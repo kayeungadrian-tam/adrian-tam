@@ -1,5 +1,5 @@
 {
-  "name": "porfolio",
+  "name": "test2",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,9 +8,16 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^1.1.4",
+    "@element-plus/theme-chalk": "^2.1.10",
+    "@guillaumebriday/vue-scroll-progress-bar": "^1.0.0",
     "core-js": "^3.8.3",
+    "element-plus": "^2.1.11",
+    "firebase": "^9.8.0",
     "vue": "^3.2.13",
-    "vue-router": "^4.0.3"
+    "vue-observe-visibility": "^2.0.0-alpha.1",
+    "vue-router": "^4.0.3",
+    "vue-scroll-progress": "^1.1.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
