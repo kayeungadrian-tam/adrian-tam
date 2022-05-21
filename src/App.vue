@@ -1,11 +1,13 @@
 <template>
   <TopPage />
-  <SummaryContent/>
+  <SummaryContent />
   <nav>
     <router-link to="/">Home</router-link> |
     <router-link to="/about">Really ABOUT</router-link>
   </nav>
-  <router-view />
+  <div class="page">
+    <router-view />
+  </div>
 </template>
 
 <script>
@@ -26,6 +28,10 @@ export default {
 * {
   margin: 0;
   font-family: "Josefin Sans", sans-serif;
+}
+
+.page {
+  height: 100vh;
 }
 
 #app {

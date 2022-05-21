@@ -38,30 +38,27 @@ export default {
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css?family=Josefin+Sans:400,400i,600,600i");
+
 .title {
   justify-content: center;
   align-items: center;
   text-align: center;
-  height: 80px;
   padding: 2% 0% 1% 0%;
 }
 hr {
   width: 10%;
   margin: auto;
+  background: red;
+  color: whitesmoke;
 }
-
 h2 {
   font-size: 2.5rem;
   text-transform: uppercase;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
-.text-wrapper {
+.title .wrapper {
   text-transform: uppercase;
-  &:after {
-    content: "";
-    width: 150px;
-    display: flex;
-  }
+  margin-top: -1%;
 }
 
 .aslide-fade-enter-active {
@@ -87,7 +84,7 @@ h2 {
 }
 .slide-left-enter-from,
 .slide-left-leave-to {
-  transform: translateY(-50px);
+  transform: translateY(-20px);
   opacity: 0;
 }
 </style>

@@ -17,7 +17,7 @@
           <hr />
           <div>
             <h2>YomamaBanana</h2>
-            <div class="info">Last updated: {{ date }}</div>
+            <div class="date">Last updated: {{ date }}</div>
           </div>
         </div>
       </div>
@@ -83,7 +83,7 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
   overflow: hidden;
-  height: 100vh;
+  height: 105vh;
   background-size: cover;
   text-align: center;
   background-position-x: 50%;
@@ -120,16 +120,14 @@ export default {
   }
 }
 
-.info {
+.date {
   font-size: 0.7em;
-  flex: 0 0 auto;
-  display: flex-end;
-  flex-direction: column;
-  justify-content: center;
+  position: absolute;
   vertical-align: bottom;
   font-style: italic;
-  display: inline-block;
-  align-self: flex-end;
+  display: flex;
+  margin-top: 200px;
+  left: 75%;
 }
 
 hr {
@@ -147,52 +145,43 @@ hr {
   color: #eee;
   margin: 0;
   font-family: "Josefin Sans", sans-serif;
-  .wrapper-name {
-    width: 250px;
+}
+
+@media (max-width: 992px) {
+  .name {
+    widows: 55%;
   }
-  h1 {
-    font-size: 2.3rem;
+  .name h1 {
+    font-size: 1.5rem;
+    padding: 2px 10px;
+    text-align: center;
+    /* text-transform: uppercase; */
+    color: #eee;
+  }
+  .name h2 {
+    font-size: 1rem;
     padding: 2px 10px;
     text-align: center;
     text-transform: uppercase;
     color: #eee;
   }
-  p {
-    font-size: 1.5rem;
+}
+@media (min-width: 992px) {
+  .name {
+    widows: 100%;
+  }
+  .name h1 {
+    font-size: 2.3rem;
+    padding: 2px 10px;
     text-align: center;
-    margin: 5px auto;
     color: #eee;
   }
-  hr {
-    border: 1px solid whitesmoke;
-  }
-}
-@media (min-width: #{map-get($breakpoints, small)}) {
-  .name {
-    .wrapper-name {
-      width: 55%;
-    }
-    h1 {
-      font-size: 2.8rem;
-      padding: 4% 8%;
-    }
-    p {
-      font-size: 2rem;
-    }
-  }
-}
-@media (min-width: #{map-get($breakpoints, medium)}) {
-  .name {
-    .wrapper-name {
-      width: 450px;
-    }
-    h1 {
-      font-size: 4rem;
-      padding: 4% 10%;
-    }
-    p {
-      font-size: 2.5rem;
-    }
+  .name h2 {
+    font-size: 1.5rem;
+    padding: 2px 10px;
+    text-align: center;
+    text-transform: uppercase;
+    color: #eee;
   }
 }
 @media only screen and (max-device-width: 1024px) {

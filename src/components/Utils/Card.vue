@@ -1,10 +1,20 @@
 <template>
-  <div class="info card-mobile">
-    <h3>{{ user.name }}</h3>
-    <div class="data"><strong>E-mail:</strong> {{ user.email }}</div>
-    <div class="data"><strong>Phone:</strong> {{ user.phone }}</div>
-    <div class="data"><strong>City:</strong> {{ user.city }}</div>
-    <div class="data"><strong>Languages:</strong> {{ user.lang }}</div>
+  <div class="test">
+    <el-card class="info card-mobile" shadow="hover">
+      <h3>{{ user.name }}</h3>
+      <div class="data">
+        <strong class="sub-title">E-mail:</strong> {{ user.email }}
+      </div>
+      <div class="data">
+        <strong class="sub-title">Phone:</strong> {{ user.phone }}
+      </div>
+      <div class="data">
+        <strong class="sub-title">City:</strong> {{ user.city }}
+      </div>
+      <div class="data">
+        <strong class="sub-title">Languages:</strong> {{ user.lang }}
+      </div>
+    </el-card>
   </div>
 </template>
 
@@ -20,32 +30,40 @@ export default {
 </script>
 
 <style scoped>
-@media (min-width: 992px) {
+.test {
+  padding: 0% 10% 0% 10%;
+}
+
+@media (max-width: 992px) {
   .info {
     padding: 1%;
+    width: 75vw;
   }
   .info .data {
     margin-bottom: 15px;
     text-align: center;
   }
   h3 {
-    margin-bottom: 15px;
-    text-transform: uppercase;
+    margin-bottom: 1.5rem;
   }
 }
-@media (max-width: 992px) {
+
+@media (min-width: 992px) {
   .card-mobile {
     text-align: center !important;
     margin-top: 20px;
-    width: 100vw;
+    width: 25vw;
     justify-content: center;
-    align-items: center;
-    text-align: justify;
-    left: 50%;
+    align-items: left;
+    text-align: left;
+    /* right: 50%; */
   }
   .info .data {
     margin-bottom: 10px;
-    text-align: center;
+    text-align: left;
+  }
+  h3 {
+    margin-bottom: 1.5rem;
   }
 }
 </style>

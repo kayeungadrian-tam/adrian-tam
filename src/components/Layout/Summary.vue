@@ -1,8 +1,8 @@
 <template>
+  <TitleComponent :title="title" description="This is a description" />
   <div class="summary">
-    <TitleComponent :title="title" description="This is a description" />
     <PhotoComponent :user="user" />
-    <el-row class="section-content">
+    <div class="section-content">
       <div class="desc">
         <div class="col">
           <h2>Who am I?</h2>
@@ -17,12 +17,10 @@
           </p>
         </div>
       </div>
-      <div class="card-mobile">
-        <div class="col">
-          <CardComponent :user="user" :links="links" />
-        </div>
+      <div class="col">
+        <CardComponent :user="user" :links="links" />
       </div>
-    </el-row>
+    </div>
   </div>
 </template>
 
@@ -42,7 +40,7 @@ export default {
     return {
       title: "About Me",
       user: {
-        name: "Adrian Tam",
+        name: "KaYeungAdrian Tam",
         email: "tamkayeung.adrian@gmail.com",
         phone: "Phone number",
         city: "Tokyo",
@@ -56,12 +54,8 @@ export default {
 
 <style scoped>
 .summary {
-  background: whitesmoke;
-  height: 100vh;
+  height: 105vh;
   margin-top: 0px;
-}
-.desc {
-  padding: 0% 15% 0% 15%;
 }
 .desc p {
   padding: 2% 0% 2% 0%;
@@ -70,12 +64,27 @@ export default {
 
 @media (min-width: 992px) {
   .section-content {
-    width: 50%;
+    padding: 0% 5% 0% 15%;
     margin: 0 auto;
     display: flex;
+    text-align: justify;
   }
   .section-content .col {
+    flex: 50%;
+  }
+  .desc {
+    flex: 50%;
+    width: 80%;
+    margin-top: 20px;
   }
 }
 
+@media (max-width: 992px) {
+  .section-content {
+    /* background: red; */
+    padding: 1% 3% 0% 3%;
+    text-align: justify;
+    text-align: center;
+  }
+}
 </style>
