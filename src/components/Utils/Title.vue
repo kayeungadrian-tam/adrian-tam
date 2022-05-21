@@ -7,7 +7,7 @@
     }"
   >
     <Transition name="aslide-fade" mode="in-out">
-      <h2 v-if="isV">{{ title }}</h2>
+      <div class="suptitle" v-if="isV">{{ title }}</div>
     </Transition>
 
     <Transition name="slide-left" mode="in-out">
@@ -16,7 +16,7 @@
       </div>
     </Transition>
   </div>
-  <hr width="200" />
+  <hr />
 </template>
 
 <script>
@@ -39,18 +39,43 @@ export default {
 <style scoped>
 @import url("https://fonts.googleapis.com/css?family=Josefin+Sans:400,400i,600,600i");
 
+
+@media (max-width: 992px) {
+  .suptitle {
+    font-size: 2.0rem;
+  }
+  .text-wrapper{
+    font-size: 0.8rem;
+
+  }
+    hr {
+  width: 30%;
+  margin: auto;
+}
+}
+
+@media (min-width: 992px) {
+  .suptitle {
+    font-size: 2.5rem;
+  }
+  .text-wrapper{
+    font-size: 1.1rem;
+
+  }
+  hr {
+  width: 20%;
+  margin: auto;
+}
+}
+
+
 .title {
   justify-content: center;
   align-items: center;
   text-align: center;
   padding: 2% 0% 1% 0%;
 }
-hr {
-  width: 10%;
-  margin: auto;
-  background: red;
-  color: whitesmoke;
-}
+
 h2 {
   font-size: 2.5rem;
   text-transform: uppercase;
@@ -58,7 +83,7 @@ h2 {
 }
 .title .wrapper {
   text-transform: uppercase;
-  margin-top: -1%;
+  margin-top: 1%;
 }
 
 .aslide-fade-enter-active {

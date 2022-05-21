@@ -5,7 +5,7 @@
     <div class="section-content">
       <div class="desc">
         <div class="col">
-          <h2>Who am I?</h2>
+          <h3>Who am I?</h3>
           <p>
             16 “For God so loved the world, that he gave his only Son, that
             whoever believes in him should not perish but have eternal life. 17
@@ -57,10 +57,7 @@ export default {
   height: 105vh;
   margin-top: 0px;
 }
-.desc p {
-  padding: 2% 0% 2% 0%;
-  text-align: justify;
-}
+
 
 @media (min-width: 992px) {
   .section-content {
@@ -81,10 +78,14 @@ export default {
 
 @media (max-width: 992px) {
   .section-content {
-    /* background: red; */
     padding: 1% 3% 0% 3%;
-    text-align: justify;
     text-align: center;
   }
+  .desc p {
+  padding: 2% 15% 2% 15%;
+  text-align: justify;
+  max-width: 600px;
+}
+
 }
 </style>

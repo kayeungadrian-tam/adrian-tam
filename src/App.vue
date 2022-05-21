@@ -1,6 +1,9 @@
 <template>
   <TopPage />
   <SummaryContent />
+  <div class="page">
+    <HistoryContent />
+  </div>
   <nav>
     <router-link to="/">Home</router-link> |
     <router-link to="/about">Really ABOUT</router-link>
@@ -13,12 +16,14 @@
 <script>
 import TopPage from "./components/Layout//TopPage.vue";
 import SummaryContent from "./components/Layout/Summary.vue";
+import HistoryContent from "./components/Layout/History.vue";
 
 export default {
   name: "App",
   components: {
     TopPage,
     SummaryContent,
+    HistoryContent,
   },
 };
 </script>
@@ -30,8 +35,18 @@ export default {
   font-family: "Josefin Sans", sans-serif;
 }
 
+
+
 .page {
   height: 100vh;
+  background: black;
+  padding: 3% 10px 3% 10px;
+  background-image: linear-gradient(
+    135deg,
+    rgba(51, 144, 181, 0.41) 10%,
+    rgba(163, 111, 20, 0.5) 100%
+  );
+  color: white;
 }
 
 #app {

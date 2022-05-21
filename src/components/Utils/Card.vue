@@ -52,7 +52,7 @@ export default {
   .card-mobile {
     text-align: center !important;
     margin-top: 20px;
-    width: 25vw;
+    width: 22vw;
     justify-content: center;
     align-items: left;
     text-align: left;
