@@ -2,7 +2,7 @@
   <div>
     <div class="parallax">
       <div class="name">
-        <div v-observe-visibility="visibilityChanged" >
+        <div v-observe-visibility="visibilityChanged">
           <Transition name="slide-right">
             <h1 v-if="isV">
               KaYeungAdrian Tam
@@ -15,10 +15,10 @@
             </h1>
           </Transition>
           <hr />
-            <div>
-              <h2>YomamaBanana</h2>
-              <div class="info">Last updated: {{ date }}</div>
-            </div>
+          <div>
+            <h2>YomamaBanana</h2>
+            <div class="info">Last updated: {{ date }}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -77,7 +77,7 @@ export default {
 }
 
 .parallax {
-  background: url("../../assets/img/background2.jpg");
+  background: url("@/assets/img/background2.jpg");
   background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
@@ -126,9 +126,14 @@ export default {
   display: flex-end;
   flex-direction: column;
   justify-content: center;
+  vertical-align: bottom;
   font-style: italic;
   display: inline-block;
   align-self: flex-end;
+}
+
+hr {
+  margin: 20px;
 }
 
 .name {
