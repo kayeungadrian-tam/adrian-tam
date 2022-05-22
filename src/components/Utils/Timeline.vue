@@ -1,6 +1,6 @@
 <template>
   <div class="timeline">
-    <h2>{{ subtitle }}</h2>
+    <div class="subtitle">{{ subtitle }}</div>
     <el-timeline>
       <el-timeline-item
         v-for="exp in indata"
@@ -32,6 +32,14 @@
     color: whitesmoke;
   }
 
+  .subtitle {
+    margin-bottom: 20px;
+    font-size: 1.1em;
+    text-align: center;
+    color: #eee;
+    text-shadow: 0 0 20px #eee;
+  }
+
   li {
     font-size: 0.8rem;
     font-family: "Sawarabi Mincho", serif;
@@ -51,6 +59,13 @@
     font-family: "Sawarabi Mincho", serif;
     color: whitesmoke;
   }
+  .subtitle {
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    text-align: center;
+    color: #eee;
+    text-shadow: 0 0 20px #eee;
+  }
 }
 
 .timeline {
@@ -59,16 +74,6 @@
   font-family: "M PLUS 1p", sans-serif;
   font-size: 1.2em;
 }
-
-.timeline h2 {
-  margin-bottom: 20px;
-  font-size: 1.5em;
-  text-align: center;
-  color: #eee;
-  text-shadow: 0 0 20px #eee;
-}
-
-
 </style>
 
 <script>
