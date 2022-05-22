@@ -6,6 +6,7 @@
       </a>
     </div>
   </div>
+ 
 </template>
 
 <script>
@@ -21,18 +22,12 @@ export default {
 </script>
 
 <style scoped>
+
+
 .photo {
   padding-top: 1%;
-
-  a:focus {
-    outline: none;
-  }
-  img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    display: inline-block;
-  }
+  animation-name: bounce-3;
+  animation-timing-function: ease;
 }
 img {
   max-width: 100%;

@@ -4,6 +4,9 @@
   <div class="page">
     <HistoryContent />
   </div>
+  <div class="page2">
+    <SkillComponent />
+  </div>
   <nav>
     <router-link to="/">Home</router-link> |
     <router-link to="/about">Really ABOUT</router-link>
@@ -17,6 +20,7 @@
 import TopPage from "./components/Layout//TopPage.vue";
 import SummaryContent from "./components/Layout/Summary.vue";
 import HistoryContent from "./components/Layout/History.vue";
+import SkillComponent from "./components/Layout/Skills.vue";
 
 export default {
   name: "App",
@@ -24,6 +28,7 @@ export default {
     TopPage,
     SummaryContent,
     HistoryContent,
+    SkillComponent,
   },
 };
 </script>
@@ -35,7 +40,12 @@ export default {
   font-family: "Josefin Sans", sans-serif;
 }
 
-
+.page2 {
+  height: 100vh;
+  background: whitesmoke;
+  padding: 0% 10px 3% 10px;
+  color: white;
+}
 
 .page {
   height: 100vh;

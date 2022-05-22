@@ -54,6 +54,7 @@ export default {
   }
   .title_box {
     height: 15vh;
+    padding-top: 1.5%;
   }
 }
 
@@ -86,7 +87,6 @@ h2 {
   margin-bottom: 0.5rem;
 }
 .title .wrapper {
-  text-transform: uppercase;
   margin-top: 1%;
 }
 
