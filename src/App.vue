@@ -42,20 +42,15 @@ export default {
 
 .page2 {
   height: 100vh;
-  background: whitesmoke;
   padding: 0% 10px 3% 10px;
-  color: white;
+  background-color: whitesmoke;
 }
 
 .page {
   height: 100vh;
-  background: black;
   padding: 0% 10px 3% 10px;
-  background-image: linear-gradient(
-    135deg,
-    rgba(51, 144, 181, 0.41) 10%,
-    rgba(163, 111, 20, 0.5) 100%
-  );
+  background-color: #2d3436;
+  background-image: linear-gradient(315deg, #000000 15%, #2d3436 64% );
   color: white;
 }
 

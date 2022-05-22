@@ -2,7 +2,7 @@
   <div class="skillTitle">
     <TitleComponent
       :title="title"
-      description="My professional & education history"
+      description="What I can do"
     />
   </div>
   <div class="icon">
@@ -37,7 +37,7 @@
 .icon {
   margin: auto;
   width: 50%;
-  width: 100vw;
+  width: 80vw;
   align-items: center;
   justify-content: center;
   padding: 2%;
@@ -88,19 +88,19 @@ export default {
         },
         {
           url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original-wordmark.svg",
-          name: "",
+          name: "Tensorflow",
         },
         {
           url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jupyter/jupyter-original-wordmark.svg",
-          name: "",
+          name: "Jupyter",
         },
         {
           url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original-wordmark.svg",
-          name: "",
+          name: "PyTorch",
         },
         {
           url: "https://pbs.twimg.com/media/DfPTqkVWsAAxDcw.jpg",
-          name: "",
+          name: "ROS",
         },
       ],
     };
