@@ -70,7 +70,7 @@
 
 .timeline {
   margin: auto;
-  padding: 10% 5% 10% 5%;
+  padding: auto;
   font-family: "M PLUS 1p", sans-serif;
   font-size: 1.2em;
 }
