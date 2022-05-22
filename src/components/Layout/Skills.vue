@@ -46,7 +46,6 @@
 
 @media (max-width: 992px) {
  .icon img {
-     background: red;
      width: 80px;
  }
  .icon .skill-name {
