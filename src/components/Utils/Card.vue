@@ -14,17 +14,22 @@
       <div class="data">
         <strong class="sub-title">Languages:</strong> {{ user.lang }}
       </div>
+      <div>
+        <IconComponent />
+      </div>
     </el-card>
   </div>
 </template>
 
 <script>
 // import SocialBar from './SocialBar.vue'
+import IconComponent from "@/components/Utils/Icons.vue";
+
 export default {
   name: "CardComponent",
   props: ["user", "links"],
   components: {
-    // SocialBar,
+    IconComponent,
   },
 };
 </script>

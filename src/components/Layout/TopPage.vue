@@ -50,6 +50,7 @@ export default {
 </script>
 
 <style scoped>
+
 .slide-right-enter-active {
   transition: all 0.5s ease-out;
 }

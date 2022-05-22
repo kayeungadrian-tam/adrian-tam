@@ -1,22 +1,24 @@
 <template>
-  <div
-    class="title"
-    v-observe-visibility="{
-      callback: visibilityChanged,
-      throttle: 50,
-    }"
-  >
-    <Transition name="aslide-fade" mode="in-out">
-      <div class="suptitle" v-if="isV">{{ title }}</div>
-    </Transition>
+  <div class="title_box">
+    <div
+      class="title"
+      v-observe-visibility="{
+        callback: visibilityChanged,
+        throttle: 50,
+      }"
+    >
+      <Transition name="aslide-fade" mode="in-out">
+        <div class="suptitle" v-if="isV">{{ title }}</div>
+      </Transition>
 
-    <Transition name="slide-left" mode="in-out">
-      <div v-if="isV" class="wrapper">
-        <div class="text-wrapper">{{ description }}</div>
-      </div>
-    </Transition>
+      <Transition name="slide-left" mode="in-out">
+        <div v-if="isV" class="wrapper">
+          <div class="text-wrapper">{{ description }}</div>
+        </div>
+      </Transition>
+    </div>
+    <hr />
   </div>
-  <hr />
 </template>
 
 <script>
@@ -39,35 +41,37 @@ export default {
 <style scoped>
 @import url("https://fonts.googleapis.com/css?family=Josefin+Sans:400,400i,600,600i");
 
-
 @media (max-width: 992px) {
   .suptitle {
-    font-size: 2.0rem;
+    font-size: 2rem;
   }
-  .text-wrapper{
+  .text-wrapper {
     font-size: 0.8rem;
-
   }
-    hr {
-  width: 30%;
-  margin: auto;
-}
+  hr {
+    width: 30%;
+    margin: auto;
+  }
+  .title_box {
+    height: 15vh;
+  }
 }
 
 @media (min-width: 992px) {
   .suptitle {
     font-size: 2.5rem;
   }
-  .text-wrapper{
+  .text-wrapper {
     font-size: 1.1rem;
-
   }
   hr {
-  width: 20%;
-  margin: auto;
+    width: 20%;
+    margin: auto;
+  }
+  .title_box {
+    height: 18vh;
+  }
 }
-}
-
 
 .title {
   justify-content: center;

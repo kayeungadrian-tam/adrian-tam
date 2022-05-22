@@ -26,7 +26,7 @@ p {
 
 body {
   background: black;
-  padding: 3% 10px 3% 10px;
+  padding: 0% 10px 3% 10px;
   background-image: linear-gradient(
     135deg,
     rgba(51, 144, 181, 0.41) 10%,

@@ -29,6 +29,7 @@ import TitleComponent from "@/components/Utils/Title.vue";
 import PhotoComponent from "@/components/Utils/Photo.vue";
 import CardComponent from "@/components/Utils/Card.vue";
 
+
 export default {
   name: "SummaryContent",
   components: {
@@ -56,6 +57,12 @@ export default {
 .summary {
   height: 105vh;
   margin-top: 0px;
+}
+
+h3{
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 2% 0% 2% 0%;
 }
 
 
