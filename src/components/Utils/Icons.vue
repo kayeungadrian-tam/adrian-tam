@@ -22,6 +22,16 @@
           <fa class="icon" :icon="{ prefix: 'fab', iconName: 'linkedin' }" />
         </a>
       </li>
+      <li>
+        <a href="links.metadata.linkedin" target="_blank">
+          <img
+            src="../../assets/img/logo/Qiita.png"
+            alt="Qiita"
+            width="41"
+            class="qiita icon"
+          />
+        </a>
+      </li>
     </ul>
   </div>
 </template>
@@ -33,6 +43,10 @@ export default {
 </script>
 
 <style scoped>
+.qiita{
+    filter: contrast(1%);
+}
+
 .social-wrap {
   padding: 5% 10% 0% 10%;
 }
