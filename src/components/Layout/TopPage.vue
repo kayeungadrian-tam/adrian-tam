@@ -23,10 +23,20 @@
       </div>
     </div>
   </div>
+  <el-backtop :right="100" :bottom="100"> 
+    <el-button
+      class="backtop"
+      size="large "
+      type="success"
+      :icon="ArrowUpBold"
+      circle
+    />
+  </el-backtop>
 </template>
 
 <script setup>
 import { InfoFilled } from "@element-plus/icons-vue";
+import { ArrowUpBold } from "@element-plus/icons-vue";
 </script>
 
 <script>
@@ -50,6 +60,12 @@ export default {
 </script>
 
 <style scoped>
+.backtop {
+  opacity: 1;
+  background-color: transparent;
+  border: 0;
+  font-size: 25px;
+}
 
 .slide-right-enter-active {
   transition: all 0.5s ease-out;
