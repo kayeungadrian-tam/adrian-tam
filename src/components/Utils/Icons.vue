@@ -25,9 +25,9 @@
       <li>
         <a href="links.metadata.linkedin" target="_blank">
           <img
-            src="../../assets/img/logo/Qiita.png"
+            src="../../assets/img/logo/qiita3.png"
             alt="Qiita"
-            width="41"
+            width="40"
             class="qiita icon"
           />
         </a>
@@ -43,8 +43,15 @@ export default {
 </script>
 
 <style scoped>
-.qiita{
-    filter: contrast(1%);
+.qiita {
+  background-color: #73767a;
+  border-radius: 4px;
+  border: 0px solid black;
+  padding-top: -7-px;
+}
+
+.qiita:hover {
+  background-color: #00bcd4;
 }
 
 .social-wrap {

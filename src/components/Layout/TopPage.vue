@@ -23,7 +23,7 @@
       </div>
     </div>
   </div>
-  <el-backtop :right="100" :bottom="100"> 
+  <el-backtop :right="100" :bottom="100">
     <el-button
       class="backtop"
       size="large "
@@ -47,7 +47,7 @@ export default {
   data() {
     return {
       dates: ref(new Date()),
-      date: "2022-05-15",
+      date: "2022-05-29",
       isV: false,
     };
   },
@@ -144,7 +144,7 @@ export default {
   font-style: italic;
   display: flex;
   margin-top: 200px;
-  left: 75%;
+  padding: 0% 13% 0% 10%;
 }
 
 hr {

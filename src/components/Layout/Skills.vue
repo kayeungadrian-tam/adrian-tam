@@ -1,9 +1,6 @@
 <template>
   <div class="skillTitle">
-    <TitleComponent
-      :title="title"
-      description="What I can do"
-    />
+    <TitleComponent :title="title" description="What I can do" />
   </div>
   <div class="icon">
     <el-space
@@ -43,17 +40,14 @@
   padding: 2%;
 }
 
-
 @media (max-width: 992px) {
- .icon img {
-     width: 80px;
- }
- .icon .skill-name {
-        font-size: 1.0em;
- }
+  .icon img {
+    width: 80px;
+  }
+  .icon .skill-name {
+    font-size: 1em;
+  }
 }
-
-
 </style>
 
 <script>
@@ -101,6 +95,18 @@ export default {
         {
           url: "https://pbs.twimg.com/media/DfPTqkVWsAAxDcw.jpg",
           name: "ROS",
+        },
+        {
+          url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original-wordmark.svg",
+          name: "CSS3",
+        },
+        {
+          url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original-wordmark.svg",
+          name: "PostgreSQL",
+        },
+        {
+          url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg",
+          name: "Flask",
         },
       ],
     };

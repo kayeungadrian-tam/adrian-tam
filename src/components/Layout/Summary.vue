@@ -29,7 +29,6 @@ import TitleComponent from "@/components/Utils/Title.vue";
 import PhotoComponent from "@/components/Utils/Photo.vue";
 import CardComponent from "@/components/Utils/Card.vue";
 
-
 export default {
   name: "SummaryContent",
   components: {
@@ -59,12 +58,11 @@ export default {
   margin-top: 0px;
 }
 
-h3{
+h3 {
   font-size: 1.5rem;
   font-weight: bold;
   padding: 2% 0% 2% 0%;
 }
-
 
 @media (min-width: 992px) {
   .section-content {
@@ -89,10 +87,9 @@ h3{
     text-align: center;
   }
   .desc p {
-  padding: 2% 15% 2% 15%;
-  text-align: justify;
-  max-width: 600px;
-}
-
+    padding: 2% 15% 2% 15%;
+    text-align: justify;
+    max-width: 600px;
+  }
 }
 </style>
