@@ -7,7 +7,7 @@
   <div class="page2">
     <SkillComponent />
   </div>
-  <div class="page">
+  <div class="">
     <ProjectConponent />
   </div>
 </template>
