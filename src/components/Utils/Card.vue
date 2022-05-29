@@ -1,35 +1,41 @@
 <template>
-  <div class="test">
-    <el-card class="info card-mobile" shadow="hover">
-      <h3>{{ user.name }}</h3>
-      <div class="data">
-        <strong class="sub-title">E-mail:</strong>
-        {{ user.email }}
-        <el-button
-          class="button"
-          style="border: 0px; width: 10px; margin-left: 0"
-          @click="copy"
-          round
-        >
-          <el-icon :size="12" circle>
-            <CopyDocument />
-          </el-icon>
-        </el-button>
-      </div>
-      <div class="data">
-        <strong class="sub-title">Phone:</strong> {{ user.phone }}
-      </div>
-      <div class="data">
-        <strong class="sub-title">City:</strong> {{ user.city }}
-      </div>
-      <div class="data">
-        <strong class="sub-title">Languages:</strong> {{ user.lang }}
-      </div>
-      <div>
-        <IconComponent />
-      </div>
-    </el-card>
-  </div>
+  <el-row :gutter="0">
+    <el-col :span="5"><div class="grid-content bg-purple" /></el-col>
+    <el-col :span="14"
+      ><div class="grid-content bg-purple" />
+      <div class="test">
+        <el-card class="info card-mobile" shadow="hover">
+          <h3>{{ user.name }}</h3>
+          <div class="data">
+            <strong class="sub-title">E-mail:</strong>
+            {{ user.email }}
+            <el-button
+              class="button"
+              style="border: 0px; width: 10px; margin-left: 0"
+              @click="copy"
+              round
+            >
+              <el-icon :size="12" circle>
+                <CopyDocument />
+              </el-icon>
+            </el-button>
+          </div>
+          <div class="data">
+            <strong class="sub-title">Phone:</strong> {{ user.phone }}
+          </div>
+          <div class="data">
+            <strong class="sub-title">City:</strong> {{ user.city }}
+          </div>
+          <div class="data">
+            <strong class="sub-title">Languages:</strong> {{ user.lang }}
+          </div>
+          <div>
+            <IconComponent />
+          </div>
+        </el-card></div
+    ></el-col>
+    <el-col :span="5"><div class="grid-content bg-purple" /></el-col>
+  </el-row>
 </template>
 
 <script setup>
@@ -63,27 +69,24 @@ export default {
 </script>
 
 <style scoped>
-
 .button:focus {
   background-color: white;
   color: inherit;
 }
 
-.test {
-  padding: 0% 10% 0% 10%;
-}
-
 @media (max-width: 992px) {
   .info {
-    padding: 1%;
-    width: 75vw;
+    justify-content: center;
   }
   .info .data {
     margin-bottom: 15px;
     text-align: center;
+    font-size: 0.9rem;
   }
   h3 {
     margin-bottom: 1.5rem;
+    font-size: 1rem;
+    text-decoration: underline;
   }
 }
 
@@ -103,6 +106,7 @@ export default {
   }
   h3 {
     margin-bottom: 1.5rem;
+    text-decoration: underline;
   }
 }
 </style>

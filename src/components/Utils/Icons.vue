@@ -1,39 +1,37 @@
 <template>
-  <div class="social-wrap">
-    <ul>
-      <li>
-        <a href="links.metadata.facebook" target="_blank">
-          <fa
-            class="icon"
-            :icon="{ prefix: 'fab', iconName: 'facebook-square' }"
-          />
-        </a>
-      </li>
-      <li>
-        <a href="links.metadata.instagram" target="_blank">
-          <fa
-            class="icon"
-            :icon="{ prefix: 'fab', iconName: 'github-square' }"
-          />
-        </a>
-      </li>
-      <li>
-        <a href="links.metadata.linkedin" target="_blank">
-          <fa class="icon" :icon="{ prefix: 'fab', iconName: 'linkedin' }" />
-        </a>
-      </li>
-      <li>
-        <a href="links.metadata.linkedin" target="_blank">
-          <img
-            src="../../assets/img/logo/qiita3.png"
-            alt="Qiita"
-            width="40"
-            class="qiita icon"
-          />
-        </a>
-      </li>
-    </ul>
-  </div>
+  <el-row :gutter="0">
+    <el-col :span="6"
+      ><div class="grid-content bg-purple" />
+      <a href="links.metadata.facebook" target="_blank">
+        <fa
+          class="icon"
+          :icon="{ prefix: 'fab', iconName: 'facebook-square' }"
+        /> </a
+    ></el-col>
+    <el-col :span="6"
+      ><div class="grid-content bg-purple" />
+      <a href="links.metadata.instagram" target="_blank">
+        <fa
+          class="icon"
+          :icon="{ prefix: 'fab', iconName: 'github-square' }"
+        /> </a
+    ></el-col>
+    <el-col :span="6"
+      ><div class="grid-content bg-purple" />
+      <a href="links.metadata.linkedin" target="_blank">
+        <fa class="icon" :icon="{ prefix: 'fab', iconName: 'linkedin' }" /> </a
+    ></el-col>
+    <el-col :span="6"
+      ><div class="grid-content bg-purple" />
+      <a href="links.metadata.linkedin" target="_blank">
+        <img
+          src="../../assets/img/logo/qiita3.png"
+          alt="Qiita"
+          width="40"
+          class="qiita icon"
+        /> </a
+    ></el-col>
+  </el-row>
 </template>
 
 <script>
@@ -47,7 +45,8 @@ export default {
   background-color: #73767a;
   border-radius: 4px;
   border: 0px solid black;
-  padding-top: -7-px;
+  margin-top: 2px;
+  padding-top: -1px;
 }
 
 .qiita:hover {
