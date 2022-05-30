@@ -8,26 +8,20 @@
             <div class="container">
               <el-skeleton :rows="5" />
               {{ index }}
-              <div class="detail">
-                <el-row :gutter="20">
-                  <el-col :span="4"
-                    ><div class="grid-content bg-purple" />
-                  </el-col>
-                  <el-col :span="16"
-                    ><div class="grid-content bg-purple" />
-
-                    <el-icon
-                      @click="showPage(item.link)"
-                      class="icon-down"
-                      style="vertical-align: middle"
-                      ><DArrowLeft class="down"
-                    /></el-icon>
-                  </el-col>
-                  <el-col :span="4"
-                    ><div class="grid-content bg-purple"
-                  /></el-col>
-                </el-row>
-              </div>
+            </div>
+            <div class="detail">
+              <el-row :gutter="20">
+                <el-col :span="4"><div class="" /> </el-col>
+                <el-col :span="16">
+                  <el-icon
+                    @click="showPage(item.link)"
+                    class="icon-down"
+                    style="vertical-align: middle"
+                    ><DArrowLeft class="down"
+                  /></el-icon>
+                </el-col>
+                <el-col :span="4"></el-col>
+              </el-row>
             </div>
           </el-carousel-item>
         </el-carousel>
@@ -83,8 +77,8 @@
 @media (max-width: 768px) {
   .detail {
     position: relative;
-    margin-top: 40vh;
     padding: 0% 15% 0% 15%;
+    background: red;
   }
   .icon-down {
     font-size: 18px;
@@ -94,7 +88,6 @@
 @media (min-width: 768px) {
   .detail {
     position: relative;
-    margin-top: 40vh;
     padding: 0% 15% 0% 15%;
   }
   .icon-down {
@@ -113,11 +106,12 @@
 }
 
 .container {
-  height: 80vh;
   box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.2);
   background-color: rgba(255, 255, 255, 0.15);
   padding: 2% 10% 0% 10%;
-
+  display: flex;
+  flex-direction: column;
+  height: 84%;
   backdrop-filter: blur(1px);
 }
 </style>

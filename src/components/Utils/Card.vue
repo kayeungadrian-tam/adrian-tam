@@ -1,9 +1,8 @@
 <template>
   <el-row :gutter="0">
     <el-col :span="5"><div class="grid-content bg-purple" /></el-col>
-    <el-col :span="14"
-      ><div class="grid-content bg-purple" />
-      <div class="test">
+    <el-col :span="14">
+      <div class="">
         <el-card class="info card-mobile" shadow="hover">
           <h3>{{ user.name }}</h3>
           <div class="data">
@@ -32,8 +31,9 @@
           <div>
             <IconComponent />
           </div>
-        </el-card></div
-    ></el-col>
+        </el-card>
+      </div>
+    </el-col>
     <el-col :span="5"><div class="grid-content bg-purple" /></el-col>
   </el-row>
 </template>

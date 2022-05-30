@@ -51,9 +51,10 @@ export default {
   hr {
     width: 30%;
     margin: auto;
+    margin-bottom: 20px;
   }
   .title_box {
-    height: 15vh;
+    height: 100px;
     padding-top: 1.5%;
   }
 }
@@ -68,9 +69,11 @@ export default {
   hr {
     width: 20%;
     margin: auto;
+    padding: 0% 5% 0% 5%;
+    margin-bottom: 50px;
   }
   .title_box {
-    height: 18vh;
+    height: 150px;
   }
 }
 

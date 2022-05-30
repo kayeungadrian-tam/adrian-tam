@@ -53,11 +53,6 @@ export default {
 </script>
 
 <style scoped>
-.summary {
-  height: 105vh;
-  margin-top: 0px;
-}
-
 h3 {
   font-size: 1.5rem;
   font-weight: bold;
@@ -79,6 +74,11 @@ h3 {
     width: 80%;
     margin-top: 20px;
   }
+  .summary {
+    height: 105vh;
+    margin-top: 0px;
+    padding: 0% 0% 2% 0%;
+  }
 }
 
 @media (max-width: 992px) {
@@ -90,6 +90,10 @@ h3 {
     padding: 2% 15% 2% 15%;
     text-align: justify;
     max-width: 600px;
+  }
+  .summary {
+    margin: 0px 0px 10px 0px;
+    padding: 0% 0% 2% 0%;
   }
 }
 </style>

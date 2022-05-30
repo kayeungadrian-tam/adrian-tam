@@ -17,7 +17,7 @@
           <hr />
           <div>
             <h2>YomamaBanana</h2>
-            <div class="date">Last updated: {{ date }}</div>
+            <div class="date"></div>
           </div>
         </div>
       </div>
