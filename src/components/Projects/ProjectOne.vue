@@ -25,7 +25,6 @@
 <style scoped>
 .main {
   padding: 20px;
-  background: blue;
   height: 100vh;
 }
 
@@ -38,7 +37,6 @@ h1 {
 
 .common-layout {
   padding: 1% 20px 3% 20px;
-  border: 1px solid red;
   margin: 0 20px 0 20px;
 }
 
@@ -51,13 +49,14 @@ h1 {
 }
 
 .topboder {
-  border-top: 5px solid grey;
+  border-top: 2mm solid #eccc68d3;
   height: 10px;
   margin-top: -5px;
 }
 
 .topbox {
-  background: grey;
+  background-color: #d3d3d3;
+  background-image: linear-gradient(315deg, #d3d3d3 0%, #eccc68 74%);
   height: 50px;
 }
 </style>
