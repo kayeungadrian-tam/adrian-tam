@@ -10,6 +10,9 @@
   <div class="">
     <ProjectConponent />
   </div>
+  <div class="footer">
+    <el-footer>Footer</el-footer>
+  </div>
 </template>
 
 <script>
@@ -60,6 +63,12 @@ export default {
 .page2 {
   padding: 0% 10px 3% 10px;
   background-color: whitesmoke;
+}
+
+.footer {
+  background-color: #0d0a0b;
+  background-image: linear-gradient(315deg, #0d0a0b 0%, #009fc2 74%);
+  border-radius: 1px;
 }
 
 .test-page {

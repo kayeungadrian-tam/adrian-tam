@@ -123,6 +123,16 @@ import { DArrowLeft } from "@element-plus/icons-vue";
 <script>
 import TitleComponent from "@/components/Utils/Title.vue";
 import router from "@/router";
+import { saveAs } from "file-saver";
+import axios from "axios";
+
+function download(fileUrl, fileName) {
+  var a = document.createElement("a");
+  a.setAttribute("target", "_blank");
+  a.setAttribute("download", fileName);
+  a.href = fileUrl;
+  a.click();
+}
 
 export default {
   name: "ProjectConponent",
@@ -162,6 +172,14 @@ export default {
       document
         .getElementById("projectTop")
         .scrollIntoView({ behavior: "smooth" });
+    },
+    downloadClick() {
+      download("./src/assets/logo.png", "Codesource_Logo.txt");
+    },
+    downloadItem(url) {
+      axios.get(url, { responseType: "blob" }).then((response) => {
+        saveAs(response.data, "downloaded-file.docx");
+      });
     },
   },
 };
