@@ -17,6 +17,7 @@
     </el-container>
 
     <img src="../../assets/projects/thumbnails/infinite_virtual_web_loop.png" />
+    <h4>Keywords: OBS, OpenCV, Mediapipe</h4>
 
     <div class="main">
       <h1>Problem Statement</h1>
@@ -55,6 +56,9 @@
 
 <style scoped>
 
+h4{
+    font-style: italic;
+}
 .icon {
   font-size: 1.5rem;
 }

@@ -18,6 +18,8 @@
 
     <img src="../../assets/projects/thumbnails/image_processing_gui.png" />
 
+    <h4>Keywords: Image Processing, CV, Yolov3, PySimpleGUI</h4>
+
     <div class="main">
       <h1>Problem Statement</h1>
       <p>
@@ -52,6 +54,10 @@
 </template>
 
 <style scoped>
+
+h4{
+    font-style: italic;
+}
 
 .icon {
   font-size: 1.5rem;
