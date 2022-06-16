@@ -75,7 +75,7 @@ h3 {
     margin-top: 20px;
   }
   .summary {
-    height: 105vh;
+    /* height: 105vh; */
     margin-top: 0px;
     padding: 0% 0% 2% 0%;
   }

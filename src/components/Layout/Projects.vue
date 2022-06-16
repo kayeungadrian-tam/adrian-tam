@@ -2,9 +2,10 @@
   <div class="page" id="projectTop">
     <TitleComponent :title="title" :description="description" />
     <br>
+    <div>
     <el-row class="row-bg" justify="space-evenly">
       <el-col :span="16">
-        <el-carousel height="75vh" indicator-position="" :interval="6000">
+        <el-carousel height="80vh" indicator-position="" :interval="6000">
           <el-carousel-item v-for="(item, index) in projectList" :key="item">
             <div class="container">
               <h3>
@@ -17,35 +18,35 @@
                 :src="item.img"
                 fit="contain"
               />
+                <div class="tag">
+                  <el-tag
+                    v-for="tag in item.tags"
+                    :class="tag"
+                    :key="tag"
+                    :type="tag"
+                    effect="dark"
+                  >
+                    {{ tag }}
+                  </el-tag>
+                </div>
               <div class="overview">
                 <p>{{ item.overview }}</p>
 
 
               </div>
-              <div class="tag">
-                <el-tag
-                  v-for="tag in item.tags"
-                  :class="tag"
-                  :key="tag"
-                  :type="tag"
-                  effect="dark"
-                >
-                  {{ tag }}
-                </el-tag>
+              <div id="container" class="go-down" style="padding-top: 20px">
+                <button class="learn-more mobile" @click="showPage(item.link)">
+                  <span class="circle mobile" aria-hidden="true">
+                    <span class="icon arrow" style="rotate: 90"></span>
+                  </span>
+                  <span class="button-text">Learn More</span>
+                </button>
               </div>
             </div>
             <div class="detail">
               <el-row :gutter="20">
                 <el-col :span="4"><div class="" /> </el-col>
                 <el-col :span="16">
-                  <div id="container" class="go-down" style="padding-top: 20px">
-                    <button class="learn-more mobile" @click="showPage(item.link)">
-                      <span class="circle mobile" aria-hidden="true">
-                        <span class="icon arrow" style="rotate: 90"></span>
-                      </span>
-                      <span class="button-text">Learn More</span>
-                    </button>
-                  </div>
                 </el-col>
 
                 <el-col :span="4"> </el-col>
@@ -55,6 +56,7 @@
         </el-carousel>
       </el-col>
     </el-row>
+    </div>
   </div>
   <div class="page2" id="projectContent">
     <el-affix :offset="0">
@@ -71,12 +73,30 @@
 </style>
 
 <style scoped>
+@media (min-height: 700px) {
+.row-bg{
+  /* background-color: #f5f5f5; */
+  height: 100%;
+}
+.container {
+  box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.2);
+  background-color: rgba(255, 255, 255, 0.15);
+  padding: 2% 10% 0% 10%;
+  display: flex;
+  flex-direction: column;
+  height: 95%;
+  backdrop-filter: blur(1px);
+  align-items: center;
+}
+}
+
 .go-down{
-  padding: 10% 0 100 0;
+  /* padding: 10% 0 100 0; */
 }
 .overview{
   margin-top: 20px;
   line-height: 1.5;
+  text-align: justify;
 }
 .github {
   font-size: 3rem;
@@ -117,13 +137,24 @@
   background-image: linear-gradient(315deg, #f9484a 0%, #fbd72b 74%);
 }
 
+.Mediapipe {
+background-color: #0cbaba;
+background-image: linear-gradient(315deg, #0cbaba 0%, #380036 74%);
+
+}
+
+.OBS {
+background-color: #edd812;
+background-image: linear-gradient(315deg, #edd812 0%, #766a65 74%);
+}
+
 .tag {
-  position: absolute;
+  position: relative;
   display: flex;
   justify-content: space-between;
-  gap: 3px;
+  gap: 5px;
   align-items: center;
-  bottom: 10px;
+  /* bottom: 10px; */
   margin-left: 2px;
 }
 
@@ -150,7 +181,7 @@
   background-color: #2d3436;
   background-image: linear-gradient(315deg, #000000 15%, #2d3436 64%);
   color: white;
-  height: 100vh;
+  /* height: 100vh; */
 }
 
 .page2 {
@@ -158,9 +189,6 @@
   background-color: whitesmoke;
 }
 
-.row-bg {
-  height: 70vh;
-}
 
 @media (max-width: 768px) {
   .detail {
@@ -181,6 +209,11 @@
   .detail {
     position: relative;
     padding: 0% 15% 0% 15%;
+    /* background: green; */
+  }
+  .mobile{
+    font-size: 1rem;
+  /* background: red;; */
   }
   .icon-down {
     font-size: 30px;
@@ -197,7 +230,7 @@
   background-image: linear-gradient(315deg, #2b4162 0%, #12100e 74%);
 }
 
-.container {
+/* .container {
   box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.2);
   background-color: rgba(255, 255, 255, 0.15);
   padding: 2% 10% 0% 10%;
@@ -206,7 +239,7 @@
   height: 84%;
   backdrop-filter: blur(1px);
   align-items: center;
-}
+} */
 </style>
 
 <script setup>
@@ -245,14 +278,17 @@ export default {
           img: require("../../assets/projects/thumbnails/image_processing_gui.png"),
           tags: ["Python", "OpenCV", "PysimpleGUI", "Yolov3"],
           overview:
-            "A GUI for image processing using OpenCV, PySimpleGUI and Yolov3",
+            "A GUI for image processing using OpenCV, PySimpleGUI and Yolov3. It aims to provide a way to test the object detection model on preprocessed image in real time.  ",
         },
         {
           no: 2,
           name: "Project 2",
-          description: "This is project 2",
-          link: "home",
+          description: "Infinite Virtual Webcam Loop",
+          link: "project-two",
           img: require("../../assets/logo.png"),
+          tags: ["Python", "OpenCV", "Mediapipe", "OBS"],
+          overview:
+            "A virtual webcam loop using OpenCV, Mediapipe and OBS. A simple program to record a video from a webcam and play it on repeat. It then sends the video to OBS for streaming.",
         },
       ],
     };
