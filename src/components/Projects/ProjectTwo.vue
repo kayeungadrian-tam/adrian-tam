@@ -81,13 +81,11 @@ a:hover{
   text-align: center;
 }
 
-
 img {
-  width: 500px;
+  width: 720px;
   height: auto;
   padding: 20px;
 }
-
 p {
   font-size: 16px;
   line-height: 26px;
