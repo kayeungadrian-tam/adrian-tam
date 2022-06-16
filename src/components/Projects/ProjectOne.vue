@@ -17,6 +17,7 @@
     </el-container>
 
     <img src="../../assets/projects/thumbnails/image_processing_gui.png" />
+
     <div class="main">
       <h1>Problem Statement</h1>
       <p>
@@ -39,10 +40,42 @@
         possible to test the performance of the models on an augmented image.
       </p>
     </div>
+        <div class="repo"><a href="https://github.com/YomamaBanana/Image_Processing" target="_blank">
+          Github repo
+                  <fa
+          class="icon"
+          :icon="{ prefix: 'fab', iconName: 'github-square' }"
+        />
+          </a>
+        </div>
   </div>
 </template>
 
 <style scoped>
+
+.icon {
+  font-size: 1.5rem;
+}
+
+a{
+  color: #7c795d;
+  text-decoration: none;
+  -webkit-transition: all 0.2s ease-in-out;
+}
+
+a:hover{
+  color: rgba(22, 19, 48, 0.652);
+  text-shadow: 0 0 10px rgba(20, 20, 20, 0.652);
+}
+
+.repo{
+  margin-top: 10px;
+  color: #7c795d;
+  vertical-align: middle;
+  text-align: center;
+}
+
+
 img {
   width: 500px;
   height: auto;

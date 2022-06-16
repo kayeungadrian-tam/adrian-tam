@@ -46,14 +46,14 @@ button {
   font-family: inherit;
   &.learn-more {
     width: 12rem;
-    height: auto;
+    height: 3rem;
     .circle {
       @include transition(all, 0.45s, cubic-bezier(0.65,0,.076,1));
       position: relative;
       display: block;
       margin: 0;
       width: 3rem;
-      height: 3rem;
+      height: 2rem;
       background: $black;
       border-radius: 1.625rem;
       .icon {

@@ -1,9 +1,10 @@
 <template>
   <div class="page" id="projectTop">
     <TitleComponent :title="title" :description="description" />
+    <br>
     <el-row class="row-bg" justify="space-evenly">
       <el-col :span="16">
-        <el-carousel height="70vh" indicator-position="" :interval="6000">
+        <el-carousel height="75vh" indicator-position="" :interval="6000">
           <el-carousel-item v-for="(item, index) in projectList" :key="item">
             <div class="container">
               <h3>
@@ -12,9 +13,15 @@
               </h3>
               <el-image
                 style="width: 400px; height: 280px"
+                class="img-thumbnail"
                 :src="item.img"
                 fit="contain"
               />
+              <div class="overview">
+                <p>{{ item.overview }}</p>
+
+
+              </div>
               <div class="tag">
                 <el-tag
                   v-for="tag in item.tags"
@@ -31,9 +38,9 @@
               <el-row :gutter="20">
                 <el-col :span="4"><div class="" /> </el-col>
                 <el-col :span="16">
-                  <div id="container" style="padding-top: 20px">
-                    <button class="learn-more" @click="showPage(item.link)">
-                      <span class="circle" aria-hidden="true">
+                  <div id="container" class="go-down" style="padding-top: 20px">
+                    <button class="learn-more mobile" @click="showPage(item.link)">
+                      <span class="circle mobile" aria-hidden="true">
                         <span class="icon arrow" style="rotate: 90"></span>
                       </span>
                       <span class="button-text">Learn More</span>
@@ -64,6 +71,13 @@
 </style>
 
 <style scoped>
+.go-down{
+  padding: 10% 0 100 0;
+}
+.overview{
+  margin-top: 20px;
+  line-height: 1.5;
+}
 .github {
   font-size: 3rem;
   color: #fff;
@@ -152,7 +166,11 @@
   .detail {
     position: relative;
     padding: 0% 15% 0% 15%;
-    background: red;
+    /* background: green; */
+  }
+  .mobile{
+    font-size: 0.8rem;
+    /* background: red;; */
   }
   .icon-down {
     font-size: 18px;
@@ -226,6 +244,8 @@ export default {
           link: "project-one",
           img: require("../../assets/projects/thumbnails/image_processing_gui.png"),
           tags: ["Python", "OpenCV", "PysimpleGUI", "Yolov3"],
+          overview:
+            "A GUI for image processing using OpenCV, PySimpleGUI and Yolov3",
         },
         {
           no: 2,
