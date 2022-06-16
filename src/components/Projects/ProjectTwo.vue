@@ -16,21 +16,33 @@
       </el-header>
     </el-container>
 
-    <img src="../../assets/projects/thumbnails/image_processing_gui.png" />
+    <img src="../../assets/projects/thumbnails/infinite_virtual_web_loop.png" />
 
     <div class="main">
       <h1>Problem Statement</h1>
       <p>
-
+        Online meeting has become a common practice in the industry, however, someimes 
+        you just want to sit back, relax, and all the while still pretend you are paying attention.
+        Aa result, a solution was needed for them boring meetings held online.
       </p>
       <h1>Solution</h1>
       <p>
+        A virtual webcam loop was developed in python to record a video and then play it on repeat. 
+        Such recording is then sent to a virtual webcam, which in turn can be used for online meetings. 
+        Ultimately, this program provides a way for the user to record themself, play it back and pretend
+        they are still listening. 
+      </p>
+      <p>
+        Furthermore, it uses facial landmarks detection to provide a metric to help the user to make a smmoth
+        transition between the on-repeat video and the real time frame. 
       </p>
       <h1>In the future...</h1>
       <p>
+        A desktop application for this program would be a good idea for better UX. At the same time, 
+        web-based solution such as Chrome Extension would also be an excellent idea.
       </p>
     </div>
-        <div class="repo"><a href="https://github.com/YomamaBanana/Image_Processing" target="_blank">
+        <div class="repo"><a href="https://github.com/YomamaBanana/OpenCV-for-Web" target="_blank">
           Github repo
                   <fa
           class="icon"
@@ -115,16 +127,16 @@ h1 {
 .topboder {
   border-top: 2mm solid #77eed8;
   height: 10px;
-  margin-top: -5px;
+  margin-top: -8px;
 }
 
 .topbox {
 background-color: #9eabe4;
 background-image: linear-gradient(315deg, #9eabe4 0%, #77eed8 74%);
-
-
   height: 50px;
   line-height: 50px;
+  margin-top: -2px;
+
 }
 </style>
 

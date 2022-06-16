@@ -77,7 +77,7 @@ a:hover{
 
 
 img {
-  width: 500px;
+  width: 720px;
   height: auto;
   padding: 20px;
 }
@@ -125,7 +125,7 @@ h1 {
 .topboder {
   border-top: 2mm solid #eccc68d3;
   height: 10px;
-  margin-top: -5px;
+  margin-top: -8px;
 }
 
 .topbox {
@@ -133,6 +133,8 @@ h1 {
   background-image: linear-gradient(315deg, #d3d3d3 0%, #eccc68 74%);
   height: 50px;
   line-height: 50px;
+  margin-top: -2px;
+
 }
 </style>
 

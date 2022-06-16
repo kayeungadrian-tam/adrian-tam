@@ -12,12 +12,13 @@
                 {{ index + 1 }} -
                 {{ item.description }}
               </h3>
+              <div class="thumbnail">
               <el-image
                 style="width: 400px; height: 280px"
-                class="img-thumbnail"
                 :src="item.img"
                 fit="contain"
               />
+              </div>
                 <div class="tag">
                   <el-tag
                     v-for="tag in item.tags"
@@ -73,6 +74,12 @@
 </style>
 
 <style scoped>
+
+
+.thumbnail{
+  padding: 20px 0px 10px 0px;
+}
+
 @media (min-height: 700px) {
 .row-bg{
   /* background-color: #f5f5f5; */
@@ -285,7 +292,7 @@ export default {
           name: "Project 2",
           description: "Infinite Virtual Webcam Loop",
           link: "project-two",
-          img: require("../../assets/logo.png"),
+          img: require("../../assets/projects/thumbnails/infinite_virtual_web_loop.png"),
           tags: ["Python", "OpenCV", "Mediapipe", "OBS"],
           overview:
             "A virtual webcam loop using OpenCV, Mediapipe and OBS. A simple program to record a video from a webcam and play it on repeat. It then sends the video to OBS for streaming.",
