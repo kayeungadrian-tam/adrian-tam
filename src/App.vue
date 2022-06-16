@@ -11,7 +11,7 @@
     <ProjectConponent />
   </div>
   <div class="footer">
-    <el-footer>Footer</el-footer>
+    <el-footer><FooterComponent /></el-footer>
   </div>
 </template>
 
@@ -21,6 +21,8 @@ import SummaryContent from "./components/Layout/Summary.vue";
 import HistoryContent from "./components/Layout/History.vue";
 import SkillComponent from "./components/Layout/Skills.vue";
 import ProjectConponent from "./components/Layout/Projects.vue";
+import FooterComponent from "./components/Layout/Footer.vue";
+
 
 export default {
   name: "App",
@@ -30,6 +32,7 @@ export default {
     HistoryContent,
     SkillComponent,
     ProjectConponent,
+    FooterComponent
   },
 };
 </script>
@@ -66,8 +69,8 @@ export default {
 }
 
 .footer {
-  background-color: #0d0a0b;
-  background-image: linear-gradient(315deg, #0d0a0b 0%, #009fc2 74%);
+  background-color: #26272b;
+  /* background-image: linear-gradient(315deg, #26272b 0%, #03002e 74%); */
   border-radius: 1px;
 }
 
