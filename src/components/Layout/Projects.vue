@@ -20,7 +20,7 @@
               />
               </div>
                 <div class="tag">
-                  <el-tag
+                  <div
                     v-for="tag in item.tags"
                     :class="tag"
                     :key="tag"
@@ -28,7 +28,7 @@
                     effect="dark"
                   >
                     {{ tag }}
-                  </el-tag>
+                  </div>
                 </div>
               <div class="overview">
                 <p>{{ item.overview }}</p>
@@ -125,34 +125,81 @@
 }
 
 .Python {
+  font-size: 0.8rem;
   background-color: #2a2a72;
   background-image: linear-gradient(315deg, #2a2a72 0%, #009ffd 74%);
+  display: inline-block;
+    border-radius: 3px;
+    padding: .3em .5em .3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: .25em .1em
 }
 
 .OpenCV {
+  font-size: 0.8rem;
+
   background-color: #a4508b;
   background-image: linear-gradient(326deg, #a4508b 0%, #5f0a87 74%);
+    display: inline-block;
+    border-radius: 3px;
+    padding: .3em .5em .3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: .25em .1em
 }
 
 .PysimpleGUI {
-  background-color: #63d471;
+  font-size: 0.8rem;
+
+background-color: #63d471;
   background-image: linear-gradient(315deg, #63d471 0%, #233329 74%);
+    display: inline-block;
+    border-radius: 3px;
+    padding: .3em .5em .3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: .25em .1em
 }
 
 .Yolov3 {
-  background-color: #f9484a;
+  font-size: 0.8rem;
+
+background-color: #f9484a;
   background-image: linear-gradient(315deg, #f9484a 0%, #fbd72b 74%);
+    display: inline-block;
+    border-radius: 3px;
+    padding: .3em .5em .3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: .25em .1em
 }
 
 .Mediapipe {
+  font-size: 0.8rem;
+
 background-color: #0cbaba;
 background-image: linear-gradient(315deg, #0cbaba 0%, #380036 74%);
+  display: inline-block;
+    border-radius: 3px;
+    padding: .3em .5em .3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: .25em .1em
 
 }
 
 .OBS {
+  font-size: 0.8rem;
+
 background-color: #edd812;
 background-image: linear-gradient(315deg, #edd812 0%, #766a65 74%);
+  display: inline-block;
+    border-radius: 3px;
+    padding: .3em .5em .3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: .25em .1em
 }
 
 .tag {
