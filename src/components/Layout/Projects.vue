@@ -191,9 +191,8 @@ background-image: linear-gradient(315deg, #0cbaba 0%, #380036 74%);
 
 .OBS {
   font-size: 0.8rem;
-
-background-color: #edd812;
-background-image: linear-gradient(315deg, #edd812 0%, #766a65 74%);
+  background-color: #edd812;
+  background-image: linear-gradient(315deg, #edd812 0%, #766a65 74%);
   display: inline-block;
     border-radius: 3px;
     padding: .3em .5em .3em;
@@ -202,6 +201,41 @@ background-image: linear-gradient(315deg, #edd812 0%, #766a65 74%);
     margin: .25em .1em
 }
 
+.Dash{
+  background-color: #55efc4;
+  background-image: linear-gradient(315deg, #55efc4 0%, #000000 74%);
+    font-size: 0.8rem;
+    display: inline-block;
+    border-radius: 3px;
+    padding: .3em .5em .3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: .25em .1em
+}
+
+.PID {
+  background-color: #2234ae;
+background-image: linear-gradient(315deg, #2234ae 0%, #191714 74%);
+    font-size: 0.8rem;
+    display: inline-block;
+    border-radius: 3px;
+    padding: .3em .5em .3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: .25em .1em
+}
+
+.Sim{
+background-color: #ba9833;
+background-image: linear-gradient(315deg, #ba9833 0%, #993333 74%);
+    font-size: 0.8rem;
+    display: inline-block;
+    border-radius: 3px;
+    padding: .3em .5em .3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: .25em .1em
+}
 .tag {
   position: relative;
   display: flex;
@@ -325,7 +359,6 @@ export default {
       description: "My story",
       projectList: [
         {
-          no: 1,
           name: "Project 1",
           description: "Image Processing GUI",
           link: "project-one",
@@ -335,12 +368,20 @@ export default {
             "A GUI for image processing using OpenCV, PySimpleGUI and Yolov3. It aims to provide a way to test the object detection model on preprocessed image in real time.  ",
         },
         {
-          no: 2,
           name: "Project 2",
           description: "Infinite Virtual Webcam Loop",
           link: "project-two",
           img: require("../../assets/projects/thumbnails/infinite_virtual_web_loop.png"),
           tags: ["Python", "OpenCV", "Mediapipe", "OBS"],
+          overview:
+            "A virtual webcam loop using OpenCV, Mediapipe and OBS. A simple program to record a video from a webcam and play it on repeat. It then sends the video to OBS for streaming.",
+        },
+                {
+          name: "Project 3",
+          description: "Dynamics Bicycle Model Simulation",
+          link: "project-three",
+          img: require("../../assets/projects/thumbnails/dbm_simulation.png"),
+          tags: ["Python", "Dash", "PID", "Sim"],
           overview:
             "A virtual webcam loop using OpenCV, Mediapipe and OBS. A simple program to record a video from a webcam and play it on repeat. It then sends the video to OBS for streaming.",
         },
