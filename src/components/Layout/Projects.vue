@@ -62,7 +62,7 @@
   <div class="page2" id="projectContent">
     <el-affix :offset="0">
       <div @click="projectTop">
-        <DArrowLeft class="up" />
+        <Bottom class="up" />
       </div>
     </el-affix>
     <router-view />
@@ -236,6 +236,18 @@ background-image: linear-gradient(315deg, #ba9833 0%, #993333 74%);
     font-weight: 600;
     margin: .25em .1em
 }
+
+.ZMQ{
+background-color: #f6d327;
+background-image: linear-gradient(315deg, #f6d327 0%, #de4daa 74%);
+    font-size: 0.8rem;
+    display: inline-block;
+    border-radius: 3px;
+    padding: .3em .5em .3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: .25em .1em
+}
 .tag {
   position: relative;
   display: flex;
@@ -256,7 +268,7 @@ background-image: linear-gradient(315deg, #ba9833 0%, #993333 74%);
 }
 
 .up {
-  transform: rotate(90deg);
+  transform: rotate(180deg);
   width: 35px;
 }
 
@@ -330,8 +342,9 @@ background-image: linear-gradient(315deg, #ba9833 0%, #993333 74%);
 } */
 </style>
 
+
 <script setup>
-import { DArrowLeft } from "@element-plus/icons-vue";
+import { Bottom } from "@element-plus/icons-vue";
 </script>
 
 <script>
@@ -381,7 +394,7 @@ export default {
           description: "Dynamics Bicycle Model Simulation",
           link: "project-three",
           img: require("../../assets/projects/thumbnails/dbm_simulation.png"),
-          tags: ["Python", "Dash", "PID", "Sim"],
+          tags: ["Python", "Dash", "PID", "Sim", "ZMQ"],
           overview:
             "A virtual webcam loop using OpenCV, Mediapipe and OBS. A simple program to record a video from a webcam and play it on repeat. It then sends the video to OBS for streaming.",
         },
