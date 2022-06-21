@@ -84,6 +84,7 @@ export default {
 
 .page {
   padding: 0% 10px 3% 10px;
+  min-height: 100vh;
   background-color: #2d3436;
   background-image: linear-gradient(315deg, #000000 15%, #2d3436 64%);
   color: white;
