@@ -81,10 +81,19 @@ a:hover{
   text-align: center;
 }
 
+@media (max-width: 992px) {
 img {
+  width: 500px;
+  height: auto;
+  padding: 20px;
+}
+}
+@media (min-width: 992px) {
+  img {
   width: 720px;
   height: auto;
   padding: 20px;
+}
 }
 p {
   font-size: 16px;
