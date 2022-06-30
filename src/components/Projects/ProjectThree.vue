@@ -22,6 +22,8 @@
     <div class="main">
       <h1>Problem Statement</h1>
       <p>
+        While inverstigating the possibility of applying machine learning algorithms to dynamics bicycle model,
+        a better visualization of the model is required. 
       </p>
       <h1>Solution</h1>
       <p>

@@ -58,7 +58,6 @@
     </el-row>
     </div>
   </div>
-    <div v-if="clicked">
   <div class="page2" id="projectContent">
     <el-affix :offset="0">
       <div @click="projectTop">
@@ -66,7 +65,6 @@
       </div>
     </el-affix>
       <router-view />
-    </div>
   </div>
 </template>
 
@@ -371,7 +369,6 @@ export default {
     return {
       title: "Projects",
       description: "My story",
-      clicked: false,
       projectList: [
         {
           name: "Project 1",
