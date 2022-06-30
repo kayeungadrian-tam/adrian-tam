@@ -49,7 +49,6 @@
                 <el-col :span="4"><div class="" /> </el-col>
                 <el-col :span="16">
                 </el-col>
-
                 <el-col :span="4"> </el-col>
               </el-row>
             </div>
@@ -59,13 +58,15 @@
     </el-row>
     </div>
   </div>
+    <div v-if="clicked">
   <div class="page2" id="projectContent">
     <el-affix :offset="0">
       <div @click="projectTop">
         <Bottom class="up" />
       </div>
     </el-affix>
-    <router-view />
+      <router-view />
+    </div>
   </div>
 </template>
 
@@ -370,6 +371,7 @@ export default {
     return {
       title: "Projects",
       description: "My story",
+      clicked: false,
       projectList: [
         {
           name: "Project 1",
@@ -403,6 +405,7 @@ export default {
   },
   methods: {
     showPage(link) {
+      this.clicked = true;
       document
         .getElementById("projectContent")
         .scrollIntoView({ behavior: "smooth" });

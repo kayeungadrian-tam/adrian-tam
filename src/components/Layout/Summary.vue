@@ -1,7 +1,9 @@
 <template>
   <TitleComponent :title="title" description="This is a description" />
   <div class="summary">
-    <PhotoComponent :user="user" />
+    <AnimationComponent a_class="aslide-fade" >
+        <PhotoComponent :user="user" />
+    </AnimationComponent>
     <div class="section-content">
       <div class="desc">
         <div class="col">
@@ -18,7 +20,7 @@
         </div>
       </div>
       <div class="col">
-        <CardComponent :user="user" :links="links" />
+          <CardComponent :user="user" :links="links" />
       </div>
     </div>
   </div>
@@ -28,6 +30,7 @@
 import TitleComponent from "@/components/Utils/Title.vue";
 import PhotoComponent from "@/components/Utils/Photo.vue";
 import CardComponent from "@/components/Utils/Card.vue";
+import AnimationComponent from "@/components/Utils/Animation.vue";
 
 export default {
   name: "SummaryContent",
@@ -35,6 +38,7 @@ export default {
     TitleComponent,
     PhotoComponent,
     CardComponent,
+    AnimationComponent
   },
   data() {
     return {

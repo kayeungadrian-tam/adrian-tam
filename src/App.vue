@@ -10,7 +10,7 @@
   <div class="">
     <ProjectConponent />
   </div>
-  <div class="footer">
+  <div class="footer"> 
     <el-footer><FooterComponent /></el-footer>
   </div>
 </template>
@@ -34,6 +34,7 @@ export default {
     ProjectConponent,
     FooterComponent
   },
+
 };
 </script>
 

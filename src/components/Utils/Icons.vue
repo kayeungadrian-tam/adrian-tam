@@ -1,7 +1,7 @@
 <template>
   <el-row :gutter="0">
     <el-col :span="6"
-      ><div class="grid-content bg-purple" />
+      ><div class="grid-content bg-purple" />z
       <a href="links.metadata.facebook" target="_blank">
         <fa
           class="icon"

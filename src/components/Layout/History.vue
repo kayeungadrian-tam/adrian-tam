@@ -7,11 +7,16 @@
   </div>
   <el-row class="content" >
     <el-col :span="12">
+    <AnimationComponent a_class="slide-right">
       <TimeLine subtitle="Professional" :indata="Experience" />
+      </AnimationComponent>
     </el-col>
     <el-col :span="12">
-      <TimeLine subtitle="Education" :indata="Education" />
-    </el-col>
+    <AnimationComponent a_class="slide-right">
+        <TimeLine subtitle="Education" :indata="Education" />
+    </AnimationComponent>
+  
+</el-col>
   </el-row>
 </template>
 
@@ -36,12 +41,16 @@ li {
 <script>
 import TitleComponent from "@/components/Utils/Title.vue";
 import TimeLine from "@/components/Utils/Timeline.vue";
+import AnimationComponent from "@/components/Utils/Animation.vue";
+
 
 export default {
   name: "HistoryContent",
   components: {
     TitleComponent,
     TimeLine,
+    AnimationComponent
+
   },
   data() {
     return {
