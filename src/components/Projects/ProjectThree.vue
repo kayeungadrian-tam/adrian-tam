@@ -37,7 +37,14 @@
         vehicle.
       </p>
       <h1>In the future...</h1>
-      <p></p>
+      <p>
+        This project provides a good playground environment for investigating
+        the dynamic bicycle model in which result can be visualized in
+        real-time. The system equation of the model and, in turn, it's state
+        vector were implemented from scratch in python. This allows different
+        system equation to be compared and results are then visualization in a
+        3D environment.
+      </p>
     </div>
     <div class="repo">
       <a
