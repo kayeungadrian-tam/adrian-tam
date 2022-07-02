@@ -1,45 +1,43 @@
 <template lang="">
- <div 
-       v-observe-visibility="{
-        callback: visibilityChanged,
-        throttle: 50,
-      }"
-    >
-        <Transition :name="a_class" mode="in-out">
-            <div v-if="isV">
-                <slot></slot>
-            </div>
-            <div v-else>
-                <div claas="placeholder">
-                </div>
-            </div>
-        </Transition>
-        </div>
+  <div
+    v-observe-visibility="{
+      callback: visibilityChanged,
+      throttle: 50,
+    }"
+  >
+    <Transition :name="a_class" mode="in-out">
+      <div v-if="isV">
+        <slot></slot>
+      </div>
+      <div v-else>
+        <div claas="placeholder"></div>
+      </div>
+    </Transition>
+  </div>
 </template>
 <script>
 export default {
-    name: "AnimationComponent",
-    props: ["a_class"],
-    data() {
-        return {
-            isV: false,
-        };
+  name: "AnimationComponent",
+  props: ["a_class"],
+  data() {
+    return {
+      isV: false,
+    };
+  },
+  methods: {
+    visibilityChanged(isVisible) {
+      this.isV = isVisible;
     },
-    methods: {
-        visibilityChanged(isVisible) {
-            this.isV = isVisible;
-        },
-    },
-}
+  },
+};
 </script>
 <style scoped>
-
 .placeholder {
-    min-height: 200px;
-    width: 100%;
-    background-color: transparent;
-    border: 0;
-    font-size: 25px;
+  min-height: 400px;
+  width: 100%;
+  background-color: transparent;
+  border: 0;
+  font-size: 25px;
 }
 .aslide-fade-enter-active {
   transition: all 0.5s ease-out;
@@ -80,6 +78,4 @@ export default {
   transform: translateX(50px);
   opacity: 0;
 }
-
-
 </style>
