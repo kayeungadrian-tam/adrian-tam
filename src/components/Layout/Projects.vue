@@ -1,24 +1,29 @@
 <template>
   <div class="page" id="projectTop">
     <TitleComponent :title="title" :description="description" />
-    <br>
+    <br />
     <div>
-    <el-row class="row-bg" justify="space-evenly">
-      <el-col :span="16">
-        <el-carousel height="80vh" indicator-position="" :interval="6000">
-          <el-carousel-item v-for="(item, index) in projectList" :key="item">
-            <div class="container">
-              <h3>
-                {{ index + 1 }} -
-                {{ item.description }}
-              </h3>
-              <div class="thumbnail">
-              <el-image
-                style="width: 400px; height: 280px"
-                :src="item.img"
-                fit="contain"
-              />
-              </div>
+      <el-row class="row-bg" justify="space-evenly">
+        <el-col :span="16">
+          <el-carousel
+            height="600px"
+            indicator-position=""
+            direction="vertical"
+            :interval="6000"
+          >
+            <el-carousel-item v-for="(item, index) in projectList" :key="item">
+              <div class="containers">
+                <h3>
+                  {{ index + 1 }} -
+                  {{ item.description }}
+                </h3>
+                <div class="thumbnail">
+                  <el-image
+                    style="width: 400px; height: 280px"
+                    :src="item.img"
+                    fit="contain"
+                  />
+                </div>
                 <div class="tag">
                   <div
                     v-for="tag in item.tags"
@@ -30,41 +35,44 @@
                     {{ tag }}
                   </div>
                 </div>
-              <div class="overview">
-                <p>{{ item.overview }}</p>
-
-
+                <div class="overview">
+                  <p>{{ item.overview }}</p>
+                </div>
+                <div id="containers" class="go-down" style="padding-top: 20px">
+                  <button
+                    class="learn-more mobile"
+                    @click="showPage(item.link)"
+                  >
+                    <span class="circle mobile" aria-hidden="true">
+                      <span class="icon arrow" style="rotate: 90"></span>
+                    </span>
+                    <span class="button-text">Learn More</span>
+                  </button>
+                </div>
               </div>
-              <div id="container" class="go-down" style="padding-top: 20px">
-                <button class="learn-more mobile" @click="showPage(item.link)">
-                  <span class="circle mobile" aria-hidden="true">
-                    <span class="icon arrow" style="rotate: 90"></span>
-                  </span>
-                  <span class="button-text">Learn More</span>
-                </button>
+              <div class="detail">
+                <el-row :gutter="20">
+                  <el-col :span="4"><div class="" /> </el-col>
+                  <el-col :span="16"> </el-col>
+                  <el-col :span="4"> </el-col>
+                </el-row>
               </div>
-            </div>
-            <div class="detail">
-              <el-row :gutter="20">
-                <el-col :span="4"><div class="" /> </el-col>
-                <el-col :span="16">
-                </el-col>
-                <el-col :span="4"> </el-col>
-              </el-row>
-            </div>
-          </el-carousel-item>
-        </el-carousel>
-      </el-col>
-    </el-row>
+            </el-carousel-item>
+          </el-carousel>
+        </el-col>
+      </el-row>
     </div>
   </div>
-  <div class="page2" id="projectContent">
-    <el-affix :offset="0">
-      <div @click="projectTop">
-        <Bottom class="up" />
-      </div>
-    </el-affix>
-      <router-view />
+  <div class="page22" id="projectContent">
+    <router-view />
+    <div id="container" class="go-up" style="padding-top: 20px">
+      <button class="second-more mobile" @click="projectTop()">
+        <span class="circle2 mobile" aria-hidden="true">
+          <span class="icon2 arrow2" style="rotate: 90"></span>
+        </span>
+        <span class="button-text2">BACK</span>
+      </button>
+    </div>
   </div>
 </template>
 
@@ -73,33 +81,40 @@
 </style>
 
 <style scoped>
-
-
-.thumbnail{
+.af {
+  position: relative;
+  top: -20px;
+  padding-left: 220px;
+}
+.thumbnail {
   padding: 20px 0px 10px 0px;
 }
 
 @media (min-height: 700px) {
-.row-bg{
-  /* background-color: #f5f5f5; */
-  height: 100%;
+  .row-bg {
+    /* background-color: #f5f5f5; */
+    height: 100%;
+  }
+  .containers {
+    box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.2);
+    background-color: rgba(255, 255, 255, 0.15);
+    padding: 2% 10% 0% 10%;
+    display: flex;
+    flex-direction: column;
+    height: 95%;
+    backdrop-filter: blur(1px);
+    align-items: center;
+  }
 }
-.container {
-  box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.2);
-  background-color: rgba(255, 255, 255, 0.15);
-  padding: 2% 10% 0% 10%;
-  display: flex;
-  flex-direction: column;
-  height: 95%;
-  backdrop-filter: blur(1px);
-  align-items: center;
+.go-up {
+  /* padding: 10% 0 100 0; */
+  display: relative;
+  margin: -75px 0 0 65%;
 }
-}
-
-.go-down{
+.go-down {
   /* padding: 10% 0 100 0; */
 }
-.overview{
+.overview {
   margin-top: 20px;
   line-height: 1.5;
   text-align: justify;
@@ -128,11 +143,11 @@
   background-color: #2a2a72;
   background-image: linear-gradient(315deg, #2a2a72 0%, #009ffd 74%);
   display: inline-block;
-    border-radius: 3px;
-    padding: .3em .5em .3em;
-    border-radius: 2px;
-    font-weight: 600;
-    margin: .25em .1em
+  border-radius: 3px;
+  padding: 0.3em 0.5em 0.3em;
+  border-radius: 2px;
+  font-weight: 600;
+  margin: 0.25em 0.1em;
 }
 
 .OpenCV {
@@ -140,52 +155,51 @@
 
   background-color: #a4508b;
   background-image: linear-gradient(326deg, #a4508b 0%, #5f0a87 74%);
-    display: inline-block;
-    border-radius: 3px;
-    padding: .3em .5em .3em;
-    border-radius: 2px;
-    font-weight: 600;
-    margin: .25em .1em
+  display: inline-block;
+  border-radius: 3px;
+  padding: 0.3em 0.5em 0.3em;
+  border-radius: 2px;
+  font-weight: 600;
+  margin: 0.25em 0.1em;
 }
 
 .PysimpleGUI {
   font-size: 0.8rem;
 
-background-color: #63d471;
+  background-color: #63d471;
   background-image: linear-gradient(315deg, #63d471 0%, #233329 74%);
-    display: inline-block;
-    border-radius: 3px;
-    padding: .3em .5em .3em;
-    border-radius: 2px;
-    font-weight: 600;
-    margin: .25em .1em
+  display: inline-block;
+  border-radius: 3px;
+  padding: 0.3em 0.5em 0.3em;
+  border-radius: 2px;
+  font-weight: 600;
+  margin: 0.25em 0.1em;
 }
 
 .Yolov3 {
   font-size: 0.8rem;
 
-background-color: #f9484a;
+  background-color: #f9484a;
   background-image: linear-gradient(315deg, #f9484a 0%, #fbd72b 74%);
-    display: inline-block;
-    border-radius: 3px;
-    padding: .3em .5em .3em;
-    border-radius: 2px;
-    font-weight: 600;
-    margin: .25em .1em
+  display: inline-block;
+  border-radius: 3px;
+  padding: 0.3em 0.5em 0.3em;
+  border-radius: 2px;
+  font-weight: 600;
+  margin: 0.25em 0.1em;
 }
 
 .Mediapipe {
   font-size: 0.8rem;
 
-background-color: #0cbaba;
-background-image: linear-gradient(315deg, #0cbaba 0%, #380036 74%);
+  background-color: #0cbaba;
+  background-image: linear-gradient(315deg, #0cbaba 0%, #380036 74%);
   display: inline-block;
-    border-radius: 3px;
-    padding: .3em .5em .3em;
-    border-radius: 2px;
-    font-weight: 600;
-    margin: .25em .1em
-
+  border-radius: 3px;
+  padding: 0.3em 0.5em 0.3em;
+  border-radius: 2px;
+  font-weight: 600;
+  margin: 0.25em 0.1em;
 }
 
 .OBS {
@@ -193,59 +207,59 @@ background-image: linear-gradient(315deg, #0cbaba 0%, #380036 74%);
   background-color: #edd812;
   background-image: linear-gradient(315deg, #edd812 0%, #766a65 74%);
   display: inline-block;
-    border-radius: 3px;
-    padding: .3em .5em .3em;
-    border-radius: 2px;
-    font-weight: 600;
-    margin: .25em .1em
+  border-radius: 3px;
+  padding: 0.3em 0.5em 0.3em;
+  border-radius: 2px;
+  font-weight: 600;
+  margin: 0.25em 0.1em;
 }
 
-.Dash{
+.Dash {
   background-color: #55efc4;
   background-image: linear-gradient(315deg, #55efc4 0%, #000000 74%);
-    font-size: 0.8rem;
-    display: inline-block;
-    border-radius: 3px;
-    padding: .3em .5em .3em;
-    border-radius: 2px;
-    font-weight: 600;
-    margin: .25em .1em
+  font-size: 0.8rem;
+  display: inline-block;
+  border-radius: 3px;
+  padding: 0.3em 0.5em 0.3em;
+  border-radius: 2px;
+  font-weight: 600;
+  margin: 0.25em 0.1em;
 }
 
 .PID {
   background-color: #2234ae;
-background-image: linear-gradient(315deg, #2234ae 0%, #191714 74%);
-    font-size: 0.8rem;
-    display: inline-block;
-    border-radius: 3px;
-    padding: .3em .5em .3em;
-    border-radius: 2px;
-    font-weight: 600;
-    margin: .25em .1em
+  background-image: linear-gradient(315deg, #2234ae 0%, #191714 74%);
+  font-size: 0.8rem;
+  display: inline-block;
+  border-radius: 3px;
+  padding: 0.3em 0.5em 0.3em;
+  border-radius: 2px;
+  font-weight: 600;
+  margin: 0.25em 0.1em;
 }
 
-.Sim{
-background-color: #ba9833;
-background-image: linear-gradient(315deg, #ba9833 0%, #993333 74%);
-    font-size: 0.8rem;
-    display: inline-block;
-    border-radius: 3px;
-    padding: .3em .5em .3em;
-    border-radius: 2px;
-    font-weight: 600;
-    margin: .25em .1em
+.Sim {
+  background-color: #ba9833;
+  background-image: linear-gradient(315deg, #ba9833 0%, #993333 74%);
+  font-size: 0.8rem;
+  display: inline-block;
+  border-radius: 3px;
+  padding: 0.3em 0.5em 0.3em;
+  border-radius: 2px;
+  font-weight: 600;
+  margin: 0.25em 0.1em;
 }
 
-.ZMQ{
-background-color: #f6d327;
-background-image: linear-gradient(315deg, #f6d327 0%, #de4daa 74%);
-    font-size: 0.8rem;
-    display: inline-block;
-    border-radius: 3px;
-    padding: .3em .5em .3em;
-    border-radius: 2px;
-    font-weight: 600;
-    margin: .25em .1em
+.ZMQ {
+  background-color: #f6d327;
+  background-image: linear-gradient(315deg, #f6d327 0%, #de4daa 74%);
+  font-size: 0.8rem;
+  display: inline-block;
+  border-radius: 3px;
+  padding: 0.3em 0.5em 0.3em;
+  border-radius: 2px;
+  font-weight: 600;
+  margin: 0.25em 0.1em;
 }
 .tag {
   position: relative;
@@ -288,14 +302,13 @@ background-image: linear-gradient(315deg, #f6d327 0%, #de4daa 74%);
   background-color: whitesmoke;
 }
 
-
 @media (max-width: 768px) {
   .detail {
     position: relative;
     padding: 0% 15% 0% 15%;
     /* background: green; */
   }
-  .mobile{
+  .mobile {
     font-size: 0.8rem;
     /* background: red;; */
   }
@@ -310,9 +323,9 @@ background-image: linear-gradient(315deg, #f6d327 0%, #de4daa 74%);
     padding: 0% 15% 0% 15%;
     /* background: green; */
   }
-  .mobile{
+  .mobile {
     font-size: 1rem;
-  /* background: red;; */
+    /* background: red;; */
   }
   .icon-down {
     font-size: 30px;
@@ -341,9 +354,8 @@ background-image: linear-gradient(315deg, #f6d327 0%, #de4daa 74%);
 } */
 </style>
 
-
 <script setup>
-import { Bottom } from "@element-plus/icons-vue";
+// import { Bottom } from "@element-plus/icons-vue";
 </script>
 
 <script>
@@ -388,7 +400,7 @@ export default {
           overview:
             "A virtual webcam loop using OpenCV, Mediapipe and OBS. A simple program to record a video from a webcam and play it on repeat. It then sends the video to OBS for streaming.",
         },
-                {
+        {
           name: "Project 3",
           description: "Dynamics Bicycle Model Simulation",
           link: "project-three",

@@ -23,17 +23,17 @@
     <div class="main">
       <h1>Problem Statement</h1>
       <p>
-        Image augmentation and processing were needed for a object detection
+        Image augmentation and processing were needed for an object detection
         task. The detection task was to detect a specific object among a set of
-        similar images. Image processing was perfomed on a pixel level and it
-        was repetitve and time consuming.
+        similar images. Image processing was performed on a pixel level and it
+        was repetitive and time-consuming.
       </p>
       <h1>Solution</h1>
       <p>
-        A home-made-from-scratch image processing GUI was developed in python to
-        ease the process. It was designed to augment the image and perfom object
-        detection on the modified image. It also provides a color-seperation
-        function to identify dominant colors in the image.
+        A homemade-from-scratch image processing GUI was developed in python to
+        ease the process. It was designed to augment the image and perform
+        object detection on the modified image. It also provides a
+        color-separation function to identify dominant colors in the image.
       </p>
       <h1>In the future...</h1>
       <p>
@@ -42,39 +42,39 @@
         possible to test the performance of the models on an augmented image.
       </p>
     </div>
-        <div class="repo"><a href="https://github.com/YomamaBanana/Image_Processing" target="_blank">
-          Github repo
-                  <fa
-          class="icon"
-          :icon="{ prefix: 'fab', iconName: 'github-square' }"
-        />
-          </a>
-        </div>
+    <div class="repo">
+      <a
+        href="https://github.com/YomamaBanana/Image_Processing"
+        target="_blank"
+      >
+        Github repo
+        <fa class="icon" :icon="{ prefix: 'fab', iconName: 'github-square' }" />
+      </a>
+    </div>
   </div>
 </template>
 
 <style scoped>
-
-h4{
-    font-style: italic;
+h4 {
+  font-style: italic;
 }
 
 .icon {
   font-size: 1.5rem;
 }
 
-a{
+a {
   color: #7c795d;
   text-decoration: none;
   -webkit-transition: all 0.2s ease-in-out;
 }
 
-a:hover{
+a:hover {
   color: rgba(22, 19, 48, 0.652);
   text-shadow: 0 0 10px rgba(20, 20, 20, 0.652);
 }
 
-.repo{
+.repo {
   margin-top: 10px;
   color: #7c795d;
   vertical-align: middle;
@@ -82,18 +82,18 @@ a:hover{
 }
 
 @media (max-width: 992px) {
-img {
-  width: 500px;
-  height: auto;
-  padding: 20px;
-}
+  img {
+    width: 500px;
+    height: auto;
+    padding: 20px;
+  }
 }
 @media (min-width: 992px) {
   img {
-  width: 720px;
-  height: auto;
-  padding: 20px;
-}
+    width: 720px;
+    height: auto;
+    padding: 20px;
+  }
 }
 p {
   font-size: 16px;
@@ -147,7 +147,6 @@ h1 {
   height: 50px;
   line-height: 50px;
   margin-top: -2px;
-
 }
 </style>
 

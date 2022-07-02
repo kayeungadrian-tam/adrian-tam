@@ -22,33 +22,38 @@
     <div class="main">
       <h1>Problem Statement</h1>
       <p>
-        While inverstigating the possibility of applying machine learning algorithms to dynamics bicycle model,
-        a better visualization of the model is required. 
+        While investigating the possibility of applying machine learning
+        algorithms to the dynamics bicycle model, better visualization of the
+        model is required. Furthermore, the client wanted a web application to
+        monitor the model's output in real-time.
       </p>
       <h1>Solution</h1>
       <p>
-      </p>
-      <p>
+        A 3D simulation of the bicycle model was developed to visualize the
+        dynamics bicycle model in python with the ursina library. Everything was
+        done from scratch which provides a high degree of freedom to customize
+        the output. A web application and server were then developed to monitor
+        the output of the model, namely the position and orientation of the
+        vehicle.
       </p>
       <h1>In the future...</h1>
-      <p>
-      </p>
+      <p></p>
     </div>
-        <div class="repo"><a href="https://github.com/YomamaBanana/Dynamics_Bicycle_Model" target="_blank">
-          Github repo
-                  <fa
-          class="icon"
-          :icon="{ prefix: 'fab', iconName: 'github-square' }"
-        />
-          </a>
-        </div>
+    <div class="repo">
+      <a
+        href="https://github.com/YomamaBanana/Dynamics_Bicycle_Model"
+        target="_blank"
+      >
+        Github repo
+        <fa class="icon" :icon="{ prefix: 'fab', iconName: 'github-square' }" />
+      </a>
+    </div>
   </div>
 </template>
 
 <style scoped>
-
-h4{
-    font-style: italic;
+h4 {
+  font-style: italic;
 }
 .icon {
   position: absolute;
@@ -57,18 +62,18 @@ h4{
   margin-left: 5px;
 }
 
-a{
+a {
   color: #7c795d;
   text-decoration: none;
   -webkit-transition: all 0.2s ease-in-out;
 }
 
-a:hover{
+a:hover {
   color: rgba(22, 19, 48, 0.652);
   text-shadow: 0 0 10px rgba(20, 20, 20, 0.652);
 }
 
-.repo{
+.repo {
   margin-top: 10px;
   color: #7c795d;
   vertical-align: middle;
@@ -76,18 +81,18 @@ a:hover{
 }
 
 @media (max-width: 992px) {
-img {
-  width: 500px;
-  height: auto;
-  padding: 20px;
-}
+  img {
+    width: 500px;
+    height: auto;
+    padding: 20px;
+  }
 }
 @media (min-width: 992px) {
   img {
-  width: 720px;
-  height: auto;
-  padding: 20px;
-}
+    width: 720px;
+    height: auto;
+    padding: 20px;
+  }
 }
 p {
   font-size: 16px;
@@ -136,12 +141,11 @@ h1 {
 }
 
 .topbox {
-background-color: #84fb95;
-background-image: linear-gradient(315deg, #84fb95 0%, #cef576 74%);
+  background-color: #84fb95;
+  background-image: linear-gradient(315deg, #84fb95 0%, #cef576 74%);
   height: 50px;
   line-height: 50px;
   margin-top: -2px;
-
 }
 </style>
 
