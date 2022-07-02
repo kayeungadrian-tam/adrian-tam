@@ -10,7 +10,7 @@
   <div class="">
     <ProjectConponent />
   </div>
-  <div class="footer"> 
+  <div class="footer">
     <el-footer><FooterComponent /></el-footer>
   </div>
 </template>
@@ -23,7 +23,6 @@ import SkillComponent from "./components/Layout/Skills.vue";
 import ProjectConponent from "./components/Layout/Projects.vue";
 import FooterComponent from "./components/Layout/Footer.vue";
 
-
 export default {
   name: "App",
   components: {
@@ -32,9 +31,11 @@ export default {
     HistoryContent,
     SkillComponent,
     ProjectConponent,
-    FooterComponent
+    FooterComponent,
   },
-
+  created() {
+    document.title = "Adrian Tam";
+  },
 };
 </script>
 
