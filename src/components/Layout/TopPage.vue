@@ -16,7 +16,7 @@
           </Transition>
           <hr />
           <div>
-            <h2>YomamaBanana</h2>
+            <h2>All-stack Engineer</h2>
             <div class="date"></div>
           </div>
         </div>
@@ -27,8 +27,6 @@
 
 <script setup>
 import { InfoFilled } from "@element-plus/icons-vue";
-
-
 </script>
 
 <script>

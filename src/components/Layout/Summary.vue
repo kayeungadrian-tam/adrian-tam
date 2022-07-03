@@ -1,8 +1,8 @@
 <template>
-  <TitleComponent :title="title" description="This is a description" />
+  <TitleComponent :title="title" description="" />
   <div class="summary">
-    <AnimationComponent a_class="aslide-fade" >
-        <PhotoComponent :user="user" />
+    <AnimationComponent a_class="aslide-fade">
+      <PhotoComponent :user="user" />
     </AnimationComponent>
     <div class="section-content">
       <div class="desc">
@@ -20,7 +20,7 @@
         </div>
       </div>
       <div class="col">
-          <CardComponent :user="user" :links="links" />
+        <CardComponent :user="user" :links="links" />
       </div>
     </div>
   </div>
@@ -38,7 +38,7 @@ export default {
     TitleComponent,
     PhotoComponent,
     CardComponent,
-    AnimationComponent
+    AnimationComponent,
   },
   data() {
     return {
@@ -63,7 +63,7 @@ h3 {
   padding: 2% 0% 2% 0%;
 }
 
-@media (min-width: 992px) {
+@media (min-width: 768px) {
   .section-content {
     padding: 0% 5% 0% 15%;
     margin: 0 auto;
