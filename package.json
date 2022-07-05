@@ -24,6 +24,7 @@
     "font-awesome": "^4.7.0",
     "vue": "^3.2.13",
     "vue-axios": "^3.4.1",
+    "vue-country-flag-next": "^2.3.2",
     "vue-observe-visibility": "^2.0.0-alpha.1",
     "vue-router": "^4.0.3",
     "vue-scroll-progress": "^1.1.5"

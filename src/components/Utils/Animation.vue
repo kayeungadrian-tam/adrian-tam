@@ -33,7 +33,8 @@ export default {
 </script>
 <style scoped>
 .placeholder {
-  min-height: 400px;
+  display: inherit;
+  min-height: 500px;
   width: 100%;
   background-color: transparent;
   border: 0;

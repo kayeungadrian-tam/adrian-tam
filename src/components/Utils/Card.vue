@@ -2,31 +2,62 @@
   <el-row :gutter="0">
     <el-col :span="5"><div class="grid-content bg-purple" /></el-col>
     <el-col :span="14">
-      <div class="">
-        <el-card class="info card-mobile" shadow="hover">
+      <div class="card">
+        <el-card style="width: 305px" class="info card-mobiles" shadow="hover">
           <h3>{{ user.name }}</h3>
           <div class="data">
-            <strong class="sub-title">E-mail:</strong>
-            {{ user.email }}
-            <el-button
-              class="button"
-              style="border: 0px; width: 10px; margin-left: 0"
-              @click="copy"
-              round
+            <span
+              >{{ user.email }}
+              <el-button
+                class="button"
+                style="border: 0px; width: 10px; margin-left: 0"
+                @click="copy"
+                round
+              >
+                <el-icon :size="12" circle>
+                  <CopyDocument />
+                </el-icon>
+              </el-button>
+            </span>
+          </div>
+          <div class="data"></div>
+          <div class="data">
+            <strong class="sub-title"></strong> {{ user.city }}
+          </div>
+          <div class="data">
+            <!-- <strong class="sub-title"></strong> {{ user.lang }} -->
+            <el-tooltip
+              class="box-item"
+              effect="dark"
+              content="English"
+              placement="top-start"
             >
-              <el-icon :size="12" circle>
-                <CopyDocument />
-              </el-icon>
-            </el-button>
-          </div>
-          <div class="data">
-            <strong class="sub-title">Phone:</strong> {{ user.phone }}
-          </div>
-          <div class="data">
-            <strong class="sub-title">City:</strong> {{ user.city }}
-          </div>
-          <div class="data">
-            <strong class="sub-title">Languages:</strong> {{ user.lang }}
+              <country-flag class="flag" country="nz" size="normal" />
+            </el-tooltip>
+            <el-tooltip
+              class="box-item"
+              effect="dark"
+              content="Japanese"
+              placement="bottom"
+            >
+              <country-flag class="flag" country="jp" size="normal" />
+            </el-tooltip>
+            <el-tooltip
+              class="box-item"
+              effect="dark"
+              content="Chinese (Mandarin)"
+              placement="top-start"
+            >
+              <country-flag class="flag" country="cn" size="normal" />
+            </el-tooltip>
+            <el-tooltip
+              class="box-item"
+              effect="dark"
+              content="Cantonese"
+              placement="bottom"
+            >
+              <country-flag class="flag" country="hk" size="normal" />
+            </el-tooltip>
           </div>
           <div>
             <IconComponent />
@@ -69,12 +100,27 @@ export default {
 </script>
 
 <style scoped>
+.flag {
+  /* font-size: 2rem; */
+  margin-right: 5px;
+  border: 1px solid #ccc;
+}
+
+.flag:hover {
+  border: 1px solid #000;
+}
+
 .button:focus {
   background-color: white;
   color: inherit;
 }
 
-@media (max-width: 992px) {
+@media (max-width: 768px) {
+  .card {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+  }
   .info {
     justify-content: center;
   }
@@ -90,18 +136,10 @@ export default {
   }
 }
 
-@media (min-width: 992px) {
-  .card-mobile {
-    text-align: center !important;
-    margin-top: 20px;
-    width: 25vw;
-    justify-content: center;
-    align-items: left;
-    text-align: left;
-    /* right: 50%; */
-  }
+@media (min-width: 768px) {
   .info .data {
-    margin-bottom: 10px;
+    /* max-width: 500px; */
+    margin-bottom: 12px;
     text-align: left;
   }
   h3 {

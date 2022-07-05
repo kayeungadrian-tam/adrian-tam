@@ -11,6 +11,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import CountryFlag from 'vue-country-flag-next'
 
 library.add(fas, far, fab)
 
@@ -21,4 +22,5 @@ app
     .use(ElementPlus)
     .use(VueObserveVisibility)
         .component("fa", FontAwesomeIcon)
+        .use(CountryFlag)
     .mount('#app');

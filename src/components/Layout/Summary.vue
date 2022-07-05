@@ -69,13 +69,15 @@ h3 {
     margin: 0 auto;
     display: flex;
     text-align: justify;
+    max-width: 1000px;
   }
   .section-content .col {
     flex: 50%;
   }
   .desc {
     flex: 50%;
-    width: 80%;
+    /* width: 80%; */
+    max-width: 1000px;
     margin-top: 20px;
   }
   .summary {
@@ -85,13 +87,15 @@ h3 {
   }
 }
 
-@media (max-width: 992px) {
+@media (max-width: 768px) {
   .section-content {
     padding: 1% 3% 0% 3%;
     text-align: center;
+    max-width: 1000px;
   }
   .desc p {
     padding: 2% 15% 2% 15%;
+
     text-align: justify;
     max-width: 600px;
   }
