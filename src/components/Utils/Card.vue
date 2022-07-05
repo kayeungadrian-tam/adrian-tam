@@ -102,7 +102,7 @@ export default {
 <style scoped>
 .flag {
   /* font-size: 2rem; */
-  margin-right: 5px;
+  padding: 5px;
   border: 1px solid #ccc;
 }
 

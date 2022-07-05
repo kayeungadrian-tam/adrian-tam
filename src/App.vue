@@ -71,9 +71,13 @@ export default {
 }
 
 .footer {
+  /* display: flex; */
+  position: relative;
   background-color: #26272b;
   /* background-image: linear-gradient(315deg, #26272b 0%, #03002e 74%); */
   border-radius: 1px;
+  /* padding: 1% 20px 3% 20px; */
+  /* vertical-align: middle; */
 }
 
 .test-page {

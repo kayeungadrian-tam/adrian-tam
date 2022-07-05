@@ -6,6 +6,12 @@
       <el-row class="row-bg" justify="space-evenly">
         <el-col :span="16">
           <el-carousel
+            style="
+              max-width: 960px;
+              display: block;
+              margin: 0 auto;
+              /* border-radius: 3px; */
+            "
             height="600px"
             indicator-position=""
             direction="vertical"
@@ -63,7 +69,7 @@
       </el-row>
     </div>
   </div>
-  <div class="page22" id="projectContent">
+  <div class="project-detail" id="projectContent">
     <router-view />
     <div id="container" class="go-up" style="padding-top: 20px">
       <button class="second-more mobile" @click="projectTop()">
@@ -88,6 +94,14 @@
 }
 .thumbnail {
   padding: 20px 0px 10px 0px;
+}
+
+.project-detail {
+  max-width: 1000px;
+  align-content: center;
+  display: inline-block;
+  min-height: 100vh;
+  margin-bottom: 40px;
 }
 
 @media (min-height: 700px) {
