@@ -33,8 +33,7 @@
 }
 .icon {
   margin: auto;
-  width: 50%;
-  width: 80vw;
+  max-width: 1000px;
   align-items: center;
   justify-content: center;
   padding: 2%;
@@ -107,6 +106,14 @@ export default {
         {
           url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg",
           name: "Flask",
+        },
+        {
+          url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg",
+          name: "Flutter",
+        },
+        {
+          url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-plain.svg",
+          name: "FastAPI",
         },
       ],
     };

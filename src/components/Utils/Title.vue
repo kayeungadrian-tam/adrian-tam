@@ -94,11 +94,11 @@ h2 {
 }
 
 .aslide-fade-enter-active {
-  transition: all 0.5s ease-out;
+  transition: all 0.8s ease-out;
 }
 
 .aslide-fade-leave-active {
-  transition: all 0.5s ease-out;
+  transition: all 0.8s ease-out;
 }
 .aslide-fade-enter-from,
 .aslide-fade-leave-to {
@@ -107,12 +107,12 @@ h2 {
 }
 
 .slide-left-enter-active {
-  transition: all 0.5s ease-out;
+  transition: all 0.8s ease-out;
   transition-delay: 0.1s;
 }
 
 .slide-left-leave-active {
-  transition: all 0.5s ease-out;
+  transition: all 0.8s ease-out;
 }
 .slide-left-enter-from,
 .slide-left-leave-to {

@@ -63,7 +63,7 @@ export default {
           name: "AMBL株式会社",
           period: "2021/10 ~ Now",
           description: [
-            "Project Management",
+            "AI Team Leader",
             "Software Engineer",
             "Learning Management System",
           ],
@@ -75,7 +75,7 @@ export default {
           period: "2020/09 ~ 2021/10",
           description: [
             "Machine Learning Engineer",
-            "Computer Vision",
+            "Computer Vision (Object Detection)",
             "Keras, PyTorch, TensorFlow",
           ],
           color: "##D4D7DE",

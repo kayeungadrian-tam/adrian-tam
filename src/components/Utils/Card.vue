@@ -102,8 +102,9 @@ export default {
 <style scoped>
 .flag {
   /* font-size: 2rem; */
-  padding: 5px;
+  padding: 0 0px 0 0px;
   border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 .flag:hover {
