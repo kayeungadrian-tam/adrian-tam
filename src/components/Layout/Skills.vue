@@ -115,6 +115,10 @@ export default {
           url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-plain.svg",
           name: "FastAPI",
         },
+        {
+          url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg",
+          name: "Github",
+        },
       ],
     };
   },

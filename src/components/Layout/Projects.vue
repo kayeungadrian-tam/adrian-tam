@@ -100,7 +100,7 @@
   max-width: 1000px;
   align-content: center;
   display: inline-block;
-  min-height: 100vh;
+  /* min-height: 100vh; */
   margin-bottom: 40px;
 }
 
@@ -426,7 +426,15 @@ export default {
         {
           name: "Project 4",
           description: "Custom made Learning platform",
-          link: "project-three",
+          link: "about",
+          img: require("../../assets/projects/thumbnails/coming_soon.png"),
+          tags: ["Vue3", "Js", "FastAPI", "Docker"],
+          overview: "",
+        },
+        {
+          name: "Project 5",
+          description: "Mobile Application",
+          link: "about",
           img: require("../../assets/projects/thumbnails/coming_soon.png"),
           tags: ["Vue3", "Js", "FastAPI", "Docker"],
           overview: "",

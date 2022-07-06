@@ -1,5 +1,52 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
+  <div class="home">
+    <div class="common-layout">
+      <!-- <h1>HTETE</h1> -->
+      <img src="@/assets/projects/thumbnails/coming_soon.png" width="450" />
+      <el-skeleton style="width: 240px">
+        <template #template>
+          <div style="padding: 14px">
+            <el-skeleton-item variant="p" style="width: 50%" />
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-items: space-between;
+              "
+            >
+              <el-skeleton-item variant="text" style="margin-right: 16px" />
+              <el-skeleton-item variant="text" style="width: 30%" />
+            </div>
+          </div>
+        </template>
+      </el-skeleton>
+    </div>
   </div>
 </template>
+
+<style scoped>
+.home {
+  /* min-height: 100vh; */
+  display: inline-block;
+  align-content: center;
+  justify-content: center;
+}
+
+.common-layout {
+  padding: 1% 20px 3% 20px;
+  margin: 0 20px 0 20px;
+  background-color: #d9d9d9;
+  background-image: linear-gradient(315deg, #d9d9d9 0%, #f6f2f2 74%);
+  /* min-height: 100vh; */
+  max-width: 1000px;
+}
+</style>
+
+<script>
+// @ is an alias to /src
+
+export default {
+  name: "HomeView",
+  components: {},
+};
+</script>

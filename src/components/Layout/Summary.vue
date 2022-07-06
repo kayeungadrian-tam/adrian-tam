@@ -1,5 +1,5 @@
 <template>
-  <TitleComponent :title="title" description="" />
+  <TitleComponent :title="title" description="Summary" />
   <div class="summary">
     <AnimationComponent a_class="aslide-fade">
       <PhotoComponent :user="user" />
@@ -9,13 +9,13 @@
         <div class="col">
           <h3>Who am I?</h3>
           <p>
-            16 “For God so loved the world, that he gave his only Son, that
-            whoever believes in him should not perish but have eternal life. 17
-            For God did not send his Son into the world to condemn the world,
-            but in order that the world might be saved through him. 18 Whoever
-            believes in him is not condemned, but whoever does not believe is
-            condemned already, because he has not believed in the name of the
-            only Son of God.
+            Motivated artificial intelligence engineer with a strong background
+            in delivering machine learning solutions to solve real-world
+            problems. 2+ years of experience include applying object detection
+            algorithms for autonomous driving and managing a team of 4 engineers
+            in developing an AI-driven learning management system. Capable of
+            translating business requirements into ai-driven solutions. Eager to
+            apply, combine and modify existing technologies to get work done.
           </p>
         </div>
       </div>
@@ -63,6 +63,10 @@ h3 {
   padding: 2% 0% 2% 0%;
 }
 
+p {
+  line-height: 1.2;
+}
+
 @media (min-width: 768px) {
   .section-content {
     padding: 0% 5% 0% 15%;
@@ -95,7 +99,7 @@ h3 {
   }
   .desc p {
     padding: 2% 15% 2% 15%;
-
+    /* line-height: 15rem; */
     text-align: justify;
     max-width: 600px;
   }
