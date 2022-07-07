@@ -5,18 +5,18 @@
       description="My professional & education history"
     />
   </div>
-  <el-row class="content">
-    <el-col :span="12">
-      <AnimationComponent a_class="slide-right">
+  <AnimationComponent a_class="fade-in-left">
+    <el-row class="content">
+      <el-col :span="12">
         <TimeLine subtitle="Professional" :indata="Experience" />
-      </AnimationComponent>
-    </el-col>
-    <el-col :span="12">
-      <AnimationComponent a_class="slide-right">
+        <!-- </AnimationComponent> -->
+      </el-col>
+      <el-col :span="12">
+        <!-- <AnimationComponent a_class="slide-right"> -->
         <TimeLine subtitle="Education" :indata="Education" />
-      </AnimationComponent>
-    </el-col>
-  </el-row>
+      </el-col>
+    </el-row>
+  </AnimationComponent>
 </template>
 
 <style scoped>

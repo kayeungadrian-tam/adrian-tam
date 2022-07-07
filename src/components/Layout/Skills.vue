@@ -2,6 +2,7 @@
   <div class="skillTitle">
     <TitleComponent :title="title" description="What I can do" />
   </div>
+
   <div class="icon">
     <el-space
       :wrap="true"
@@ -12,7 +13,9 @@
     >
       <div v-for="skill in skills" :key="skill">
         <div>
-          <img :src="skill.url" width="100" height="100" />
+          <AnimationCcomponent a_class="slide-in-blurred-top">
+            <img :src="skill.url" width="100" height="100" />
+          </AnimationCcomponent>
         </div>
         <div class="skill-name">
           {{ skill.name }}
@@ -34,6 +37,7 @@
 .icon {
   margin: auto;
   max-width: 1000px;
+  min-height: 100vh;
   align-items: center;
   justify-content: center;
   padding: 2%;
@@ -51,6 +55,7 @@
 
 <script>
 import TitleComponent from "@/components/Utils/Title.vue";
+import AnimationCcomponent from "@/components/Utils/Animation.vue";
 
 export default {
   name: "SkillComponent",
@@ -124,6 +129,7 @@ export default {
   },
   components: {
     TitleComponent,
+    AnimationCcomponent,
   },
   methods: {},
 };
