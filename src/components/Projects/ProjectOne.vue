@@ -1,60 +1,88 @@
-<template lang="">
-  <div class="common-layout">
-    <el-container>
-      <el-header>
-        <div class="topboder">
-          <el-row>
-            <el-col :span="8">
-              <div class="topbox">Project 1</div>
-            </el-col>
-            <el-col :span="4"></el-col>
-            <el-col :span="12"
-              ><div class="top-right">Image Processing GUI</div>
-            </el-col>
-          </el-row>
-        </div>
-      </el-header>
-    </el-container>
+<template>
+  <div class="parallax">
+    <div class="common-layouts" id="top">
+      <el-container>
+        <el-header>
+          <div class="topboder">
+            <el-row>
+              <el-col :span="8">
+                <div class="topbox">Project 1</div>
+              </el-col>
+              <el-col :span="4"></el-col>
+              <el-col :span="12"
+                ><div class="top-right">Image Processing GUI</div>
+              </el-col>
+            </el-row>
+          </div>
+        </el-header>
+      </el-container>
+      <!-- <div> -->
+      <img src="../../assets/projects/thumbnails/image_processing_gui.png" />
+      <!-- </div> -->
+      <h4>Keywords: Image Processing, CV, Yolov3, PySimpleGUI</h4>
 
-    <img src="../../assets/projects/thumbnails/image_processing_gui.png" />
-
-    <h4>Keywords: Image Processing, CV, Yolov3, PySimpleGUI</h4>
-
-    <div class="main">
-      <h1>Problem Statement</h1>
-      <p>
-        Image augmentation and processing were needed for an object detection
-        task. The detection task was to detect a specific object among a set of
-        similar images. Image processing was performed on a pixel level and it
-        was repetitive and time-consuming.
-      </p>
-      <h1>Solution</h1>
-      <p>
-        A homemade-from-scratch image processing GUI was developed in python to
-        ease the process. It was designed to augment the image and perform
-        object detection on the modified image. It also provides a
-        color-separation function to identify dominant colors in the image.
-      </p>
-      <h1>In the future...</h1>
-      <p>
-        This GUI serves as a platform for real time image processing tester for
-        object detection tasks. Given enough object detection models, it will be
-        possible to test the performance of the models on an augmented image.
-      </p>
-    </div>
-    <div class="repo">
-      <a
-        href="https://github.com/YomamaBanana/Image_Processing"
-        target="_blank"
-      >
-        Github repo
-        <fa class="icon" :icon="{ prefix: 'fab', iconName: 'github-square' }" />
-      </a>
+      <div class="main">
+        <h1>Problem Statement</h1>
+        <p>
+          Image augmentation and processing were needed for an object detection
+          task. The detection task was to detect a specific object among a set
+          of similar images. Image processing was performed on a pixel level and
+          it was repetitive and time-consuming.
+        </p>
+        <h1>Solution</h1>
+        <p>
+          A homemade-from-scratch image processing GUI was developed in python
+          to ease the process. It was designed to augment the image and perform
+          object detection on the modified image. It also provides a
+          color-separation function to identify dominant colors in the image.
+        </p>
+        <h1>In the future...</h1>
+        <p>
+          This GUI serves as a platform for real time image processing tester
+          for object detection tasks. Given enough object detection models, it
+          will be possible to test the performance of the models on an augmented
+          image.
+        </p>
+      </div>
+      <div class="repo">
+        <a
+          href="https://github.com/YomamaBanana/Image_Processing"
+          target="_blank"
+        >
+          Github repo
+          <fa
+            class="icon"
+            :icon="{ prefix: 'fab', iconName: 'github-square' }"
+          />
+        </a>
+      </div>
     </div>
   </div>
+  <FooterComponent />
 </template>
 
 <style scoped>
+.parallax {
+  background: url("@/assets/img/background2.jpg");
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: repeat;
+  background-size: cover;
+  overflow: hidden;
+  min-height: 200vh;
+  /* min-width: 99vw; */
+  /* padding: 10px; */
+  background-size: cover;
+  text-align: center;
+  background-position-x: 50%;
+  background-position-y: 0%;
+  justify-content: center;
+}
+
+* {
+  /* max-width: 1000px; */
+}
+
 h4 {
   font-style: italic;
 }
@@ -120,11 +148,20 @@ h1 {
   text-decoration: underline 1px;
 }
 .common-layout {
-  padding: 1% 20px 3% 20px;
-  margin: 0 20px 0 20px;
+  /* padding: 1% 20px 3% 20px; */
+  /* margin: 0 20px 0 20px; */
   background-color: #d9d9d9;
   background-image: linear-gradient(315deg, #d9d9d9 0%, #f6f2f2 74%);
-  min-height: 100vh;
+  /* min-height: 100vh; */
+  max-width: 1000px;
+
+  left: 50;
+  position: absolute;
+  display: relative;
+  left: 50%;
+  top: 80%;
+  transform: translate(-50%, -50%);
+  padding: 10px;
 }
 
 .top-right {
@@ -150,9 +187,22 @@ h1 {
 }
 </style>
 
+<script setup>
+import { onMounted } from "vue";
+
+onMounted(() => {
+  // document.getElementById("top").scrollIntoView({ behavior: "smooth" });
+});
+</script>
+
 <script>
+import FooterComponent from "@/components/Layout/Footer.vue";
+
 export default {
   name: "ProjectOne",
+  components: {
+    FooterComponent,
+  },
 };
 </script>
 <style lang=""></style>

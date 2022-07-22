@@ -1,45 +1,106 @@
 <template>
-  <TopPage />
-  <SummaryContent />
-  <div class="page">
-    <HistoryContent />
-  </div>
-  <div class="page2">
-    <SkillComponent />
-  </div>
-  <div class="">
-    <ProjectConponent />
-  </div>
-  <div class="footer">
-    <el-footer><FooterComponent /></el-footer>
-  </div>
+  <!-- <router-view /> -->
+  <router-view v-slot="{ Component, route }">
+    <transition name="zoom" mode="out-in">
+      <!-- <transition name="slide-left" mode="out-in"> -->
+      <!-- <transition name="fade-custom" mode="out-in"> -->
+      <div :key="route.name">
+        <component :is="Component"></component>
+      </div>
+    </transition>
+  </router-view>
 </template>
 
 <script>
-import TopPage from "./components/Layout//TopPage.vue";
-import SummaryContent from "./components/Layout/Summary.vue";
-import HistoryContent from "./components/Layout/History.vue";
-import SkillComponent from "./components/Layout/Skills.vue";
-import ProjectConponent from "./components/Layout/Projects.vue";
-import FooterComponent from "./components/Layout/Footer.vue";
+// import AnimationComponent from "@/components/Utils/Animation.vue";
 
 export default {
   name: "App",
-  components: {
-    TopPage,
-    SummaryContent,
-    HistoryContent,
-    SkillComponent,
-    ProjectConponent,
-    FooterComponent,
-  },
+  // components: { AnimationComponent },
   created() {
     document.title = "Adrian Tam";
   },
 };
 </script>
 
-<style>
+<style lang="scss">
+.zoom-enter-active,
+.zoom-leave-active {
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
+  animation-name: zoom;
+}
+
+.zoom-leave-active {
+  animation-direction: reverse;
+}
+
+@keyframes zoom {
+  from {
+    opacity: 0;
+    // transform: scale3d(0.3, 0.3, 0.3);
+    transform: translateY(-200px);
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
+  animation-fill-mode: both;
+
+  transition-duration: 1s;
+  transition-property: height, opacity, transform;
+  transition-timing-function: cubic-bezier(0.55, 0, 0.1, 1);
+  overflow: hidden;
+}
+
+.slide-left-enter,
+.slide-right-leave-active {
+  opacity: 0;
+  transform: translate(2em, 0);
+}
+
+.slide-left-leave-active,
+.slide-right-enter {
+  opacity: 0;
+  transform: translate(-2em, 0);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-custom-enter-active,
+.fade-custom-leave-active {
+  transition: opacity 0.5s ease;
+}
+.fade-custom-enter,
+.fade-custom-from,
+.fade-custom-leave-to {
+  opacity: 0;
+}
+.slide-fade-enter-active {
+  transition: all 0.5s ease;
+}
+.slide-fade-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.slide-fade-enter,
+.slide-fade-leave-to {
+  transform: translateX(10px);
+  opacity: 0;
+}
+
 @import url("https://fonts.googleapis.com/css?family=Josefin+Sans:400,400i,600,600i");
 * {
   margin: 0;

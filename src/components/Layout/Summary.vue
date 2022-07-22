@@ -49,7 +49,7 @@ export default {
         phone: "Phone number",
         city: "Tokyo",
         lang: "English, Japanese, Chinese",
-        photo: "MyPhoto.png",
+        photo: "new_photo.png",
       },
     };
   },

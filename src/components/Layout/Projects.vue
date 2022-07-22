@@ -69,17 +69,17 @@
       </el-row>
     </div>
   </div>
-  <div class="project-detail" id="projectContent">
-    <router-view />
-    <div id="container" class="go-up" style="padding-top: 20px">
-      <button class="second-more mobile" @click="projectTop()">
-        <span class="circle2 mobile" aria-hidden="true">
-          <span class="icon2 arrow2" style="rotate: 90"></span>
-        </span>
-        <span class="button-text2">BACK</span>
-      </button>
-    </div>
-  </div>
+  <!-- <div class="project-detail" id="projectContent"> -->
+  <!-- <router-view /> -->
+  <!-- <div id="container" class="go-up" style="padding-top: 20px"> -->
+  <!-- <button class="second-more mobile" @click="projectTop()"> -->
+  <!-- <span class="circle2 mobile" aria-hidden="true"> -->
+  <!-- <span class="icon2 arrow2" style="rotate: 90"></span> -->
+  <!-- </span> -->
+  <!-- <span class="button-text2">BACK</span> -->
+  <!-- </button> -->
+  <!-- </div> -->
+  <!-- </div> -->
 </template>
 
 <style lang="scss" scoped>
@@ -140,7 +140,7 @@
 
 .github:hover {
   font-size: 3rem;
-  color: ;
+  /* color: ; */
 }
 
 .ml-2 {
@@ -445,9 +445,9 @@ export default {
   methods: {
     showPage(link) {
       this.clicked = true;
-      document
-        .getElementById("projectContent")
-        .scrollIntoView({ behavior: "smooth" });
+      // document
+      // .getElementById("projectContent")
+      // .scrollIntoView({ behavior: "smooth" });
       router.push({
         name: link,
       });
