@@ -15,7 +15,7 @@
             height="600px"
             indicator-position=""
             direction="vertical"
-            :interval="6000"
+            :interval="8000"
           >
             <el-carousel-item v-for="(item, index) in projectList" :key="item">
               <div class="containers">
@@ -25,7 +25,7 @@
                 </h3>
                 <div class="thumbnail">
                   <el-image
-                    style="width: 400px; height: 280px"
+                    style="width: 450px; height: 280px"
                     :src="item.img"
                     fit="contain"
                   />
@@ -275,6 +275,51 @@
   font-weight: 600;
   margin: 0.25em 0.1em;
 }
+
+.Tensorflow {
+  background-color: #f6d327;
+  background-image: linear-gradient(315deg, #f6d327 0%, #de4daa 74%);
+  display: inline-block;
+  border-radius: 3px;
+  padding: 0.3em 0.5em 0.3em;
+  border-radius: 2px;
+  font-weight: 600;
+  margin: 0.25em 0.1em;
+}
+
+.PyGame {
+  background-color: #42378f;
+  background-image: linear-gradient(315deg, #42378f 0%, #f53844 74%);
+  display: inline-block;
+  border-radius: 3px;
+  padding: 0.3em 0.5em 0.3em;
+  border-radius: 2px;
+  font-weight: 600;
+  margin: 0.25em 0.1em;
+}
+
+.OpenAI {
+  background-color: #7f5a83;
+  background-image: linear-gradient(315deg, #7f5a83 0%, #0d324d 74%);
+  display: inline-block;
+  border-radius: 3px;
+  padding: 0.3em 0.5em 0.3em;
+  border-radius: 2px;
+  font-weight: 600;
+  margin: 0.25em 0.1em;
+}
+
+.RL {
+  background-color: #5d4257;
+  background-image: linear-gradient(315deg, #5d4257 0%, #a5c7b7 74%);
+  display: inline-block;
+  border-radius: 3px;
+  padding: 0.3em 0.5em 0.3em;
+  border-radius: 2px;
+  font-weight: 600;
+  margin: 0.25em 0.1em;
+}
+
 .tag {
   position: relative;
   display: flex;
@@ -308,7 +353,7 @@
   background-color: #2d3436;
   background-image: linear-gradient(315deg, #000000 15%, #2d3436 64%);
   color: white;
-  /* height: 100vh; */
+  min-height: 100vh;
 }
 
 .page2 {
@@ -425,11 +470,12 @@ export default {
         },
         {
           name: "Project 4",
-          description: "Custom made Learning platform",
-          link: "about",
-          img: require("../../assets/projects/thumbnails/coming_soon.png"),
-          tags: ["Vue3", "Js", "FastAPI", "Docker"],
-          overview: "",
+          description: "Reinforcement Learning PoC",
+          link: "project-four",
+          img: require("../../assets/projects/thumbnails/reinforcemenet_learning.png"),
+          tags: ["Tensorflow", "PyGame", "OpenAI", "RL"],
+          overview:
+            "A PoC project to apply reinforcement learning algorithm to autonomous driving which include obstacles avoidance and object pursuit.",
         },
         {
           name: "Project 5",

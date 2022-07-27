@@ -10,7 +10,7 @@
   <div class="">
     <ProjectConponent />
   </div>
-  <div class="footer">
+  <div id="project" class="footer">
     <el-footer><FooterComponent /></el-footer>
   </div>
 </template>
@@ -38,7 +38,6 @@ export default {
   },
 };
 </script>
-
 
 <style>
 @import url("https://fonts.googleapis.com/css?family=Josefin+Sans:400,400i,600,600i");

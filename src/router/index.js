@@ -3,6 +3,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import ProjectOne from "../components/Projects/ProjectOne.vue"
 import ProjectTwo from "../components/Projects/ProjectTwo.vue"
 import ProjectThree from "../components/Projects/ProjectThree.vue"
+import ProjectFour from "../components/Projects/ProjectFour.vue"
+
+
 import HelloWorld from "../components/HelloWorld.vue"
 
 const routes = [
@@ -20,25 +23,30 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   },
   {
-    path: '/case-study/image-processing_gui',
+    path: '/case-studies/1',
     name: 'project-one',
     component: ProjectOne
   },
   {
-    path: '/project_2',
+    path: '/case-studies/2',
     name: 'project-two',
     component: ProjectTwo
   },
   {
-    path: '/project_3',
+    path: '/case-studies/3',
     name: 'project-three',
     component: ProjectThree
-  }
+  },
+  {
+    path: '/case-studies/4',
+    name: 'project-four',
+    component: ProjectFour
+  },
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
-  routes
+  history: createWebHistory(process.env.BASE_URL),  routes,
+
 })
 
 export default router

@@ -1,5 +1,5 @@
 <template>
-  <div class="parallax">
+  <div class="parallaxs">
     <div class="common-layouts" id="top">
       <el-container>
         <el-header>
