@@ -1,0 +1,169 @@
+
+.Python {
+    font-size: 1.2rem;
+    background-color: #2a2a72;
+    background-image: linear-gradient(315deg, #2a2a72 0%, #009ffd 74%);
+    display: inline-block;
+    border-radius: 3px;
+    padding: 0.3em 0.5em 0.3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: 0.25em 0.1em;
+  }
+  
+  .OpenCV {
+    font-size: 1.2rem;
+  
+    background-color: #a4508b;
+    background-image: linear-gradient(326deg, #a4508b 0%, #5f0a87 74%);
+    display: inline-block;
+    border-radius: 3px;
+    padding: 0.3em 0.5em 0.3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: 0.25em 0.1em;
+  }
+  
+  .PysimpleGUI {
+    font-size: 1.2rem;
+  
+    background-color: #63d471;
+    background-image: linear-gradient(315deg, #63d471 0%, #233329 74%);
+    display: inline-block;
+    border-radius: 3px;
+    padding: 0.3em 0.5em 0.3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: 0.25em 0.1em;
+  }
+  
+  .Yolov3 {
+    font-size: 1.2rem;
+  
+    background-color: #f9484a;
+    background-image: linear-gradient(315deg, #f9484a 0%, #fbd72b 74%);
+    display: inline-block;
+    border-radius: 3px;
+    padding: 0.3em 0.5em 0.3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: 0.25em 0.1em;
+  }
+  
+  .Mediapipe {
+    font-size: 1.2rem;
+  
+    background-color: #0cbaba;
+    background-image: linear-gradient(315deg, #0cbaba 0%, #380036 74%);
+    display: inline-block;
+    border-radius: 3px;
+    padding: 0.3em 0.5em 0.3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: 0.25em 0.1em;
+  }
+  
+  .OBS {
+    font-size: 1.2rem;
+    background-color: #edd812;
+    background-image: linear-gradient(315deg, #edd812 0%, #766a65 74%);
+    display: inline-block;
+    border-radius: 3px;
+    padding: 0.3em 0.5em 0.3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: 0.25em 0.1em;
+  }
+  
+  .Dash {
+    background-color: #55efc4;
+    background-image: linear-gradient(315deg, #55efc4 0%, #000000 74%);
+    font-size: 1.2rem;
+    display: inline-block;
+    border-radius: 3px;
+    padding: 0.3em 0.5em 0.3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: 0.25em 0.1em;
+  }
+  
+  .PID {
+    background-color: #2234ae;
+    background-image: linear-gradient(315deg, #2234ae 0%, #191714 74%);
+    font-size: 1.2rem;
+    display: inline-block;
+    border-radius: 3px;
+    padding: 0.3em 0.5em 0.3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: 0.25em 0.1em;
+  }
+  
+  .Sim {
+    background-color: #ba9833;
+    background-image: linear-gradient(315deg, #ba9833 0%, #993333 74%);
+    font-size: 1.2rem;
+    display: inline-block;
+    border-radius: 3px;
+    padding: 0.3em 0.5em 0.3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: 0.25em 0.1em;
+  }
+  
+  .ZMQ {
+    background-color: #f6d327;
+    background-image: linear-gradient(315deg, #f6d327 0%, #de4daa 74%);
+    font-size: 1.2rem;
+    display: inline-block;
+    border-radius: 3px;
+    padding: 0.3em 0.5em 0.3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: 0.25em 0.1em;
+  }
+  
+  .Tensorflow {
+    background-color: #f6d327;
+    background-image: linear-gradient(315deg, #f6d327 0%, #de4daa 74%);
+    display: inline-block;
+    border-radius: 3px;
+    padding: 0.3em 0.5em 0.3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: 0.25em 0.1em;
+  }
+  
+  .PyGame {
+    background-color: #42378f;
+    background-image: linear-gradient(315deg, #42378f 0%, #f53844 74%);
+    display: inline-block;
+    border-radius: 3px;
+    padding: 0.3em 0.5em 0.3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: 0.25em 0.1em;
+  }
+  
+  .OpenAI {
+    background-color: #7f5a83;
+    background-image: linear-gradient(315deg, #7f5a83 0%, #0d324d 74%);
+    display: inline-block;
+    border-radius: 3px;
+    padding: 0.3em 0.5em 0.3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: 0.25em 0.1em;
+  }
+  
+  .RL {
+    background-color: #5d4257;
+    background-image: linear-gradient(315deg, #5d4257 0%, #a5c7b7 74%);
+    display: inline-block;
+    border-radius: 3px;
+    padding: 0.3em 0.5em 0.3em;
+    border-radius: 2px;
+    font-weight: 600;
+    margin: 0.25em 0.1em;
+  }
+  

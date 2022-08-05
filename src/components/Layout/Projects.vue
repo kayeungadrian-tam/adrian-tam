@@ -1,92 +1,80 @@
 <template>
-  <div class="page" id="projectTop">
-    <TitleComponent :title="title" :description="description" />
-    <br />
-    <div>
-      <el-row class="row-bg" justify="space-evenly">
-        <el-col :span="16">
-          <el-carousel
-            style="
-              max-width: 960px;
-              display: block;
-              margin: 0 auto;
-              /* border-radius: 3px; */
-            "
-            height="600px"
-            indicator-position=""
-            direction="vertical"
-            :interval="8000"
-          >
-            <el-carousel-item v-for="(item, index) in projectList" :key="item">
-              <div class="containers">
-                <h3>
-                  {{ index + 1 }} -
-                  {{ item.description }}
-                </h3>
-                <div class="thumbnail">
-                  <el-image
-                    style="width: 450px; height: 280px"
-                    :src="item.img"
-                    fit="contain"
-                  />
-                </div>
-                <div class="tag">
-                  <div
-                    v-for="tag in item.tags"
-                    :class="tag"
-                    :key="tag"
-                    :type="tag"
-                    effect="dark"
-                  >
-                    {{ tag }}
-                  </div>
-                </div>
-                <div class="overview">
-                  <p>{{ item.overview }}</p>
-                </div>
-                <div id="containers" class="go-down" style="padding-top: 20px">
-                  <button
-                    class="learn-more mobile"
-                    @click="showPage(item.link)"
-                  >
-                    <span class="circle mobile" aria-hidden="true">
-                      <span class="icon arrow" style="rotate: 90"></span>
-                    </span>
-                    <span class="button-text">Learn More</span>
-                  </button>
+  <!-- <div class="page" id="projectTop"> -->
+  <TitleComponent :title="title" :description="description" />
+  <br />
+
+  <el-row class="row-bg" justify="space-evenly">
+    <el-col :span="16">
+      <div class="container">
+        <div class="card" v-for="(item, index) in projectList" :key="item">
+          <figure class="card__thumb">
+            <img
+              :src="item.img"
+              alt="Picture by Kyle Cottrell"
+              class="card__image"
+            />
+            <div class="card__caption">
+              <h2 class="card__title">Projects {{ index + 1 }}</h2>
+              <div class="card__snippets">
+                <h1>{{ item.description }}</h1>
+                <p>
+                  {{ item.overview }}
+                </p>
+              </div>
+              <div class="tag">
+                <div
+                  v-for="tag in item.tags"
+                  :class="tag"
+                  :key="tag"
+                  :type="tag"
+                  effect="dark"
+                >
+                  {{ tag }}
                 </div>
               </div>
-              <div class="detail">
-                <el-row :gutter="20">
-                  <el-col :span="4"><div class="" /> </el-col>
-                  <el-col :span="16"> </el-col>
-                  <el-col :span="4"> </el-col>
-                </el-row>
-              </div>
-            </el-carousel-item>
-          </el-carousel>
-        </el-col>
-      </el-row>
-    </div>
-  </div>
-  <!-- <div class="project-detail" id="projectContent"> -->
-  <!-- <router-view /> -->
-  <!-- <div id="container" class="go-up" style="padding-top: 20px"> -->
-  <!-- <button class="second-more mobile" @click="projectTop()"> -->
-  <!-- <span class="circle2 mobile" aria-hidden="true"> -->
-  <!-- <span class="icon2 arrow2" style="rotate: 90"></span> -->
-  <!-- </span> -->
-  <!-- <span class="button-text2">BACK</span> -->
-  <!-- </button> -->
-  <!-- </div> -->
+              <!-- <a href="" class="card__button">Read more</a> -->
+              <!-- <div id="containers" class="go-down" style="padding-top: 20px;"> -->
+              <button class="card__button" @click="showPage(item.link)">
+                <!-- <span class="circle mobile" aria-hidden="true"> -->
+                <!-- <span class="icon arrow" style="rotate: 90;"></span> -->
+                <!-- </span> -->
+                <span class="button-text">Learn More</span>
+              </button>
+              <!-- </div> -->
+            </div>
+          </figure>
+        </div>
+      </div>
+    </el-col>
+  </el-row>
   <!-- </div> -->
 </template>
 
 <style lang="scss" scoped>
 @import "../../assets/styles/scss/button.scss";
+@import "../../assets/styles/scss/cards.scss";
+@import "../../assets/styles/css/tags.css";
 </style>
 
 <style scoped>
+h1 {
+  font-size: 2.2rem;
+  line-height: 40px;
+  padding: 1.8rem;
+}
+
+.tag {
+  position: relative;
+  padding-top: 25px;
+  /* display: -webkit-inline-flex; */
+  /* justify-content: space-evenly; */
+  gap: 5px;
+  align-items: center;
+  align-content: center;
+  /* bottom: 10px; */
+  margin-left: 2px;
+}
+
 .af {
   position: relative;
   top: -20px;
@@ -150,184 +138,6 @@
 
 .el-tag {
   border: 0px solid #fff;
-}
-
-.Python {
-  font-size: 0.8rem;
-  background-color: #2a2a72;
-  background-image: linear-gradient(315deg, #2a2a72 0%, #009ffd 74%);
-  display: inline-block;
-  border-radius: 3px;
-  padding: 0.3em 0.5em 0.3em;
-  border-radius: 2px;
-  font-weight: 600;
-  margin: 0.25em 0.1em;
-}
-
-.OpenCV {
-  font-size: 0.8rem;
-
-  background-color: #a4508b;
-  background-image: linear-gradient(326deg, #a4508b 0%, #5f0a87 74%);
-  display: inline-block;
-  border-radius: 3px;
-  padding: 0.3em 0.5em 0.3em;
-  border-radius: 2px;
-  font-weight: 600;
-  margin: 0.25em 0.1em;
-}
-
-.PysimpleGUI {
-  font-size: 0.8rem;
-
-  background-color: #63d471;
-  background-image: linear-gradient(315deg, #63d471 0%, #233329 74%);
-  display: inline-block;
-  border-radius: 3px;
-  padding: 0.3em 0.5em 0.3em;
-  border-radius: 2px;
-  font-weight: 600;
-  margin: 0.25em 0.1em;
-}
-
-.Yolov3 {
-  font-size: 0.8rem;
-
-  background-color: #f9484a;
-  background-image: linear-gradient(315deg, #f9484a 0%, #fbd72b 74%);
-  display: inline-block;
-  border-radius: 3px;
-  padding: 0.3em 0.5em 0.3em;
-  border-radius: 2px;
-  font-weight: 600;
-  margin: 0.25em 0.1em;
-}
-
-.Mediapipe {
-  font-size: 0.8rem;
-
-  background-color: #0cbaba;
-  background-image: linear-gradient(315deg, #0cbaba 0%, #380036 74%);
-  display: inline-block;
-  border-radius: 3px;
-  padding: 0.3em 0.5em 0.3em;
-  border-radius: 2px;
-  font-weight: 600;
-  margin: 0.25em 0.1em;
-}
-
-.OBS {
-  font-size: 0.8rem;
-  background-color: #edd812;
-  background-image: linear-gradient(315deg, #edd812 0%, #766a65 74%);
-  display: inline-block;
-  border-radius: 3px;
-  padding: 0.3em 0.5em 0.3em;
-  border-radius: 2px;
-  font-weight: 600;
-  margin: 0.25em 0.1em;
-}
-
-.Dash {
-  background-color: #55efc4;
-  background-image: linear-gradient(315deg, #55efc4 0%, #000000 74%);
-  font-size: 0.8rem;
-  display: inline-block;
-  border-radius: 3px;
-  padding: 0.3em 0.5em 0.3em;
-  border-radius: 2px;
-  font-weight: 600;
-  margin: 0.25em 0.1em;
-}
-
-.PID {
-  background-color: #2234ae;
-  background-image: linear-gradient(315deg, #2234ae 0%, #191714 74%);
-  font-size: 0.8rem;
-  display: inline-block;
-  border-radius: 3px;
-  padding: 0.3em 0.5em 0.3em;
-  border-radius: 2px;
-  font-weight: 600;
-  margin: 0.25em 0.1em;
-}
-
-.Sim {
-  background-color: #ba9833;
-  background-image: linear-gradient(315deg, #ba9833 0%, #993333 74%);
-  font-size: 0.8rem;
-  display: inline-block;
-  border-radius: 3px;
-  padding: 0.3em 0.5em 0.3em;
-  border-radius: 2px;
-  font-weight: 600;
-  margin: 0.25em 0.1em;
-}
-
-.ZMQ {
-  background-color: #f6d327;
-  background-image: linear-gradient(315deg, #f6d327 0%, #de4daa 74%);
-  font-size: 0.8rem;
-  display: inline-block;
-  border-radius: 3px;
-  padding: 0.3em 0.5em 0.3em;
-  border-radius: 2px;
-  font-weight: 600;
-  margin: 0.25em 0.1em;
-}
-
-.Tensorflow {
-  background-color: #f6d327;
-  background-image: linear-gradient(315deg, #f6d327 0%, #de4daa 74%);
-  display: inline-block;
-  border-radius: 3px;
-  padding: 0.3em 0.5em 0.3em;
-  border-radius: 2px;
-  font-weight: 600;
-  margin: 0.25em 0.1em;
-}
-
-.PyGame {
-  background-color: #42378f;
-  background-image: linear-gradient(315deg, #42378f 0%, #f53844 74%);
-  display: inline-block;
-  border-radius: 3px;
-  padding: 0.3em 0.5em 0.3em;
-  border-radius: 2px;
-  font-weight: 600;
-  margin: 0.25em 0.1em;
-}
-
-.OpenAI {
-  background-color: #7f5a83;
-  background-image: linear-gradient(315deg, #7f5a83 0%, #0d324d 74%);
-  display: inline-block;
-  border-radius: 3px;
-  padding: 0.3em 0.5em 0.3em;
-  border-radius: 2px;
-  font-weight: 600;
-  margin: 0.25em 0.1em;
-}
-
-.RL {
-  background-color: #5d4257;
-  background-image: linear-gradient(315deg, #5d4257 0%, #a5c7b7 74%);
-  display: inline-block;
-  border-radius: 3px;
-  padding: 0.3em 0.5em 0.3em;
-  border-radius: 2px;
-  font-weight: 600;
-  margin: 0.25em 0.1em;
-}
-
-.tag {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  gap: 5px;
-  align-items: center;
-  /* bottom: 10px; */
-  margin-left: 2px;
 }
 
 .down {

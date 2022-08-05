@@ -7,7 +7,7 @@
   <div class="page2">
     <SkillComponent />
   </div>
-  <div class="">
+  <div class="page">
     <ProjectConponent />
   </div>
   <div id="project" class="footer">
@@ -42,7 +42,7 @@ export default {
 <style>
 @import url("https://fonts.googleapis.com/css?family=Josefin+Sans:400,400i,600,600i");
 * {
-  margin: 0;
+  /* margin: 0; */
   font-family: "Josefin Sans", sans-serif;
 }
 
