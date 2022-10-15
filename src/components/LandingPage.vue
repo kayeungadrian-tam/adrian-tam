@@ -18,16 +18,13 @@
                 An engineer excited to get better!
             </h2>
             <div class="buttons">
-                <el-link type="primary"
-                    :underline="false">
-                    <el-button @click="$router.push('about-me')"
-                        size="large"
-                        round>
-                        <fa class="icon"
-                            icon="fa-solid fa-user" />
-                        About
-                    </el-button>
-                </el-link>
+                <el-button @click="$router.push('about-me')"
+                    size="large"
+                    round>
+                    <fa class="icon"
+                        icon="fa-solid fa-user" />
+                    About
+                </el-button>
 
 
                 <el-button @click="$router.push('projects')"

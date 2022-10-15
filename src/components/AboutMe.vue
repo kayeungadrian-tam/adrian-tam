@@ -52,15 +52,16 @@ function test() {
 <style scoped>
 @import "../assets/css/card.css";
 
+
 .icon {
-    padding: 0 15px 0 15px;
+    padding: 0px 15px 0px 15px;
 }
 
 .icon:hover {
     cursor: pointer;
     color: lightskyblue;
 
-    transform: scale(1.5);
+    transform: scale(1.2);
     transition: 0.25s ease-in-out;
 }
 

@@ -37,7 +37,7 @@ document.title = "Adrian Tam ";
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s ease;
+  transition: opacity 0.75s ease-in-out;
 }
 
 .fade-enter-from,

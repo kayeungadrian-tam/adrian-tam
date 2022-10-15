@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import projects_data from "../data/projects"
-
-
 </script>
 
 <script lang="ts">
@@ -9,9 +7,6 @@ import projects_data from "../data/projects"
 import { ref } from 'vue'
 const drawer = ref(false)
 const title = ref("")
-
-
-
 
 const open = (item: any) => {
     console.table(item);
@@ -23,50 +18,48 @@ const open = (item: any) => {
 
 <template>
     <div class="aboutmepage">
-        <div>
-            <h1>Projects</h1>
-            <hr>
-        </div>
+        <h1>Projects</h1>
+        <hr>
         <div class="overview">
+
             <div class="project-card"
                 v-for="(item, i) in projects_data"
                 :key="i">
+                <div class="warpper">
+                    <div class='grid-container'>
+                        <div class='grid-item'>
+                            <img :src="item.img" />
+                        </div>
+                        <div class='grid-item'>
 
-                <el-card :body-style="{ 
-                padding: '0px 0px 0px 0px',
-                background: i%2 == 0 ?'whitesmoke':'#f4c5a375',
-                cursor: 'pointer',
-                margin: '0px 0px 0px -10px'
-                }"
-                    shadow="hover"
-                    @click="open(item)">
-                    <el-row>
-                        <el-col :span="12">
-                            <img :src="item.img"
-                                class="image" />
-                        </el-col>
-                        <el-col :span="12"
-                            style="padding-left:20px;">
-                            <div clasS="description">
-                                <h3>{{item.description}}</h3>
-                                <p>{{item.overview}}</p>
-                                <el-button text
-                                    class="button"></el-button>
+                            <div class="center">
+                                <el-card :body-style="{ 
+                                background: i%2 == 0 ?'whitesmoke':'#f4c5a375',
+                                cursor: 'pointer',
+                                padding: '10px',
+                                }"
+                                    shadow="hover"
+                                    @click="open(item)">
+                                    <div clasS="description">
+                                        <h3>{{item.description}}</h3>
+                                        <p>{{item.overview}}</p>
+                                        <el-button text
+                                            class="button"></el-button>
+                                    </div>
+                                    <el-row :gutter="15"
+                                        style="padding-left: 10px; margin-top: -40px;   justify-content: center;">
+                                        <el-col :span="5"
+                                            v-for="(tag, i) in item.icons"
+                                            :key="i">
+                                            <img class="tag-icon"
+                                                :src="tag">
+                                        </el-col>
+                                    </el-row>
+                                </el-card>
                             </div>
-                            <el-row :gutter="15"
-                                style="padding-left: 10px; margin-top: -40px;">
-                                <el-col :span="5"
-                                    v-for="(tag, i) in item.icons"
-                                    :key="i">
-                                    <img class="tag-icon"
-                                        :src="tag">
-                                </el-col>
-                            </el-row>
-                        </el-col>
-                    </el-row>
-                </el-card>
-
-
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -83,9 +76,53 @@ const open = (item: any) => {
 </template>
 
 <style scoped>
-.description {
-    padding-right: 20px;
+.center {
+    display: inline;
+    /* right: 100%; */
+    /* margin-left: 20px; */
+    /* padding: 0 10px 0 10px; */
+    /* align-items: center; */
+    /* text-align: center; */
+    /* margin-top: 20px; */
 }
+
+.warpper {
+    background: rgba(154, 101, 47, 0.35);
+    box-shadow: 0 5px 5px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(10.5px);
+    -webkit-backdrop-filter: blur(10.5px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    margin: 0;
+}
+
+.grid-container {
+    display: flex;
+    flex-direction: row;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    width: 100%;
+
+}
+
+.grid-item {
+    width: calc(100% - 10px);
+    width: 600px;
+    margin: 5px;
+}
+
+@media (min-width: 1000px) {
+    .grid-item {
+        width: calc(100% - 30px);
+    }
+}
+
+@media (min-width: 1020px) {
+    .grid-item {
+        width: calc(50% - 20px);
+    }
+}
+
 
 .tag-icon {
     width: 50px;
@@ -111,11 +148,15 @@ const open = (item: any) => {
 }
 
 .project-card h3 {
-    color: #e5781fe2
+    color: #e5781fe2;
+    font-size: 1.5rem;
+    ;
 }
 
 .project-card {
     padding-bottom: 20px;
+    display: flex;
+    flex-direction: column;
 
 }
 
@@ -126,12 +167,12 @@ const open = (item: any) => {
 }
 
 img {
-    display: inline-block;
+    display: inline;
     padding: 10px 0 10px 0;
     /* fit: center; */
-    /* margin: 20px; */
+    margin: 10px;
     /* width: 100%; */
-    width: 300px;
+    width: 350px;
     height: auto;
 }
 
