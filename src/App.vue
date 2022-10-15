@@ -4,6 +4,7 @@
 // import HelloWorld from './components/HelloWorld.vue'
 import NavBar from './components/NavBar.vue'
 
+document.title = "Adrian Tam ";
 
 </script>
 
