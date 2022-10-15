@@ -1,64 +1,32 @@
 {
-  "name": "portfolio",
-  "version": "0.1.0",
+  "name": "new_portfolio",
   "private": true,
+  "version": "0.0.0",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@element-plus/icons-vue": "^1.1.4",
-    "@element-plus/theme-chalk": "^2.1.10",
-    "@fortawesome/fontawesome-svg-core": "^6.1.1",
-    "@fortawesome/free-brands-svg-icons": "^6.1.1",
-    "@fortawesome/free-regular-svg-icons": "^6.1.1",
-    "@fortawesome/free-solid-svg-icons": "^6.1.1",
-    "@fortawesome/vue-fontawesome": "^3.0.0-5",
-    "@guillaumebriday/vue-scroll-progress-bar": "^1.0.0",
-    "axios": "^0.27.2",
-    "core-js": "^3.8.3",
-    "element-plus": "^2.1.11",
-    "file-saver": "^2.0.5",
-    "firebase": "^9.8.0",
-    "font-awesome": "^4.7.0",
-    "vue": "^3.2.13",
-    "vue-axios": "^3.4.1",
-    "vue-country-flag-next": "^2.3.2",
-    "vue-observe-visibility": "^2.0.0-alpha.1",
-    "vue-router": "^4.0.3",
-    "vue-scroll-progress": "^1.1.5"
+    "@element-plus/icons-vue": "^2.0.9",
+    "@fortawesome/fontawesome-svg-core": "^6.2.0",
+    "@fortawesome/free-brands-svg-icons": "^6.2.0",
+    "@fortawesome/free-regular-svg-icons": "^6.2.0",
+    "@fortawesome/free-solid-svg-icons": "^6.2.0",
+    "@fortawesome/vue-fontawesome": "^3.0.1",
+    "element-plus": "^2.2.17",
+    "particles-bg-vue": "^1.3.5",
+    "vue": "^3.2.37",
+    "vue-observe-visibility": "^1.0.0",
+    "vue-responsive-video-background-player": "^2.3.1",
+    "vue-router": "4",
+    "vue-sequential-entrance": "^1.1.3",
+    "vue-spline": "^0.0.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@babel/eslint-parser": "^7.12.16",
-    "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-plugin-eslint": "~5.0.0",
-    "@vue/cli-plugin-router": "~5.0.0",
-    "@vue/cli-service": "~5.0.0",
-    "eslint": "^7.32.0",
-    "eslint-plugin-vue": "^8.0.3",
-    "sass": "^1.52.3",
-    "sass-loader": "^10.2.1"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser"
-    },
-    "rules": {}
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead",
-    "not ie 11"
-  ]
+    "@vitejs/plugin-vue": "^3.1.0",
+    "typescript": "^4.6.4",
+    "vite": "^3.1.0",
+    "vue-tsc": "^0.40.4"
+  }
 }
