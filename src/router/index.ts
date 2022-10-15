@@ -9,6 +9,7 @@ const routes = [
     { path: '/projects', name: 'projects', component: ProjectsVue },
     { path: '/about-me', name: 'aboutme', component: AboutMeVue },
     { path: "/timeline", name: 'timeline', component: TimelineVue }
+    { path: "*", name: 'backhome', component: LandingPageVue }
 ]
 
 const router = createRouter({
