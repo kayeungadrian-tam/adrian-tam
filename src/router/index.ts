@@ -8,7 +8,7 @@ const routes = [
     { path: '/', name: 'home', component: LandingPageVue },
     { path: '/projects', name: 'projects', component: ProjectsVue },
     { path: '/about-me', name: 'aboutme', component: AboutMeVue },
-    { path: "/timeline", name: 'timeline', component: TimelineVue }
+    { path: "/timeline", name: 'timeline', component: TimelineVue },
     { path: "*", name: 'backhome', component: LandingPageVue }
 ]
 
