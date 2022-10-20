@@ -5,10 +5,10 @@ import TimelineVue from '../components/TimeLine.vue';
 import ProjectsVue from '../components/Projects.vue';
 
 const routes = [
-    { path: '/', name: 'home', component: LandingPageVue },
-    { path: '/projects', name: 'projects', component: ProjectsVue },
-    { path: '/about-me', name: 'aboutme', component: AboutMeVue },
-    { path: "/timeline", name: 'timeline', component: TimelineVue },
+    { path: '/adrian-tam', name: 'home', component: LandingPageVue },
+    { path: '/adrian-tam/projects', name: 'projects', component: ProjectsVue },
+    { path: '/adrian-tam/about-me', name: 'aboutme', component: AboutMeVue },
+    { path: "/adrian-tam/timeline", name: 'timeline', component: TimelineVue },
     // { path: "*", name: 'backhome', component: LandingPageVue }
 ]
 

@@ -60,10 +60,10 @@ const handleSelect = (key: string, keyPath: string[]) => {
 
 
 let items = reactive([
-    { label: "Home", icon: "fa-solid fa-house", path: "/" },
-    { label: "About Me", icon: "fa-solid fa-user", path: "about-me" },
-    { label: "Porjects", icon: "fa-solid fa-rectangle-list", path: "projects" },
-    { label: "Timeline", icon: "fa-solid fa-timeline", path: "timeline" },
+    { label: "Home", icon: "fa-solid fa-house", path: "/adrian-tam" },
+    { label: "About Me", icon: "fa-solid fa-user", path: "/about-me" },
+    { label: "Porjects", icon: "fa-solid fa-rectangle-list", path: "/projects" },
+    { label: "Timeline", icon: "fa-solid fa-timeline", path: "/timeline" },
 ])
 
 
