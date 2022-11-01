@@ -24,14 +24,19 @@
                             <fa class="icon fa-lg"
                                 :icon="item.icon"></fa>
 
-                            <span>{{item.label}}</span>
+                            <span>{{ item.label }}</span>
                         </div>
                     </el-menu-item>
 
                 </div>
                 <hr style="border-top: 2px;">
 
-                <el-menu-item index="2-4-3">item three</el-menu-item>
+                <el-menu-item>
+                    <div @click="toResume"><span>Resume
+
+                        </span>
+                    </div>
+                </el-menu-item>
             </el-sub-menu>
 
             <el-sub-menu>
@@ -58,6 +63,10 @@ const handleSelect = (key: string, keyPath: string[]) => {
     // activeIndex.value = keyPath[0]
 }
 
+
+const toResume = () => {
+    window.open("https://adrian-tam.notion.site/KaYeungAdrian-Tam-fa57862230114d8b88709b1c5c616e3f", "_blank");
+}
 
 let items = reactive([
     { label: "Home", icon: "fa-solid fa-house", path: "/adrian-tam" },

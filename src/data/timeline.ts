@@ -7,7 +7,7 @@ const timeline = [
         title: "AI Team Leader",
         location: "AMBL Co.",
         icon: "fa-solid fa-briefcase",
-        website: "https://www.ipx.co.jp/",
+        website: "https://www.ambl.co.jp/",
         description: ""
     },
     {
