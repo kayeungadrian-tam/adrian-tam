@@ -10,11 +10,14 @@ document.title = "Adrian Tam ";
 
 <template>
   <NavBar />
-  <router-view v-slot="{ Component }">
-    <transition name="fade">
-      <component :is="Component" />
-    </transition>
-  </router-view>
+
+  <body>
+    <router-view v-slot="{ Component }">
+      <transition name="fade">
+        <component :is="Component" />
+      </transition>
+    </router-view>
+  </body>
   <div class="area">
     <div class="circles">
       <li></li>

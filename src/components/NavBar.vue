@@ -2,7 +2,7 @@
     <nav>
         <el-menu :router="true"
             :default-active="activeIndex"
-            menu-trigger="hover"
+            menu-trigger="click"
             text-color="Black"
             class="el-menu-demo transbackground"
             mode="horizontal"

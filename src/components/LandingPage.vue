@@ -15,35 +15,40 @@
                 </h1>
             </div>
             <h2>
-                An engineer excited to get better!
+                An engineer excited to get better <span class="and">&</span> solve problems!
             </h2>
             <div class="buttons">
-                <el-button @click="$router.push('about-me')"
-                    size="large"
-                    round>
-                    <fa class="icon"
-                        icon="fa-solid fa-user" />
-                    About
-                </el-button>
 
-
-                <el-button @click="$router.push('projects')"
-                    round>
-                    <fa class="icon"
-                        icon="fa-solid fa-rectangle-list" />
-                    Projects
-
-                </el-button>
-                <el-link type="info"
-                    href="https://github.com/kayeungadrian-tam"
-                    target="blank"
-                    :underline="false">
-                    <el-button round>
+                <div>
+                    <el-button @click="$router.push('about-me')"
+                        size="large"
+                        round>
                         <fa class="icon"
-                            icon="fa-brands fa-github" />
-                        Github
+                            icon="fa-solid fa-user" />
+                        About
                     </el-button>
-                </el-link>
+                </div>
+
+                <div>
+                    <el-button @click="$router.push('projects')"
+                        round>
+                        <fa class="icon"
+                            icon="fa-solid fa-rectangle-list" />
+                        Projects
+                    </el-button>
+                </div>
+                <div>
+                    <el-link type="info"
+                        href="https://github.com/kayeungadrian-tam"
+                        target="blank"
+                        :underline="false">
+                        <el-button round>
+                            <fa class="icon"
+                                icon="fa-brands fa-github" />
+                            Github
+                        </el-button>
+                    </el-link>
+                </div>
             </div>
         </div>
 
@@ -75,6 +80,12 @@
     border-radius: 15px;
 }
 
+
+.and {
+    color: #80400b;
+    font-size: 2.3rem;
+}
+
 .el-button {
     height: 50px;
     width: 80px;
@@ -84,11 +95,62 @@
 }
 
 
+.buttons {
+    display: flex;
+    justify-self: space-around;
+}
+
+
 
 .landingpage {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin: -5% 0 0 -22%;
+    /* width: 100%; */
+    height: calc(100vh - 100px);
+
+    /* position: absolute; */
+    display: flex;
+
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+@media (max-width: 800px) {
+
+    .landingpage {
+
+        height: calc(100vh - 100px);
+
+    
+    }
+
+    .landingpage h1 {
+        font-size: 2rem;
+        line-height: 50px;
+    }
+
+    .landingpage h2 {
+        padding: 0 40px;
+        word-wrap: break-word;
+        font-size: 1em;
+        /* line-height: 50px; */
+    }
+
+
+
+    .landingpage .and {
+        font-size: 1.3em;
+    }
+
+    .buttons {
+        display: flex;
+        flex-direction: column;
+        justify-self: space-around;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+
+
 }
 </style>

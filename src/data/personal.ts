@@ -20,7 +20,7 @@ const data = {
         email: "tamkayeung.adrian@gmail.com",
         phone: "Phone number",
         city: "Tokyo",
-        lang: "English, Japanese, Chinese",
+        lang: ["🇳🇿", "🇯🇵", "🇭🇰", "🇨🇳"],
     },
     timeline: [
         {

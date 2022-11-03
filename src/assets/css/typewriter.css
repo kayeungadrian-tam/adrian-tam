@@ -1,130 +1,124 @@
 .css-typing h1 {
-    margin: 0;
-
-    border-right: .15em solid orange;
-    /* font-family: "Courier"; */
-    font-size: 5vw;
-    white-space: nowrap;
-    overflow: hidden;
+  margin: 0;
+  color: #80400b;
+  line-height: 7vw;
+  border-right: 0.15em solid orange;
+  /* font-family: "Courier"; */
+  font-size: 5vw;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .css-typing h1:nth-child(1) {
-    /* width: 11em; */
-    -webkit-animation: type 2s steps(40, end);
-    animation: type 2s steps(40, end);
-    -webkit-animation-fill-mode: forwards;
-    animation-fill-mode: forwards;
+  /* width: 11em; */
+  -webkit-animation: type 2s steps(40, end);
+  animation: type 2s steps(40, end);
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
 }
 
 .css-typing h1:nth-child(2) {
-    /* width: 11em; */
-    opacity: 0;
-    -webkit-animation:
-        type2 2s steps(40, end),
-        blink .5s step-end infinite alternate;
-    animation:
-        type2 2s steps(40, end),
-        blink .5s step-end infinite alternate;
-    ;
-    -webkit-animation-delay: 2s;
-    animation-delay: 2s;
-    -webkit-animation-fill-mode: forwards;
-    animation-fill-mode: forwards;
+  /* width: 11em; */
+  opacity: 0;
+  -webkit-animation: type2 2s steps(40, end),
+    blink 0.5s step-end infinite alternate;
+  animation: type2 2s steps(40, end), blink 0.5s step-end infinite alternate;
+  -webkit-animation-delay: 2s;
+  animation-delay: 2s;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
 }
 
-
 @keyframes type {
-    from {
-        width: 0
-    }
+  from {
+    width: 0;
+  }
 
-    to {
-        width: 100%
-    }
+  to {
+    width: 100%;
+  }
 
+  0% {
+    width: 0;
+  }
 
-    0% {
-        width: 0;
-    }
+  99.9% {
+    border-right: 0.15em solid orange;
+  }
 
-    99.9% {
-        border-right: .15em solid orange;
-    }
-
-    100% {
-        border: none;
-    }
+  100% {
+    border: none;
+  }
 }
 
 @-webkit-keyframes type {
-    0% {
-        width: 0;
-    }
+  0% {
+    width: 0;
+  }
 
-    99.9% {
-        border-right: .15em solid orange;
-    }
+  99.9% {
+    border-right: 0.15em solid orange;
+  }
 
-    100% {
-        border: none;
-    }
+  100% {
+    border: none;
+  }
 }
 
 @keyframes type2 {
-    from {
-        width: 0
-    }
+  from {
+    width: 0;
+  }
 
-    to {
-        width: 100%
-    }
+  to {
+    width: 100%;
+  }
 
-    0% {
-        width: 0;
-    }
+  0% {
+    width: 0;
+  }
 
-    1% {
-        opacity: 1;
-    }
+  1% {
+    opacity: 1;
+  }
 
-    99.9% {
-        border-right: .15em solid orange;
-    }
+  99.9% {
+    border-right: 0.15em solid orange;
+  }
 
-    100% {
-        opacity: 1;
-        /* border: none; */
-    }
+  100% {
+    opacity: 1;
+    /* border: none; */
+  }
 }
 
 @-webkit-keyframes type2 {
-    0% {
-        width: 0;
-    }
+  0% {
+    width: 0;
+  }
 
-    1% {
-        opacity: 1;
-    }
+  1% {
+    opacity: 1;
+  }
 
-    99.9% {
-        border-right: .15em solid orange;
-    }
+  99.9% {
+    border-right: 0.15em solid orange;
+  }
 
-    100% {
-        opacity: 1;
-        /* border: none; */
-    }
+  100% {
+    opacity: 1;
+    /* border: none; */
+  }
 }
 
 @keyframes blink {
-    50% {
-        border-color: transparent;
-    }
+  50% {
+    border-color: transparent;
+  }
 }
 
 @-webkit-keyframes blink {
-    50% {
-        border-color: tranparent;
-    }
+  50% {
+    border-color: tranparent;
+  }
 }
-
