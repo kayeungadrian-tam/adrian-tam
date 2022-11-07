@@ -19,7 +19,7 @@
                             <div v-for="(flag, i) in data.info.lang"
                                 :key="i"
                                 class="flag">
-                                {{ flag }}
+                                <!-- {{ flag }} -->
                             </div>
                         </div>
 

@@ -39,7 +39,8 @@ const open = (item: any) => {
                     </div>
                 </div>
 
-                <img :src="item.img" />
+                <img class="project-thumbnail"
+                    :src="item.img" />
             </div>
         </div>
     </div>

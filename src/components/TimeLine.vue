@@ -1,5 +1,4 @@
 <template>
-    <!-- <div class="timelinepage"> -->
     <div class="title">
         <h1>Timeline</h1>
     </div>

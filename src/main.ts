@@ -30,14 +30,7 @@ import {
     faFacebook
 } from '@fortawesome/free-brands-svg-icons'
 
-
-
-
-
-
-
 import "./style.css";
-
 
 library.add(
     faUserSecret,
