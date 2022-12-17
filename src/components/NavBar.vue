@@ -6,7 +6,7 @@
                 Adrian Tam
             </router-link>
             <nav class="header-menu">
-                <div v-if="isShow">
+                <div class="full-menu">
                     <transition name="fade">
                         <ul>
                             <li v-for="(item, i) in items"
@@ -21,8 +21,7 @@
                         </ul>
                     </transition>
                 </div>
-                <div v-else
-                    class="hamburger-menu">
+                <div class="hamburger-menu">
                     <el-menu :router="true"
                         :default-active="activeIndex"
                         menu-trigger="click"
@@ -58,7 +57,7 @@
                                 <div @click="toResume"
                                     style="width:100%;"><span>Resume
                                         <fa class="icon fa-lg"
-                                            icon="fa-solid fa-house"></fa>
+                                            icon="fa-solid fa-arrow-up-right-from-square"></fa>
                                     </span>
                                 </div>
                             </el-menu-item>
@@ -78,16 +77,16 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted, Transition } from 'vue'
 
-window.addEventListener("resize", function () {
-    if (window.matchMedia("(min-width: 800px)").matches) {
-        console.log("Screen width is at least 500px");
-        isShow.value = true;
-    } else {
-        console.log("Screen less than 500px")
-        isShow.value = false;
+// window.addEventListener("resize", function () {
+//     if (window.matchMedia("(min-width: 800px)").matches) {
+//         console.log("Screen width is at least 500px");
+//         isShow.value = true;
+//     } else {
+//         console.log("Screen less than 500px")
+//         isShow.value = false;
 
-    }
-})
+//     }
+// })
 
 const isShow = ref(true);
 
