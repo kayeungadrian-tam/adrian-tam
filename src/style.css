@@ -76,21 +76,6 @@ ol {
   list-style: none;
 }
 
-nav {
-  width: 100vw;
-  /* padding-bottom: -50px; */
-  position: fixed;
-  left: 0;
-  top: 0;
-  background: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 8px 12px 0 rgba(31, 38, 135, 0.17);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  z-index: 1;
-  justify-content: space-between;
-  /* border-radius: 10px; */
-}
-
 button {
   border-radius: 8px;
   border: 1px solid transparent;

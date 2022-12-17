@@ -1,0 +1,139 @@
+@charset "utf-8";
+@import "animate.css";
+
+*,
+::before,
+::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+header {
+  width: 100vw;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 12px 0 rgba(31, 38, 135, 0.17);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1;
+}
+
+.header-inner {
+  height: 65px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 40px;
+  padding-right: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-menu ul {
+  display: flex;
+  height: 50px;
+}
+
+.header-inner li {
+  margin: 10px 20px;
+  /* margin-right: 20px; */
+}
+
+@media (min-width: 1000px) {
+  .header-inner li:hover {
+    color: #80400b;
+  }
+
+  .header-inner li:focus::after,
+  .header-inner li:hover::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: #80400b;
+    margin-top: 5px;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    width: 0%;
+    transform: translateX(-20px);
+  }
+
+  50% {
+    opacity: 0.5;
+    width: 50%;
+    transform: translateX(-10px);
+  }
+
+  100% {
+    opacity: 1;
+    width: 100%;
+    transform: translateX(0);
+  }
+}
+
+.el-menu--horizontal {
+  border-bottom: 0;
+}
+
+.el-menu--horizontal:hover,
+.el-sub-menu:hover,
+.el-sub-menu__title:hover {
+  background-color: transparent;
+}
+
+.el-menu-demo {
+  background-color: red;
+  height: 0px;
+}
+
+.hamburger-menu {
+  /* background-color: red; */
+  align-items: top;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  z-index: 11;
+  right: 0;
+}
+
+.hamburger-menu:hover {
+  /* background-color: black; */
+}
+
+/* @media (max-width: 800px) {
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #ffffff;
+    height: 50px;
+    z-index: 10;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .header-inner {
+    padding-left: 20px;
+    padding-right: 20px;
+    height: 100%;
+    position: relative;
+  }
+} */

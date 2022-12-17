@@ -1,66 +1,99 @@
 <template>
-    <nav>
-        <el-menu :router="true"
-            :default-active="activeIndex"
-            menu-trigger="click"
-            text-color="Black"
-            class="el-menu-demo transbackground"
-            mode="horizontal"
-            active-text-color="#533f20"
-            :ellipsis="false"
-            @select="handleSelect">
-            <el-sub-menu index="0"
-                style="min-height: 50px;">
-                <template #title>
-                    <fa class="fa-xl"
-                        icon="fa-solid fa-bars" />
-                </template>
+    <header class="header">
+        <div class="header-inner">
+            <router-link to="/"
+                class="header-logo">
+                Adrian Tam
+            </router-link>
+            <nav class="header-menu">
+                <div v-if="isShow">
+                    <transition name="fade">
+                        <ul>
+                            <li v-for="(item, i) in items"
+                                :key="i">
+                                <router-link :to="item.path">
+                                    <fa class="icon fa-lg"
+                                        :icon="item.icon"></fa>
+                                    {{ item.label }}
+                                </router-link>
 
-                <div v-for="(item, i) in items"
-                    :key="i">
-                    <el-menu-item>
-                        <div class="icons"
-                            @click="$router.push(item.path)">
-                            <fa class="icon fa-lg"
-                                :icon="item.icon"></fa>
-
-                            <span>{{ item.label }}</span>
-                        </div>
-                    </el-menu-item>
-
+                            </li>
+                        </ul>
+                    </transition>
                 </div>
-                <hr style="border-top: 2px;">
+                <div v-else
+                    class="hamburger-menu">
+                    <el-menu :router="true"
+                        :default-active="activeIndex"
+                        menu-trigger="click"
+                        text-color="Black"
+                        class="el-menu-demo transbackground"
+                        mode="horizontal"
+                        background-color="transparent"
+                        active-text-color="#533f20"
+                        :ellipsis="false"
+                        @select="handleSelect">
+                        <el-sub-menu index="0"
+                            style="min-height: 50px;">
+                            <template #title>
+                                <fa class="fa-xl"
+                                    icon="fa-solid fa-bars" />
+                            </template>
 
-                <el-menu-item>
-                    <div @click="toResume"><span>Resume
+                            <div v-for="(item, i) in items"
+                                :key="i">
+                                <el-menu-item>
+                                    <router-link :to="item.path"
+                                        style="width:100%;">
+                                        <fa class="icon fa-lg"
+                                            :icon="item.icon"></fa>
+                                        {{ item.label }}
+                                    </router-link>
+                                </el-menu-item>
 
-                        </span>
-                    </div>
-                </el-menu-item>
-            </el-sub-menu>
+                            </div>
+                            <hr style="border-top: 2px;">
 
-            <el-sub-menu>
-                <template #title>
-                    <el-icon>
-                        <Edit />
-                    </el-icon>
-                </template>
+                            <el-menu-item>
+                                <div @click="toResume"
+                                    style="width:100%;"><span>Resume
+                                        <fa class="icon fa-lg"
+                                            icon="fa-solid fa-house"></fa>
+                                    </span>
+                                </div>
+                            </el-menu-item>
+                        </el-sub-menu>
+                    </el-menu>
+                </div>
 
-            </el-sub-menu>
+            </nav>
+        </div>
 
-        </el-menu>
-
-
-    </nav>
+    </header>
 
 </template>
+
+
+
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted, Transition } from 'vue'
+
+window.addEventListener("resize", function () {
+    if (window.matchMedia("(min-width: 800px)").matches) {
+        console.log("Screen width is at least 500px");
+        isShow.value = true;
+    } else {
+        console.log("Screen less than 500px")
+        isShow.value = false;
+
+    }
+})
+
+const isShow = ref(true);
 
 const activeIndex = ref('0')
 const handleSelect = (key: string, keyPath: string[]) => {
     console.log(key, keyPath)
-    // activeIndex.value = keyPath[0]
 }
 
 
@@ -77,8 +110,22 @@ let items = reactive([
 
 
 </script>
-  
+
 <style scoped>
+@import "../assets/css/header.css";
+
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.75s ease-in-out;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+
+
 .el-menu-demo {
     justify-content: space-between;
 }
@@ -120,4 +167,3 @@ let items = reactive([
     background-color: transparent;
 }
 </style>
-  
