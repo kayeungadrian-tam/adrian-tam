@@ -48,7 +48,8 @@
 </template>
 
 <script setup lang="ts">
-import myphoto from "../assets/img/new_photo.png";
+// import myphoto from "../assets/img/new_photo.png";
+import myphoto from "../assets/img/new_photo_3.png";
 import data from "../data/personal";
 
 function test() {
