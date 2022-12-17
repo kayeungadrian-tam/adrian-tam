@@ -16,7 +16,15 @@
                                         :icon="item.icon"></fa>
                                     {{ item.label }}
                                 </router-link>
-
+                            </li>
+                            <li>
+                                <div @click="toResume"
+                                    style="width:100%; cursor:pointer;"><span>
+                                        <fa class="icon fa-lg"
+                                            icon="fa-solid fa-arrow-up-right-from-square"></fa>
+                                        Resume
+                                    </span>
+                                </div>
                             </li>
                         </ul>
                     </transition>
@@ -112,57 +120,4 @@ let items = reactive([
 
 <style scoped>
 @import "../assets/css/header.css";
-
-
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.75s ease-in-out;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
-}
-
-
-.el-menu-demo {
-    justify-content: space-between;
-}
-
-.icon {
-    vertical-align: middle;
-    margin-right: 10px;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.5s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
-}
-
-.el-menu-item:hover,
-.el-sub-menu__title:hover {
-    background-color: rgba(220, 220, 220, 1) !important;
-    color: #b88230 !important;
-    font-weight: bold;
-
-}
-
-.info-icons {
-    width: 20px;
-    height: 20px;
-    padding: 0 5px 0 5px;
-}
-
-.flex-grow {
-    flex-grow: 1;
-}
-
-.transbackground {
-    background-color: transparent;
-}
 </style>

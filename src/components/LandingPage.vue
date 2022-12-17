@@ -121,7 +121,7 @@
 
         height: calc(100vh - 100px);
 
-    
+
     }
 
     .landingpage h1 {

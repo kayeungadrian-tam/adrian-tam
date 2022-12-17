@@ -48,7 +48,7 @@ header {
 }
 
 .header-inner li {
-  margin: 10px 20px;
+  margin: 10px 10px;
   /* margin-right: 20px; */
 }
 
@@ -79,7 +79,7 @@ header {
     top: 0;
     z-index: 11;
     right: 0;
-    display: hidden;
+    display: none;
   }
 }
 
@@ -133,6 +133,51 @@ header {
   background-color: transparent;
 }
 
+.el-menu-item:hover,
+.el-sub-menu__title:hover {
+  background-color: rgba(220, 220, 220, 1) !important;
+  color: #b88230 !important;
+  font-weight: bold;
+}
+
 .el-menu-demo {
   height: 0px;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.75s ease-in-out;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.el-menu-demo {
+  justify-content: space-between;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.info-icons {
+  width: 20px;
+  height: 20px;
+  padding: 0 5px 0 5px;
+}
+
+.flex-grow {
+  flex-grow: 1;
+}
+
+.transbackground {
+  background-color: transparent;
 }
