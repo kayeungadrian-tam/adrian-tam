@@ -21,15 +21,27 @@ const open = (item: any) => {
         </div>
         <div class="project-card"
             v-for="(item, i) in projects_data"
-            :key="i"
-            @click="open(item)">
+            :key="i">
 
             <div :class="
                 i % 2 == 0 ? 'project-container light' : 'project-container dark'
             ">
                 <div class="project-description">
                     <h2>{{ item.description }}</h2>
+
+                    <el-link type="info"
+                        :href="item.link"
+                        target="blank"
+                        :underline="false">
+                        <el-button round>
+
+                            <fa class="icon"
+                                icon="fa-brands fa-github" />
+                            Github
+                        </el-button>
+                    </el-link>
                     <p>{{ item.overview }}</p>
+                    <!-- {{ item.link }} -->
                     <div class="icons">
                         <div v-for="(tag, i) in item.icons"
                             :key="i">
@@ -78,6 +90,20 @@ const open = (item: any) => {
     width: 50px;
     height: 50px;
     /* vertical-align: -0.15em; */
+}
+
+.el-button {
+    height: 10px;
+    font-size: 0.7rem;
+    margin-left: 25px;
+    width: 120px;
+    padding: 15px 5px;
+}
+
+.icon {
+    width: 15px;
+    height: 15px;
+    padding-right: 5px;
 }
 
 

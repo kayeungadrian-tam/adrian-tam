@@ -1,8 +1,5 @@
 @charset "utf-8";
 
-.project-page-container {
-}
-
 .project-container {
   display: flex;
   justify-content: space-between;
@@ -28,7 +25,7 @@
 }
 
 .project-card {
-  cursor: pointer;
+  /* cursor: pointer; */
   padding-bottom: 20px;
 }
 

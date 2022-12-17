@@ -85,18 +85,7 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted, Transition } from 'vue'
 
-// window.addEventListener("resize", function () {
-//     if (window.matchMedia("(min-width: 800px)").matches) {
-//         console.log("Screen width is at least 500px");
-//         isShow.value = true;
-//     } else {
-//         console.log("Screen less than 500px")
-//         isShow.value = false;
 
-//     }
-// })
-
-const isShow = ref(true);
 
 const activeIndex = ref('0')
 const handleSelect = (key: string, keyPath: string[]) => {
@@ -109,7 +98,6 @@ const toResume = () => {
 }
 
 let items = reactive([
-    { label: "Home", icon: "fa-solid fa-house", path: "/adrian-tam" },
     { label: "About Me", icon: "fa-solid fa-user", path: "/about-me" },
     { label: "Porjects", icon: "fa-solid fa-rectangle-list", path: "/projects" },
     { label: "Timeline", icon: "fa-solid fa-timeline", path: "/timeline" },

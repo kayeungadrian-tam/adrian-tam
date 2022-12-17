@@ -86,14 +86,6 @@
     font-size: 2.3rem;
 }
 
-.el-button {
-    height: 50px;
-    width: 80px;
-    font-size: large;
-    --el-button-hover-bg-color: #FFFFFFa7;
-    --el-button-hover-border-color: #EC9704d3;
-}
-
 
 .buttons {
     display: flex;

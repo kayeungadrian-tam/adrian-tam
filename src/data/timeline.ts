@@ -1,14 +1,15 @@
 const timeline = [
-
     {
         timestamp: "2020-08 <br> ~ <br> ",
         start: "2021-10",
         end: "present",
-        title: "AI Team Leader",
+        title: "ML Team Lead",
         location: "AMBL Co.",
         icon: "fa-solid fa-briefcase",
         website: "https://www.ambl.co.jp/",
-        description: ""
+        description: "\
+        - AI development for Learning Management System (LMS).<br>\
+        - Causal discovery system advisor."
     },
     {
         timestamp: "2020-08 <br> ~ <br> ",
@@ -18,7 +19,10 @@ const timeline = [
         location: "iPX Co.",
         icon: "fa-solid fa-briefcase",
         website: "https://www.ipx.co.jp/",
-        description: ""
+        description: "\
+        - Objection detection system development and deployment.<br>\
+        - Data anaylsis for automotives. <br>\
+        - Implementation of machine learning paper (distillation learning)."
     },
     {
         timestamp: "2020-08 <br> ~ <br> ",
@@ -28,7 +32,9 @@ const timeline = [
         location: "Kyotango City Board of Education",
         icon: "fa-solid fa-briefcase",
         website: "https://www.city.kyotango.lg.jp/",
-        description: ""
+        description: "\
+        - International correspondent for 2021 Tokyo Olympics (Spain, Belgium)<br>\
+        - Multi-cultural promotions<br>- Trasnslation & Interpreting (Eng ⇔ JP) "
     },
     {
         timestamp: "2018-05",
@@ -48,7 +54,7 @@ const timeline = [
         location: "Hiroshima University",
         icon: "fa-solid fa-school",
         website: "https://www.hiroshima-u.ac.jp/en",
-        description: "MEXT Scholarship Recipient by the Japanese Government for a 1-year long exchange program in Japan."
+        description: "MEXT Scholarship Recipient by the Japanese Government for a 1-year long exchange program in Hiroshima University, Japan."
     },
 ];
 
