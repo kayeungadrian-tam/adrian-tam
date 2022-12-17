@@ -90,6 +90,8 @@
 .buttons {
     display: flex;
     justify-self: space-around;
+    /* justify-content: center; */
+    /* align-items: center; */
 }
 
 
@@ -100,7 +102,6 @@
 
     /* position: absolute; */
     display: flex;
-
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -137,7 +138,8 @@
     .buttons {
         display: flex;
         flex-direction: column;
-        justify-self: space-around;
+        /* align-items: space-between; */
+        /* justify-self: space-around; */
         margin-left: auto;
         margin-right: auto;
     }

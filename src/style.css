@@ -97,7 +97,8 @@ button:focus-visible {
 
 .el-button {
   height: 50px;
-  width: 80px;
+  width: 100%;
+  margin-right: 25px;
   font-size: large;
   --el-button-hover-bg-color: #ffffffa7;
   --el-button-hover-border-color: #ec9704d3;
