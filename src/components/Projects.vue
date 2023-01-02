@@ -24,8 +24,8 @@ const open = (item: any) => {
             :key="i">
 
             <div :class="
-                i % 2 == 0 ? 'project-container light' : 'project-container dark'
-            ">
+    i % 2 == 0 ? 'project-container light' : 'project-container dark'
+">
                 <div class="project-description">
                     <h2>{{ item.description }}</h2>
 
@@ -41,7 +41,6 @@ const open = (item: any) => {
                         </el-button>
                     </el-link>
                     <p>{{ item.overview }}</p>
-                    <!-- {{ item.link }} -->
                     <div class="icons">
                         <div v-for="(tag, i) in item.icons"
                             :key="i">

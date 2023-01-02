@@ -77,3 +77,27 @@
   margin-right: 10px;
   margin-left: auto;
 }
+
+@media screen and (max-width: 1000px) {
+  .project-page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .project-container {
+    max-width: 540px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  .project-container .project-thumbnail {
+    height: 250px;
+    width: auto;
+    margin: 0 auto;
+  }
+
+  .project-description {
+  }
+}
