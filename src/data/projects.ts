@@ -3,7 +3,7 @@ import obs from "../assets/img/logo/obs.png";
 import mediapipe from "../assets/img/logo/mediapipe.png";
 import zmq from "../assets/img/logo/zmq.png";
 import pygame from "../assets/img/logo/pygame.png";
-
+import vercel from "../assets/img/logo/vercel.png";
 
 import img0 from "../assets/projects/thumbnails/portfolio.png"
 import img1 from "../assets/projects/thumbnails/image_processing_gui.png"
@@ -25,7 +25,7 @@ const projects = [
         icons: [
             devicon + "/vuejs/vuejs-original.svg",
             devicon + "typescript/typescript-original.svg",
-            "https://karmanivero.us/assets/images/vercel-logo.png"
+            vercel
         ],
         overview:
             "A personal porfolio website made from scratch in Vue3 with ts. UI components are mostly done using ElementPlus. The website is hosted by Vercel.",
