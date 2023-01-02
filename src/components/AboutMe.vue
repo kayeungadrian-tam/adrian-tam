@@ -23,14 +23,20 @@
                             </div>
                         </div>
 
-
                         <div class="color">
                             <fa class="icon"
-                                icon="fa-brands fa-github" />
+                                icon="fa-brands fa-github"
+                                @click="newLink(data.links.githubLink)">
+                            </fa>
                             <fa class="icon"
-                                icon="fa-brands fa-linkedin" />
+                                icon="fa-brands fa-linkedin"
+                                @click="newLink(data.links.linkedinLink)" />
+                            <img class="icon qiita_logo"
+                                :src=qiita_logo
+                                @click="newLink(data.links.qiitaLink)" />
                             <fa class="icon"
-                                icon="fa-brands fa-facebook" />
+                                icon="fa-brands fa-facebook"
+                                @click="newLink(data.links.facebookLink)" />
                         </div>
                     </div>
                 </div>
@@ -48,13 +54,24 @@
 </template>
 
 <script setup lang="ts">
-// import myphoto from "../assets/img/new_photo.png";
+import { ref } from "vue";
+
 import myphoto from "../assets/img/new_photo_3.png";
 import data from "../data/personal";
+
+import qiita from "../assets/img/logo/Qiita.png";
+
+const qiita_logo = ref(qiita);
 
 function test() {
     console.log("test");
 }
+
+const newLink = (url: string) => {
+    // console.log(url)
+    window.open(url, "_blank");
+}
+
 
 </script>
 

@@ -166,6 +166,7 @@
 .color .icon:hover {
   cursor: pointer;
   color: lightskyblue;
+
   z-index: 100000;
   transform: scale(1.5);
   transition: 0.25s ease-in-out;
@@ -219,6 +220,19 @@
   opacity: 1;
   transform: translateY(0px);
   transition-delay: 0.75s;
+}
+
+.qiita_logo {
+  margin-top: 1px;
+  width: 38px;
+  filter: contrast(170%);
+}
+
+.qiita_logo:hover {
+  /* filter: saturate(0); */
+  /* filter: invert(%); */
+  filter: invert(1%) sepia(100%) saturate(500%) hue-rotate(172deg)
+    brightness(100%) contrast(100%);
 }
 
 @media (max-width: 540px) {

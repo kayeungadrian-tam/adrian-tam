@@ -13,7 +13,7 @@ const data = {
     links: {
         githubLink: "https://github.com/kayeungadrian-tam",
         linkedinLink: "https://www.linkedin.com/in/kayeungadrian-tam/",
-        qiitaLink: "https://qiita.com/YomamaBanana",
+        qiitaLink: "https://qiita.com/adrian-tam",
         facebookLink: "https://www.facebook.com/profile.php?id=100006443926392",
     },
     info: {
