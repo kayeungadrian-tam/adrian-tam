@@ -19,6 +19,14 @@ a {
   text-decoration: none;
 }
 
+a .router-link-exact-active{
+  color: red;
+}
+
+a:hover{
+  color: #80400b;
+}
+
 header {
   width: 100vw;
   position: fixed;
@@ -136,7 +144,7 @@ header {
 .el-menu-item:hover,
 .el-sub-menu__title:hover {
   background-color: rgba(220, 220, 220, 1) !important;
-  color: #b88230 !important;
+  color: #b88230;
   font-weight: bold;
 }
 
