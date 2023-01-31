@@ -7,27 +7,25 @@
             </router-link>
             <nav class="header-menu">
                 <div class="full-menu">
-                    <transition name="fade">
-                        <ul>
-                            <li v-for="(item, i) in items"
-                                :key="i">
-                                <router-link :to="item.path">
+                    <ul>
+                        <li v-for="(item, i) in items"
+                            :key="i">
+                            <router-link :to="item.path">
+                                <fa class="icon fa-lg"
+                                    :icon="item.icon"></fa>
+                                {{ item.label }}
+                            </router-link>
+                        </li>
+                        <li>
+                            <div @click="toResume"
+                                style="width:100%; cursor:pointer;"><span>
                                     <fa class="icon fa-lg"
-                                        :icon="item.icon"></fa>
-                                    {{ item.label }}
-                                </router-link>
-                            </li>
-                            <li>
-                                <div @click="toResume"
-                                    style="width:100%; cursor:pointer;"><span>
-                                        <fa class="icon fa-lg"
-                                            icon="fa-solid fa-arrow-up-right-from-square"></fa>
-                                        Resume
-                                    </span>
-                                </div>
-                            </li>
-                        </ul>
-                    </transition>
+                                        icon="fa-solid fa-arrow-up-right-from-square"></fa>
+                                    Resume
+                                </span>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
                 <div class="hamburger-menu">
                     <el-menu :router="true"

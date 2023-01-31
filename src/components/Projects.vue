@@ -24,8 +24,8 @@ const open = (item: any) => {
             :key="i">
 
             <div :class="
-    i % 2 == 0 ? 'project-container light' : 'project-container dark'
-">
+                i % 2 == 0 ? 'project-container light' : 'project-container dark'
+            ">
                 <div class="project-description">
                     <h2>{{ item.description }}</h2>
 
@@ -55,7 +55,7 @@ const open = (item: any) => {
             </div>
         </div>
     </div>
-    <el-drawer v-model="drawer"
+    <!-- <el-drawer v-model="drawer"
         :title="title"
         :with-header="false">
         <div class="drawer-container">
@@ -64,7 +64,7 @@ const open = (item: any) => {
             </div>
             <h1>Problem Statement</h1>
         </div>
-    </el-drawer>
+    </el-drawer> -->
 </template>
 
 <style scoped>

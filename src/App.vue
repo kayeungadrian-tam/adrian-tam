@@ -38,9 +38,8 @@ document.title = "Adrian Tam ";
 @import "assets/css/bubbles_bg.css";
 
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.75s ease-in-out;
+.fade-enter-active {
+  transition: opacity 1.0s ease-in-out;
 }
 
 .fade-enter-from,
