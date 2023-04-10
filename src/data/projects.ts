@@ -19,7 +19,7 @@ const devicon = "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/"
 const projects = [
     {
         name: "Project 6",
-        description: "Python Decorators (PYPI)",
+        description: "Python Decorators",
         link: "https://github.com/kayeungadrian-tam/py_decorators",
         img: img6,
         tags: ["Python", "PyPI", "OSS"],
