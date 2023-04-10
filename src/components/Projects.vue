@@ -55,16 +55,6 @@ const open = (item: any) => {
             </div>
         </div>
     </div>
-    <!-- <el-drawer v-model="drawer"
-        :title="title"
-        :with-header="false">
-        <div class="drawer-container">
-            <div class="drawer-title">
-                {{ title }}
-            </div>
-            <h1>Problem Statement</h1>
-        </div>
-    </el-drawer> -->
 </template>
 
 <style scoped>

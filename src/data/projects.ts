@@ -11,11 +11,24 @@ import img2 from "../assets/projects/thumbnails/infinite_virtual_web_loop.png"
 import img3 from "../assets/projects/thumbnails/dbm_simulation.png"
 import img4 from "../assets/projects/thumbnails/reinforcemenet_learning.png"
 import img5 from "../assets/projects/thumbnails/banana-room.png"
+import img6 from "../assets/projects/thumbnails/pyDeco_docs.png"
 
 
 const devicon = "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/"
 
 const projects = [
+    {
+        name: "Project 6",
+        description: "Python Decorators (PYPI)",
+        link: "https://github.com/kayeungadrian-tam/py_decorators",
+        img: img6,
+        tags: ["Python", "PyPI", "OSS"],
+        icons: [
+            devicon + "/python/python-original.svg",
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/PyPI_logo.svg/1200px-PyPI_logo.svg.png"
+        ],
+        overview: "A python package consists of useful decorators.",
+    },
     {
         name: "Project 0",
         description: "Personal Portfolio",
