@@ -75,7 +75,6 @@
         </div>
 
     </header>
-
 </template>
 
 
@@ -92,7 +91,8 @@ const handleSelect = (key: string, keyPath: string[]) => {
 
 
 const toResume = () => {
-    window.open("https://adrian-tam.notion.site/KaYeungAdrian-Tam-fa57862230114d8b88709b1c5c616e3f", "_blank");
+    // window.open("https://adrian-tam.notion.site/KaYeungAdrian-Tam-fa57862230114d8b88709b1c5c616e3f", "_blank");
+    window.open("https://firebasestorage.googleapis.com/v0/b/kayeungadriantam.appspot.com/o/Resume.pdf?alt=media&token=1e2e8cd8-5357-4aad-bce0-43ac581fa9bc", "_blank");
 }
 
 let items = reactive([

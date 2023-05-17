@@ -3,7 +3,7 @@ const timeline = [
         timestamp: "2020-08 <br> ~ <br> ",
         start: "2021-10",
         end: "present",
-        title: "ML Team Lead",
+        title: "AI Team Lead",
         location: "AMBL Co.",
         icon: "fa-solid fa-briefcase",
         website: "https://www.ambl.co.jp/",
