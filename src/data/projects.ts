@@ -4,6 +4,9 @@ import mediapipe from "../assets/img/logo/mediapipe.png";
 import zmq from "../assets/img/logo/zmq.png";
 import pygame from "../assets/img/logo/pygame.png";
 import vercel from "../assets/img/logo/vercel.png";
+import gradio from "../assets/img/logo/gradio.png";
+import hugging_face from "../assets/img/logo/hugging_face.png";
+
 
 import img0 from "../assets/projects/thumbnails/portfolio.png"
 import img1 from "../assets/projects/thumbnails/image_processing_gui.png"
@@ -12,11 +15,25 @@ import img3 from "../assets/projects/thumbnails/dbm_simulation.png"
 import img4 from "../assets/projects/thumbnails/reinforcemenet_learning.png"
 import img5 from "../assets/projects/thumbnails/banana-room.png"
 import img6 from "../assets/projects/thumbnails/pyDeco_docs.png"
+import img7 from "../assets/projects/thumbnails/bible_search_index.png"
 
 
 const devicon = "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/"
 
 const projects = [
+    {
+        name: "Project 7",
+        description: "Bible Search Index",
+        link: "https://github.com/kayeungadrian-tam/bible_scraper",
+        img: img7,
+        tags: ["Python", "PyPI", "OSS"],
+        icons: [
+            gradio,
+            hugging_face,
+            devicon + "/python/python-original.svg",
+        ],
+        overview: "A bible search engine powered by sentence transformers.",
+    },
     {
         name: "Project 6",
         description: "Python Decorators",
