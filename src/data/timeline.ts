@@ -1,8 +1,19 @@
 const timeline = [
     {
         timestamp: "2020-08 <br> ~ <br> ",
-        start: "2021-10",
+        start: "2023-07",
         end: "present",
+        title: "AI Egnineer",
+        location: "IBM Japan Systems Engineering",
+        icon: "fa-solid fa-briefcase",
+        website: "https://www.ibm.com/jp-ja/about/subsidiaries/ise",
+        description: "\
+        - Causal discovery system advisor."
+    },
+    {
+        timestamp: "2020-08 <br> ~ <br> ",
+        start: "2021-10",
+        end: "2023-06",
         title: "AI Team Lead",
         location: "AMBL Co.",
         icon: "fa-solid fa-briefcase",
