@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, ref, watch } from 'vue'
 import * as THREE from 'three'
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { applyShadowProps, disposeModel } from './modelLoader'
 
 const props = defineProps<{
@@ -30,7 +30,7 @@ const loadModel = async () => {
     )
     gltf.scene.position.set(0, 0, 0)
     gltf.scene.scale.setScalar(1)
-    gltf.scene.traverse((node) => {
+    gltf.scene.traverse((node: THREE.Object3D) => {
       const name = node.name.toLowerCase()
       if (!headNode && (name === 'head' || name.includes('head'))) {
         headNode = node

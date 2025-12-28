@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 export type ModelLoadOptions = {
   loader: GLTFLoader
@@ -11,7 +11,7 @@ export type ModelLoadOptions = {
 }
 
 export const applyShadowProps = (object: THREE.Object3D) => {
-  object.traverse((node) => {
+  object.traverse((node: THREE.Object3D) => {
     if ((node as THREE.Mesh).isMesh) {
       node.castShadow = true
       node.receiveShadow = true
@@ -20,14 +20,14 @@ export const applyShadowProps = (object: THREE.Object3D) => {
 }
 
 export const disposeModel = (object: THREE.Object3D) => {
-  object.traverse((node) => {
+  object.traverse((node: THREE.Object3D) => {
     if ((node as THREE.Mesh).isMesh) {
       const mesh = node as THREE.Mesh
       if (mesh.geometry) {
         mesh.geometry.dispose()
       }
       if (Array.isArray(mesh.material)) {
-        mesh.material.forEach((material) => material.dispose())
+        mesh.material.forEach((material: THREE.Material) => material.dispose())
       } else if (mesh.material) {
         mesh.material.dispose()
       }
