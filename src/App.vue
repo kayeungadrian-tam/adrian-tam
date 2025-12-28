@@ -2,15 +2,20 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 // import HelloWorld from './components/HelloWorld.vue'
-import NavBar from './components/NavBar.vue'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import NewPage from './components/NewPage.vue'
 
 document.title = "Adrian Tam ";
 
-const route = useRoute()
-const hideChrome = computed(() => Boolean(route.meta?.hideChrome))
+const route = (() => {
+  try {
+    return useRoute()
+  } catch {
+    return null
+  }
+})()
+const hideChrome = computed(() => Boolean(route?.meta?.hideChrome))
 </script>
 
 <template>
@@ -40,9 +45,6 @@ const hideChrome = computed(() => Boolean(route.meta?.hideChrome))
 </template>
 
 <style scoped>
-@import "assets/css/bubbles_bg.css";
-
-
 .fade-enter-active {
   transition: opacity 1.0s ease-in-out;
 }

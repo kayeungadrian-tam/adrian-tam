@@ -104,7 +104,10 @@ onMounted(() => {
   })
 })
 
-const handleClick = () => {
+const handleClick = (event: MouseEvent) => {
+  if (event.button !== 0) {
+    return
+  }
   emit('fade')
 }
 

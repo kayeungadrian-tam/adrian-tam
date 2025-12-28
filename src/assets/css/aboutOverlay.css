@@ -1,0 +1,256 @@
+@import '../../assets/css/overlayBase.css';
+
+.intro-section {
+  margin-bottom: 32px;
+  animation: fadeSlideUp 0.5s ease-out 0.3s both;
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.intro-text {
+  font-size: 18px;
+  line-height: 1.7;
+  color: #d0e2ff;
+}
+
+.highlight {
+  color: #78a9ff;
+  font-weight: 600;
+  position: relative;
+  background: linear-gradient(135deg, rgba(120, 169, 255, 0.2) 0%, rgba(120, 169, 255, 0.05) 100%);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border-bottom: 2px solid rgba(120, 169, 255, 0.5);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 32px 0;
+  animation: fadeSlideUp 0.5s ease-out 0.4s both;
+}
+
+.stat-item {
+  background: rgba(120, 169, 255, 0.08);
+  border: 1px solid rgba(120, 169, 255, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+  background: rgba(120, 169, 255, 0.15);
+  border-color: rgba(120, 169, 255, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(15, 98, 254, 0.2);
+}
+
+.stat-icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.stat-label {
+  display: block;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #78a9ff;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.stat-value {
+  display: block;
+  font-size: 16px;
+  color: #f2f4f8;
+  font-weight: 500;
+}
+
+.passion-section {
+  margin: 40px 0;
+  animation: fadeSlideUp 0.5s ease-out 0.5s both;
+}
+
+.section-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #f2f4f8;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.title-icon {
+  font-size: 28px;
+}
+
+.description {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #a6c8ff;
+  margin-bottom: 16px;
+}
+
+.passion-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin: 32px 0;
+  animation: fadeSlideUp 0.5s ease-out 0.6s both;
+}
+
+.passion-item {
+  background: rgba(120, 169, 255, 0.06);
+  border: 1px solid rgba(120, 169, 255, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.passion-item:hover {
+  background: rgba(120, 169, 255, 0.12);
+  border-color: rgba(120, 169, 255, 0.4);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 32px rgba(15, 98, 254, 0.25);
+}
+
+.passion-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+  display: block;
+  filter: drop-shadow(0 4px 8px rgba(15, 98, 254, 0.3));
+}
+
+.passion-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #f2f4f8;
+  margin-bottom: 8px;
+}
+
+.passion-desc {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #a6c8ff;
+}
+
+.philosophy-section {
+  margin: 40px 0 20px;
+  padding: 28px;
+  background: rgba(120, 169, 255, 0.08);
+  border-left: 4px solid #78a9ff;
+  border-radius: 12px;
+  animation: fadeSlideUp 0.5s ease-out 0.7s both;
+}
+
+.philosophy-quote {
+  font-size: 17px;
+  line-height: 1.6;
+  color: #d0e2ff;
+  font-style: italic;
+  margin: 0 0 12px;
+  quotes: """ """ "'" "'";
+}
+
+.philosophy-quote::before {
+  content: open-quote;
+  color: #78a9ff;
+  font-size: 32px;
+  line-height: 0;
+  margin-right: 8px;
+  vertical-align: -0.4em;
+}
+
+.philosophy-quote::after {
+  content: close-quote;
+  color: #78a9ff;
+  font-size: 32px;
+  line-height: 0;
+  margin-left: 8px;
+  vertical-align: -0.4em;
+}
+
+.quote-author {
+  display: block;
+  font-size: 13px;
+  color: #78a9ff;
+  font-family: 'IBM Plex Mono', monospace;
+  margin-top: 8px;
+}
+
+.card-footer {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(120, 169, 255, 0.2);
+  animation: fadeSlideDown 0.5s ease-out 0.8s both;
+}
+
+.close-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #78a9ff;
+  opacity: 0.8;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.pulse-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: #78a9ff;
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
+}
+
+@media (max-width: 768px) {
+  .overlay-card {
+    padding: 32px 24px;
+  }
+  
+  .title {
+    font-size: 32px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .passion-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-title {
+    font-size: 20px;
+  }
+
+  .philosophy-section {
+    padding: 20px;
+  }
+}

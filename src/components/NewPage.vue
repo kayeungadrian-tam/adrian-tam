@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, reactive, ref, shallowRef } from 'vue'
 import * as THREE from 'three'
+import { Text } from 'troika-three-text'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import WorkOverlay from './overlays/WorkOverlay.vue'
@@ -14,6 +15,10 @@ import AvatarModel from './objects/avatar.vue'
 import SceneLights from './lights/SceneLights.vue'
 import BallModel from './objects/ball.vue'
 import PlayerRig from './objects/playerRig.vue'
+import CertificateModel from './objects/certificate.vue'
+import SceneCamera from './camera/SceneCamera.vue'
+import RoomShell from './room/RoomShell.vue'
+import { sceneLayout } from '../config/sceneLayout'
 
 const container = ref<HTMLDivElement | null>(null)
 const hasStarted = ref(false)
@@ -48,6 +53,7 @@ let ballCubeCamera: THREE.CubeCamera | null = null
 
 const sceneRef = shallowRef<THREE.Scene | null>(null)
 const gltfLoaderRef = shallowRef<GLTFLoader | null>(null)
+const introLookAt = new THREE.Vector3(0, 1.2, 0)
 
 const intro = {
   active: false,
@@ -55,21 +61,30 @@ const intro = {
   durationMs: 2200,
   from: new THREE.Vector3(0, 3.6, 9),
 }
-const followOffset = new THREE.Vector3(0, 1.4, 3.2)
-const roomWidth = 12
-const roomDepth = 10
-const playerRadius = 0.4
-const ballRadius = 0.25
+const {
+  followOffset,
+  roomWidth,
+  roomDepth,
+  playerRadius,
+  ballRadius,
+  ballPosition,
+  tablePosition,
+  tableRotationY,
+  chairPosition,
+  bookshelfPosition,
+  avatarPosition,
+  avatarRotationY,
+  playerPosition,
+  certificatePosition,
+  certificateRotationY,
+  labels,
+  interactables,
+} = sceneLayout
 const ballVelocity = new THREE.Vector3()
 let ballMesh: THREE.Mesh | null = null
-const ballPosition = new THREE.Vector3(1.0, ballRadius, 0.4)
-const tablePosition = new THREE.Vector3(0.6, 0, 1.2)
-const tableRotationY = Math.PI
-const chairPosition = new THREE.Vector3(-3.2, 0, -3.8)
-const bookshelfPosition = new THREE.Vector3(-0.2, 0, -4.4)
-const avatarPosition = new THREE.Vector3(1.8, 0, -1.6)
-const avatarRotationY = Math.PI
-const playerPosition = new THREE.Vector3(2.4, 0.55, 4.4)
+const labelBillboards: THREE.Object3D[] = []
+
+
 const nearbyId = ref('')
 const focus = reactive({
   active: false,
@@ -82,54 +97,107 @@ const focus = reactive({
   fromLook: new THREE.Vector3(),
   toLook: new THREE.Vector3(),
 })
-const interactables = [
-  {
-    id: 'table',
-    position: new THREE.Vector3(0.6, 0.8, 1.2),
-    cameraOffset: new THREE.Vector3(0.0, 0.8, 1.6),
-  },
-  {
-    id: 'chair',
-    position: new THREE.Vector3(-3.2, 0.7, -3.8),
-    cameraOffset: new THREE.Vector3(0.8, 0.6, 1.2),
-  },
-  {
-    id: 'bookshelf',
-    position: new THREE.Vector3(-0.2, 1.2, -4.4),
-    cameraOffset: new THREE.Vector3(1.1, 1.1, 0.8),
-  },
-]
 
 const createLabel = (text: string) => {
-  const canvas = document.createElement('canvas')
-  const context = canvas.getContext('2d')
-  if (!context) {
-    return null
-  }
-  const fontSize = 48
-  const padding = 24
-  context.font = `600 ${fontSize}px "Segoe UI", "Helvetica Neue", Arial, sans-serif`
-  const metrics = context.measureText(text)
-  canvas.width = Math.ceil(metrics.width + padding * 2)
-  canvas.height = Math.ceil(fontSize + padding * 2)
-  context.font = `600 ${fontSize}px "Segoe UI", "Helvetica Neue", Arial, sans-serif`
-  context.fillStyle = 'rgba(27, 34, 55, 0.9)'
-  context.textBaseline = 'middle'
-  context.textAlign = 'center'
-  context.fillText(text, canvas.width / 2, canvas.height / 2)
+  const group = new THREE.Group()
+  const backplate = new THREE.Mesh(
+    new THREE.ExtrudeGeometry(new THREE.Shape(), {
+      depth: 0.02,
+      bevelEnabled: true,
+      bevelThickness: 0.01,
+      bevelSize: 0.02,
+      bevelSegments: 2,
+      steps: 1,
+    }),
+    new THREE.MeshStandardMaterial({
+      color: 0x0f3a74,
+      roughness: 0.3,
+      metalness: 0.1,
+      emissive: 0x06162b,
+      emissiveIntensity: 0.4,
+    })
+  )
+  backplate.position.set(0, 0, -0.06)
+  backplate.castShadow = true
+  backplate.receiveShadow = true
+  group.add(backplate)
 
-  const texture = new THREE.CanvasTexture(canvas)
-  texture.minFilter = THREE.LinearFilter
-  texture.magFilter = THREE.LinearFilter
-
-  const material = new THREE.SpriteMaterial({
-    map: texture,
-    transparent: true,
-    depthTest: false,
+  const shadow = new Text()
+  shadow.text = text
+  shadow.fontSize = 0.28
+  shadow.color = '#0a122c'
+  shadow.fillOpacity = 0.55
+  shadow.anchorX = 'center'
+  shadow.anchorY = 'middle'
+  shadow.position.set(0.03, -0.03, -0.02)
+  shadow.depthOffset = -2
+  shadow.sync(() => {
+    if (shadow.material) {
+      shadow.material.depthTest = false
+      shadow.material.transparent = true
+    }
   })
-  const sprite = new THREE.Sprite(material)
-  sprite.scale.set(canvas.width / 120, canvas.height / 120, 1)
-  return sprite
+
+  const label = new Text()
+  label.text = text
+  label.fontSize = 0.28
+  label.color = '#d0e2ff'
+  label.outlineWidth = 0.01
+  label.outlineColor = '#0a122c'
+  label.anchorX = 'center'
+  label.anchorY = 'middle'
+  label.depthOffset = -1
+  label.sync(() => {
+    if (label.material) {
+      label.material.depthTest = false
+      label.material.transparent = true
+    }
+    const bounds = label.textRenderInfo?.blockBounds
+    if (!bounds) {
+      return
+    }
+    const width = bounds[2] - bounds[0]
+    const height = bounds[3] - bounds[1]
+    const padding = 0.08
+    const cornerRadius = 0.12
+    const plateShape = new THREE.Shape()
+    const w = width + padding * 2
+    const h = height + padding * 1
+    const r = Math.min(cornerRadius, w * 0.3, h * 0.5)
+    plateShape.moveTo(-w / 2 + r, -h / 2)
+    plateShape.lineTo(w / 2 - r, -h / 2)
+    plateShape.quadraticCurveTo(w / 2, -h / 2, w / 2, -h / 2 + r)
+    plateShape.lineTo(w / 2, h / 2 - r)
+    plateShape.quadraticCurveTo(w / 2, h / 2, w / 2 - r, h / 2)
+    plateShape.lineTo(-w / 2 + r, h / 2)
+    plateShape.quadraticCurveTo(-w / 2, h / 2, -w / 2, h / 2 - r)
+    plateShape.lineTo(-w / 2, -h / 2 + r)
+    plateShape.quadraticCurveTo(-w / 2, -h / 2, -w / 2 + r, -h / 2)
+    const geometry = new THREE.ExtrudeGeometry(plateShape, {
+      depth: 0.02,
+      bevelEnabled: true,
+      bevelThickness: 0.01,
+      bevelSize: 0.02,
+      bevelSegments: 2,
+      steps: 1,
+    })
+    backplate.geometry.dispose()
+    backplate.geometry = geometry
+  })
+  label.castShadow = true
+  label.receiveShadow = false
+  group.add(shadow, label)
+  labelBillboards.push(group)
+  return group
+}
+
+const startExperience = () => {
+  if (hasStarted.value || isFadingOut.value) {
+    return
+  }
+  isFadingOut.value = true
+  intro.active = true
+  intro.startTime = performance.now()
 }
 
 type BallReadyPayload = { mesh: THREE.Mesh; cubeCamera: THREE.CubeCamera } | null
@@ -149,6 +217,10 @@ const handlePlayerReady = (payload: PlayerReadyPayload) => {
   playerRig = payload
 }
 
+const handleCameraReady = (payload: THREE.PerspectiveCamera | null) => {
+  camera = payload
+}
+
 // Add these to your reactive variables/refs
 const velocity = new THREE.Vector3(0, 0, 0);
 const friction = 0.92; // How quickly you stop (0.9 to 0.98 is best)
@@ -166,8 +238,8 @@ let updateTimer = 0;
 const updateInterval = 5; // Update every 5 seconds
 
 // Add a rotation speed constant
-const rotationSpeed = 1.5;
-const walkSpeed = 3.0;
+const rotationSpeed = 0.95;
+const walkSpeed = 2.5;
 
 onMounted(async () => {
   if (!container.value) {
@@ -177,138 +249,6 @@ onMounted(async () => {
   scene = new THREE.Scene()
   scene.fog = new THREE.FogExp2(0xe8edf3, 0.08)
   sceneRef.value = scene
-
-  camera = new THREE.PerspectiveCamera(
-    55,
-    container.value.clientWidth / container.value.clientHeight,
-    0.001,
-    5000
-  )
-  camera.position.copy(intro.from)
-  camera.lookAt(0, 1.2, 0)
-
-  const roomHeight = 5.2
-
-  const createFloorTexture = () => {
-    const canvas = document.createElement('canvas')
-    const size = 512
-    canvas.width = size
-    canvas.height = size
-    const context = canvas.getContext('2d')
-    if (!context) {
-      return null
-    }
-    context.fillStyle = '#f2efe9'
-    context.fillRect(0, 0, size, size)
-
-    const plankCount = 8
-    const plankHeight = size / plankCount
-    for (let i = 0; i < plankCount; i += 1) {
-      const y = i * plankHeight
-      const shade = i % 2 === 0 ? '#ece7df' : '#f5f2ec'
-      context.fillStyle = shade
-      context.fillRect(0, y, size, plankHeight)
-      context.strokeStyle = 'rgba(120, 110, 98, 0.18)'
-      context.lineWidth = 2
-      context.beginPath()
-      context.moveTo(0, y)
-      context.lineTo(size, y)
-      context.stroke()
-    }
-
-    context.strokeStyle = 'rgba(120, 110, 98, 0.25)'
-    context.lineWidth = 3
-    for (let i = 0; i < 22; i += 1) {
-      const x = (size / 22) * i
-      context.beginPath()
-      context.moveTo(x, 0)
-      context.lineTo(x, size)
-      context.stroke()
-    }
-
-    for (let i = 0; i < 1200; i += 1) {
-      const x = Math.random() * size
-      const y = Math.random() * size
-      const alpha = 0.05 + Math.random() * 0.08
-      context.fillStyle = `rgba(60, 50, 40, ${alpha})`
-      context.fillRect(x, y, 1, 1)
-    }
-
-    const texture = new THREE.CanvasTexture(canvas)
-    texture.wrapS = THREE.RepeatWrapping
-    texture.wrapT = THREE.RepeatWrapping
-    texture.repeat.set(3, 3)
-    texture.anisotropy = 6
-    return texture
-  }
-
-  const floorTexture = createFloorTexture()
-  const floorGeometry = new THREE.PlaneGeometry(roomWidth, roomDepth)
-  const floorMaterial = new THREE.MeshStandardMaterial({
-    color: 0xf5f3ef,
-    roughness: 0.85,
-    metalness: 0,
-    map: floorTexture ?? undefined,
-  })
-  const floor = new THREE.Mesh(floorGeometry, floorMaterial)
-  floor.rotation.x = -Math.PI / 2
-  floor.position.y = -0.02
-  floor.receiveShadow = true
-  scene.add(floor)
-
-  const wallMaterial = new THREE.MeshStandardMaterial({
-    color: 0xf3e1cf,
-    roughness: 0.92,
-  })
-  const backWall = new THREE.Mesh(
-    new THREE.PlaneGeometry(roomWidth, roomHeight),
-    wallMaterial
-  )
-  backWall.material = wallMaterial.clone()
-  if (backWall.material instanceof THREE.MeshStandardMaterial) {
-    backWall.material.color.set(0xf5d7c2)
-  }
-  backWall.position.set(0, roomHeight / 2, -roomDepth / 2)
-  backWall.receiveShadow = true
-  scene.add(backWall)
-
-  const leftWall = new THREE.Mesh(
-    new THREE.PlaneGeometry(roomDepth, roomHeight),
-    wallMaterial
-  )
-  leftWall.material = wallMaterial.clone()
-  if (leftWall.material instanceof THREE.MeshStandardMaterial) {
-    leftWall.material.color.set(0xf0cdb4)
-  }
-  leftWall.rotation.y = Math.PI / 2
-  leftWall.position.set(-roomWidth / 2, roomHeight / 2, 0)
-  leftWall.receiveShadow = true
-  scene.add(leftWall)
-
-  const rightWall = new THREE.Mesh(
-    new THREE.PlaneGeometry(roomDepth, roomHeight),
-    wallMaterial
-  )
-  rightWall.material = wallMaterial.clone()
-  if (rightWall.material instanceof THREE.MeshStandardMaterial) {
-    rightWall.material.color.set(0xf6dec8)
-  }
-  rightWall.rotation.y = -Math.PI / 2
-  rightWall.position.set(roomWidth / 2, roomHeight / 2, 0)
-  rightWall.receiveShadow = true
-  scene.add(rightWall)
-
-  const picture = new THREE.Mesh(
-    new THREE.PlaneGeometry(1.2, 0.8),
-    new THREE.MeshStandardMaterial({
-      color: 0x9fc1e5,
-      roughness: 0.6,
-    })
-  )
-  picture.position.set(-4.6, 1.6, -4.6)
-  picture.rotation.y = Math.PI / 2
-  picture.receiveShadow = true
-  scene.add(picture)
 
   const dracoLoader = new DRACOLoader()
   dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/')
@@ -330,8 +270,14 @@ onMounted(async () => {
 
   const chairLabel = createLabel('About me')
   if (chairLabel) {
-    chairLabel.position.copy(chairPosition).add(new THREE.Vector3(0, 1.4, 0))
+    chairLabel.position.copy(chairPosition).add(new THREE.Vector3(0, 1.65, 0))
     scene.add(chairLabel)
+  }
+
+  const certificateLabel = createLabel('Awards')
+  if (certificateLabel) {
+    certificateLabel.position.copy(certificatePosition).add(new THREE.Vector3(0, 1.0, 0))
+    scene.add(certificateLabel)
   }
 
 
@@ -344,11 +290,9 @@ onMounted(async () => {
   renderer.setClearColor(0x000000, 0)
 
   resizeHandler = () => {
-    if (!container.value || !camera || !renderer) {
+    if (!container.value || !renderer) {
       return
     }
-    camera.aspect = window.innerWidth / window.innerHeight
-    camera.updateProjectionMatrix()
     renderer.setSize(window.innerWidth, window.innerHeight)
   }
   window.addEventListener('resize', resizeHandler)
@@ -378,9 +322,7 @@ onMounted(async () => {
     }
     if (event.code === 'Space') {
       if (!hasStarted.value && !isFadingOut.value) {
-        isFadingOut.value = true
-        intro.active = true
-        intro.startTime = performance.now()
+        startExperience()
         event.preventDefault()
         return
       }
@@ -395,7 +337,7 @@ onMounted(async () => {
           const forward = new THREE.Vector3()
           camera.getWorldDirection(forward)
           focus.fromLook.copy(camera.position).add(forward)
-          const focusOffset = new THREE.Vector3(0, 2.0, 2.4)
+          const focusOffset = target.cameraOffset ?? new THREE.Vector3(0, 2.0, 2.4)
           focus.toPos.copy(target.position).add(focusOffset)
           focus.toLook.copy(target.position)
         }
@@ -598,7 +540,7 @@ function animate() {
     const playerPos = playerRig.position
     for (const item of interactables) {
       const dist = playerPos.distanceTo(item.position)
-      if (dist < 2.2 && dist < nearestDist) {
+      if (dist < 2.5 && dist < nearestDist) {
         nearest = item.id
         nearestDist = dist
       }
@@ -661,6 +603,12 @@ function animate() {
     avatarHead.rotateY(Math.PI);
   }
 
+  if (labelBillboards.length > 0) {
+    for (const label of labelBillboards) {
+      label.quaternion.copy(camera.quaternion)
+    }
+  }
+
   if (ballMesh && ballCubeCamera) {
     ballMesh.visible = false
     ballCubeCamera.position.copy(ballMesh.position)
@@ -675,47 +623,21 @@ function animate() {
 <template>
   <div class="threejs-stage">
     <div ref="container" class="threejs-canvas"></div>
+    <SceneCamera :container="container" :intro-from="intro.from" :look-at="introLookAt" @ready="handleCameraReady" />
+    <RoomShell v-if="sceneRef" :scene="sceneRef" :room-width="roomWidth" :room-depth="roomDepth" />
     <SceneLights v-if="sceneRef" :scene="sceneRef" />
-    <BallModel
-      v-if="sceneRef"
-      :scene="sceneRef"
-      :position="ballPosition"
-      :radius="ballRadius"
-      @ready="handleBallReady"
-    />
-    <PlayerRig
-      v-if="sceneRef"
-      :scene="sceneRef"
-      :position="playerPosition"
-      @ready="handlePlayerReady"
-    />
-    <TableModel
-      v-if="sceneRef && gltfLoaderRef"
-      :scene="sceneRef"
-      :loader="gltfLoaderRef"
-      :position="tablePosition"
-      :rotation-y="tableRotationY"
-    />
-    <BookshelfModel
-      v-if="sceneRef && gltfLoaderRef"
-      :scene="sceneRef"
-      :loader="gltfLoaderRef"
-      :position="bookshelfPosition"
-    />
-    <ChairModel
-      v-if="sceneRef && gltfLoaderRef"
-      :scene="sceneRef"
-      :loader="gltfLoaderRef"
-      :position="chairPosition"
-    />
-    <AvatarModel
-      v-if="sceneRef && gltfLoaderRef"
-      :scene="sceneRef"
-      :loader="gltfLoaderRef"
-      :position="avatarPosition"
-      :rotation-y="avatarRotationY"
-      @head-ready="avatarHead = $event"
-    />
+    <BallModel v-if="sceneRef" :scene="sceneRef" :position="ballPosition" :radius="ballRadius"
+      @ready="handleBallReady" />
+    <PlayerRig v-if="sceneRef" :scene="sceneRef" :position="playerPosition" @ready="handlePlayerReady" />
+    <CertificateModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef"
+      :position="certificatePosition" :rotation-y="certificateRotationY" />
+    <TableModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef" :position="tablePosition"
+      :rotation-y="tableRotationY" />
+    <BookshelfModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef"
+      :position="bookshelfPosition" />
+    <ChairModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef" :position="chairPosition" />
+    <AvatarModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef" :position="avatarPosition"
+      :rotation-y="avatarRotationY" @head-ready="avatarHead = $event" />
     <div v-if="hasStarted" class="threejs-hint">Press Enter to return</div>
     <div v-if="hasStarted && nearbyId && !focus.active" class="threejs-prompt">
       Press Spacebar to view
@@ -732,7 +654,7 @@ function animate() {
     <Transition name="overlay-fade">
       <EducationOverlay v-if="focus.active && focus.targetId === 'bookshelf'" />
     </Transition>
-    <StartOverlay v-if="!hasStarted || isFadingOut" :is-fading-out="isFadingOut" />
+    <StartOverlay v-if="!hasStarted || isFadingOut" :is-fading-out="isFadingOut" @fade="startExperience" />
   </div>
 </template>
 
