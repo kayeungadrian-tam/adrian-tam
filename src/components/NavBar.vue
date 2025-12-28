@@ -99,6 +99,8 @@ let items = reactive([
     { label: "About Me", icon: "fa-solid fa-user", path: "/about-me" },
     { label: "Porjects", icon: "fa-solid fa-rectangle-list", path: "/projects" },
     { label: "Timeline", icon: "fa-solid fa-timeline", path: "/timeline" },
+    { label: "ThreeJS Lab", icon: "fa-solid fa-cube", path: "/threejs" },
+    { label: "ThreeJS IK", icon: "fa-solid fa-wand-magic-sparkles", path: "/threejs-ik" },
 ])
 
 

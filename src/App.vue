@@ -3,22 +3,27 @@
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 // import HelloWorld from './components/HelloWorld.vue'
 import NavBar from './components/NavBar.vue'
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import NewPage from './components/NewPage.vue'
 
 document.title = "Adrian Tam ";
 
+const route = useRoute()
+const hideChrome = computed(() => Boolean(route.meta?.hideChrome))
 </script>
 
 <template>
-  <NavBar />
 
   <body>
-    <router-view v-slot="{ Component }">
+    <NewPage />
+    <!-- <router-view v-slot="{ Component }">
       <transition name="fade">
         <component :is="Component" />
       </transition>
-    </router-view>
+    </router-view> -->
   </body>
-  <div class="area">
+  <div v-if="!hideChrome" class="area">
     <div class="circles">
       <li></li>
       <li></li>
