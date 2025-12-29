@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, reactive, ref, shallowRef } from 'vue'
+import { onBeforeUnmount, onMounted, reactive, ref, shallowRef, watch } from 'vue'
 import * as THREE from 'three'
 import { Text } from 'troika-three-text'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
@@ -23,6 +23,8 @@ import { sceneLayout } from '../config/sceneLayout'
 const container = ref<HTMLDivElement | null>(null)
 const hasStarted = ref(false)
 const isFadingOut = ref(false)
+const theme = ref<'dark' | 'light'>('dark')
+const themeStorageKey = 'portfolio-theme'
 
 const movement = {
   forward: false,
@@ -33,7 +35,6 @@ const movement = {
 const clock = new THREE.Clock()
 let yaw = 0
 let pitch = 0
-let isPointerLocked = false
 let cameraHeight = 1.2
 
 let scene: THREE.Scene | null = null
@@ -43,13 +44,16 @@ let resizeHandler: (() => void) | null = null
 let keyDownHandler: ((event: KeyboardEvent) => void) | null = null
 let keyUpHandler: ((event: KeyboardEvent) => void) | null = null
 let mouseMoveHandler: ((event: MouseEvent) => void) | null = null
-let pointerLockHandler: (() => void) | null = null
 let clickHandler: (() => void) | null = null
 let contextMenuHandler: ((event: MouseEvent) => void) | null = null
 
 let avatarHead: THREE.Object3D | null = null
 let playerRig: THREE.Object3D | null = null
 let ballCubeCamera: THREE.CubeCamera | null = null
+
+// ADD: Volumetric spotlight references
+let spotlightCone: THREE.Mesh | null = null
+let spotlightConeMaterial: THREE.MeshBasicMaterial | null = null
 
 const sceneRef = shallowRef<THREE.Scene | null>(null)
 const gltfLoaderRef = shallowRef<GLTFLoader | null>(null)
@@ -84,6 +88,56 @@ const ballVelocity = new THREE.Vector3()
 let ballMesh: THREE.Mesh | null = null
 const labelBillboards: THREE.Object3D[] = []
 
+const applyTheme = (value: 'dark' | 'light') => {
+  theme.value = value
+  if (typeof document !== 'undefined') {
+    document.documentElement.setAttribute('data-theme', value)
+  }
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem(themeStorageKey, value)
+  }
+}
+
+const applySceneTheme = (value: 'dark' | 'light') => {
+  if (!scene || !(scene.fog instanceof THREE.FogExp2)) {
+    return
+  }
+  if (value === 'dark') {
+    scene.fog.color.set(0x0a1326)
+    scene.fog.density = 0.1
+  } else {
+    scene.fog.color.set(0xe8edf3)
+    scene.fog.density = 0.08
+  }
+
+  // ADD: Update spotlight cone appearance based on theme
+  if (spotlightConeMaterial) {
+    if (value === 'dark') {
+      spotlightConeMaterial.opacity = 0.15
+      spotlightConeMaterial.color.set(0xd6e4ff)
+    } else {
+      spotlightConeMaterial.opacity = 0.06
+      spotlightConeMaterial.color.set(0xfff4e0)
+    }
+  }
+}
+
+const initTheme = () => {
+  if (typeof window === 'undefined') {
+    return
+  }
+  const stored = typeof localStorage !== 'undefined' ? localStorage.getItem(themeStorageKey) : null
+  if (stored === 'light' || stored === 'dark') {
+    applyTheme(stored)
+    return
+  }
+  const prefersDark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)').matches : false
+  applyTheme(prefersDark ? 'dark' : 'light')
+}
+
+const toggleTheme = () => {
+  applyTheme(theme.value === 'dark' ? 'light' : 'dark')
+}
 
 const nearbyId = ref('')
 const focus = reactive({
@@ -191,6 +245,38 @@ const createLabel = (text: string) => {
   return group
 }
 
+// ADD: Create volumetric spotlight cone
+const createSpotlightCone = () => {
+  // Match your centerSpot from SceneLights.vue
+  const spotPosition = new THREE.Vector3(0.6, 5.5, 0)
+  const spotDistance = 5.5
+  const spotAngle = THREE.MathUtils.degToRad(30)
+
+  const radius = Math.tan(spotAngle) * spotDistance
+  const geometry = new THREE.ConeGeometry(radius, spotDistance, 32, 1, true)
+
+  // Move so the tip is at the light position and the cone extends downward
+  geometry.translate(0, -spotDistance / 2, 0)
+
+  const material = new THREE.MeshBasicMaterial({
+    color: theme.value === 'dark' ? 0xFFF9D6 : 0xFAE987,
+    transparent: true,
+    opacity: theme.value === 'dark' ? 0.15 : 0.06,
+    side: THREE.DoubleSide,
+    depthTest: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  })
+
+  spotlightConeMaterial = material
+
+  const cone = new THREE.Mesh(geometry, material)
+  cone.position.copy(spotPosition)
+  cone.renderOrder = 1
+
+  return cone
+}
+
 const startExperience = () => {
   if (hasStarted.value || isFadingOut.value) {
     return
@@ -221,33 +307,31 @@ const handleCameraReady = (payload: THREE.PerspectiveCamera | null) => {
   camera = payload
 }
 
-// Add these to your reactive variables/refs
 const velocity = new THREE.Vector3(0, 0, 0);
-const friction = 0.92; // How quickly you stop (0.9 to 0.98 is best)
-const acceleration = 0.005; // How fast you speed up
+const friction = 0.92;
+const acceleration = 0.005;
 
 const delta = clock.getDelta();
 const moveSpeed = 3.0;
 const moveDistance = delta * moveSpeed;
 
-// 1. Logic Variables (keep these outside animate)
 const direction = new THREE.Vector3(0, 0, 0);
 
-// Timer for periodic updates
 let updateTimer = 0;
-const updateInterval = 5; // Update every 5 seconds
+const updateInterval = 5;
 
-// Add a rotation speed constant
 const rotationSpeed = 0.95;
 const walkSpeed = 2.5;
 
 onMounted(async () => {
+  initTheme()
   if (!container.value) {
     return
   }
 
   scene = new THREE.Scene()
   scene.fog = new THREE.FogExp2(0xe8edf3, 0.08)
+  applySceneTheme(theme.value)
   sceneRef.value = scene
 
   const dracoLoader = new DRACOLoader()
@@ -280,6 +364,11 @@ onMounted(async () => {
     scene.add(certificateLabel)
   }
 
+  // ADD: Create and add volumetric spotlight cone
+  spotlightCone = createSpotlightCone()
+  if (spotlightCone) {
+    scene.add(spotlightCone)
+  }
 
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
   renderer.shadowMap.enabled = true
@@ -364,44 +453,19 @@ onMounted(async () => {
     if (event.code === 'KeyD') movement.right = false
   }
 
-  // mouseMoveHandler = (event: MouseEvent) => {
-  //   if (!isPointerLocked || !camera) {
-  //     return
-  //   }
-  //   const sensitivity = 0.0025
-  //   yaw -= event.movementX * sensitivity
-  //   pitch -= event.movementY * sensitivity
-  //   const maxPitch = Math.PI / 2 - 0.05
-  //   pitch = Math.max(-maxPitch, Math.min(maxPitch, pitch))
-  //   camera.rotation.set(pitch, yaw, 0, 'YXZ')
-  // }
-
-  pointerLockHandler = () => {
-    if (!renderer) {
-      return
-    }
-    isPointerLocked = document.pointerLockElement === renderer.domElement
-  }
-
-  clickHandler = () => {
-    if (!hasStarted.value) {
-      return
-    }
-    renderer?.domElement.requestPointerLock()
-  }
-
   contextMenuHandler = (event: MouseEvent) => {
     event.preventDefault()
   }
 
   window.addEventListener('keydown', keyDownHandler)
   window.addEventListener('keyup', keyUpHandler)
-  // window.addEventListener('mousemove', mouseMoveHandler)
-  document.addEventListener('pointerlockchange', pointerLockHandler)
-  renderer.domElement.addEventListener('click', clickHandler)
   renderer.domElement.addEventListener('contextmenu', contextMenuHandler)
 
   renderer.setAnimationLoop(animate)
+})
+
+watch(theme, (value) => {
+  applySceneTheme(value)
 })
 
 onBeforeUnmount(() => {
@@ -420,15 +484,21 @@ onBeforeUnmount(() => {
   if (mouseMoveHandler) {
     window.removeEventListener('mousemove', mouseMoveHandler)
   }
-  if (pointerLockHandler) {
-    document.removeEventListener('pointerlockchange', pointerLockHandler)
-  }
-  if (clickHandler && renderer) {
-    renderer.domElement.removeEventListener('click', clickHandler)
-  }
   if (contextMenuHandler && renderer) {
     renderer.domElement.removeEventListener('contextmenu', contextMenuHandler)
   }
+
+  // ADD: Cleanup volumetric cone
+  if (spotlightCone && scene) {
+    scene.remove(spotlightCone)
+    spotlightCone.geometry.dispose()
+    if (spotlightConeMaterial) {
+      spotlightConeMaterial.dispose()
+    }
+    spotlightCone = null
+    spotlightConeMaterial = null
+  }
+
   if (renderer && container.value) {
     container.value.removeChild(renderer.domElement)
     renderer.dispose()
@@ -445,8 +515,13 @@ function animate() {
 
   const delta = clock.getDelta();
 
-  // 1. Handle Rotation (A and D keys)
-  // Instead of moving left/right, we change the YAW
+  // ADD: Animate spotlight cone (subtle pulsing and rotation)
+  if (spotlightCone && spotlightConeMaterial) {
+    const time = performance.now() * 0.001
+    const baseOpacity = theme.value === 'dark' ? 0.15 : 0.01
+    spotlightConeMaterial.opacity = baseOpacity + Math.sin(time * 0.5) * 0.03
+  }
+
   if (!focus.active) {
     if (movement.left) {
       yaw += rotationSpeed * delta;
@@ -456,8 +531,6 @@ function animate() {
     }
   }
 
-  // 2. Calculate Forward Direction based on current Yaw
-  // In Three.js, -Z is forward. We rotate that vector by our yaw.
   const forwardDir = new THREE.Vector3(0, 0, -1);
   const horizontalRotation = new THREE.Quaternion();
   horizontalRotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), yaw);
@@ -471,7 +544,6 @@ function animate() {
     }
   }
 
-  // 3. Handle Movement (W and S keys)
   const moveDelta = new THREE.Vector3(0, 0, 0);
   if (!focus.active) {
     if (movement.forward) {
@@ -482,7 +554,6 @@ function animate() {
     }
   }
 
-  // Normalize and apply speed
   if (moveDelta.lengthSq() > 0) {
     moveDelta.normalize();
     if (playerRig) {
@@ -550,7 +621,6 @@ function animate() {
     nearbyId.value = ''
   }
 
-  // 4. Update Camera (intro fly-in then third-person follow)
   if (playerRig && focus.active) {
     const elapsed = performance.now() - focus.startTime
     const t = Math.min(Math.max(elapsed / focus.durationMs, 0), 1)
@@ -595,7 +665,6 @@ function animate() {
     camera.rotation.set(pitch, yaw, 0, 'YXZ');
   }
 
-  // 5. Avatar Head (Optional - Head still follows camera)
   if (avatarHead) {
     const headTarget = new THREE.Vector3();
     camera.getWorldPosition(headTarget);
@@ -622,10 +691,20 @@ function animate() {
 
 <template>
   <div class="threejs-stage">
+    <button
+      class="theme-toggle"
+      type="button"
+      @click.stop="toggleTheme"
+      :aria-pressed="theme === 'dark'"
+      :aria-label="`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`"
+      :title="`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`"
+    >
+      <fa class="theme-toggle__icon" icon="lightbulb" aria-hidden="true" />
+    </button>
     <div ref="container" class="threejs-canvas"></div>
     <SceneCamera :container="container" :intro-from="intro.from" :look-at="introLookAt" @ready="handleCameraReady" />
-    <RoomShell v-if="sceneRef" :scene="sceneRef" :room-width="roomWidth" :room-depth="roomDepth" />
-    <SceneLights v-if="sceneRef" :scene="sceneRef" />
+    <RoomShell v-if="sceneRef" :scene="sceneRef" :room-width="roomWidth" :room-depth="roomDepth" :theme="theme" />
+    <SceneLights v-if="sceneRef" :scene="sceneRef" :theme="theme" />
     <BallModel v-if="sceneRef" :scene="sceneRef" :position="ballPosition" :radius="ballRadius"
       @ready="handleBallReady" />
     <PlayerRig v-if="sceneRef" :scene="sceneRef" :position="playerPosition" @ready="handlePlayerReady" />
@@ -664,7 +743,7 @@ function animate() {
   inset: 0;
   width: 100vw;
   height: 100vh;
-  background: radial-gradient(circle at top, #fdfcf9 0%, #e7ecf3 60%, #dfe5ee 100%);
+  background: var(--stage-bg);
 }
 
 .threejs-canvas {
@@ -681,8 +760,8 @@ function animate() {
   right: 24px;
   bottom: 20px;
   padding: 8px 14px;
-  background: rgba(27, 34, 55, 0.75);
-  color: #fdfcf9;
+  background: var(--stage-hint-bg);
+  color: var(--stage-hint-text);
   font-size: 14px;
   border-radius: 999px;
   letter-spacing: 0.4px;
@@ -694,11 +773,44 @@ function animate() {
   bottom: 24px;
   transform: translateX(-50%);
   padding: 10px 18px;
-  background: rgba(27, 34, 55, 0.8);
-  color: #fdfcf9;
+  background: var(--stage-prompt-bg);
+  color: var(--stage-prompt-text);
   font-size: 15px;
   border-radius: 999px;
   letter-spacing: 0.4px;
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: 44px;
+  height: 44px;
+  justify-content: center;
+  padding: 0;
+  border-radius: 10px;
+  border: 1px solid var(--theme-toggle-border);
+  background: var(--theme-toggle-bg);
+  color: var(--theme-toggle-text);
+  cursor: pointer;
+  box-shadow: var(--theme-toggle-shadow);
+  backdrop-filter: blur(10px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.theme-toggle:hover {
+  background: var(--theme-toggle-hover-bg);
+  transform: translateY(-1px);
+}
+
+.theme-toggle__icon {
+  width: 22px;
+  height: 22px;
+  font-size: 22px;
 }
 
 .overlay-fade-enter-active,
@@ -710,5 +822,14 @@ function animate() {
 .overlay-fade-leave-to {
   opacity: 0;
   transform: translateY(12px);
+}
+
+@media (max-width: 768px) {
+  .theme-toggle {
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+  }
 }
 </style>

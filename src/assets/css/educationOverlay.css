@@ -23,8 +23,8 @@
 }
 
 .education-item.featured {
-  background: rgba(120, 169, 255, 0.08);
-  border: 1px solid rgba(120, 169, 255, 0.3);
+  background: var(--overlay-panel-strong-bg);
+  border: 1px solid var(--overlay-panel-strong-border);
   border-radius: 20px;
   padding: 32px;
   margin-bottom: 40px;
@@ -42,8 +42,8 @@
   align-items: center;
   justify-content: center;
   font-size: 32px;
-  border: 3px solid rgba(120, 169, 255, 0.4);
-  background: linear-gradient(135deg, rgba(120, 169, 255, 0.2) 0%, rgba(15, 98, 254, 0.1) 100%);
+  border: 3px solid var(--overlay-panel-hover-border);
+  background: var(--overlay-highlight-bg);
   box-shadow: 0 0 24px rgba(15, 98, 254, 0.3);
   transition: all 0.3s ease;
 }
@@ -78,7 +78,7 @@
 .edu-title {
   font-size: 24px;
   font-weight: 600;
-  color: #f2f4f8;
+  color: var(--overlay-title);
   margin-bottom: 8px;
   line-height: 1.2;
 }
@@ -88,13 +88,13 @@
   align-items: center;
   gap: 6px;
   font-size: 14px;
-  color: #78a9ff;
+  color: var(--overlay-link);
   text-decoration: none;
   transition: all 0.2s ease;
 }
 
 .edu-link:hover {
-  color: #a6c8ff;
+  color: var(--overlay-link-hover);
   gap: 8px;
 }
 
@@ -105,13 +105,13 @@
 
 .edu-date {
   font-size: 13px;
-  color: #78a9ff;
+  color: var(--overlay-accent);
   font-family: 'IBM Plex Mono', monospace;
   white-space: nowrap;
-  background: rgba(120, 169, 255, 0.15);
+  background: var(--overlay-chip-bg);
   padding: 6px 14px;
   border-radius: 8px;
-  border: 1px solid rgba(120, 169, 255, 0.25);
+  border: 1px solid var(--overlay-chip-border);
 }
 
 .degrees-section {
@@ -122,16 +122,16 @@
 }
 
 .degree-item {
-  background: rgba(120, 169, 255, 0.05);
-  border: 1px solid rgba(120, 169, 255, 0.15);
+  background: var(--overlay-panel-bg);
+  border: 1px solid var(--overlay-panel-border);
   border-radius: 12px;
   padding: 20px;
   transition: all 0.3s ease;
 }
 
 .degree-item:hover {
-  background: rgba(120, 169, 255, 0.1);
-  border-color: rgba(120, 169, 255, 0.3);
+  background: var(--overlay-panel-hover-bg);
+  border-color: var(--overlay-panel-hover-border);
   transform: translateX(8px);
 }
 
@@ -149,12 +149,12 @@
 .degree-title {
   font-size: 18px;
   font-weight: 600;
-  color: #f2f4f8;
+  color: var(--overlay-title);
 }
 
 .degree-major {
   font-size: 16px;
-  color: #78a9ff;
+  color: var(--overlay-accent);
   font-weight: 500;
   margin-bottom: 10px;
 }
@@ -162,7 +162,7 @@
 .degree-description {
   font-size: 14px;
   line-height: 1.6;
-  color: #a6c8ff;
+  color: var(--overlay-muted);
 }
 
 .achievements {
@@ -172,7 +172,7 @@
 .achievements-title {
   font-size: 15px;
   font-weight: 600;
-  color: #f2f4f8;
+  color: var(--overlay-title);
   margin-bottom: 12px;
 }
 
@@ -185,11 +185,11 @@
 .achievement-tag {
   font-size: 12px;
   font-weight: 500;
-  color: #78a9ff;
-  background: rgba(120, 169, 255, 0.15);
+  color: var(--overlay-accent);
+  background: var(--overlay-chip-bg);
   padding: 6px 14px;
   border-radius: 6px;
-  border: 1px solid rgba(120, 169, 255, 0.3);
+  border: 1px solid var(--overlay-chip-border);
   font-family: 'IBM Plex Mono', monospace;
 }
 
@@ -204,11 +204,11 @@
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 1px;
-  color: #ffc107;
-  background: rgba(255, 193, 7, 0.2);
+  color: var(--overlay-warning);
+  background: var(--overlay-warning-bg);
   padding: 8px 16px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 193, 7, 0.4);
+  border: 1px solid var(--overlay-warning-border);
   margin-bottom: 16px;
   text-transform: uppercase;
 }
@@ -220,14 +220,14 @@
 .program-title {
   font-size: 18px;
   font-weight: 600;
-  color: #f2f4f8;
+  color: var(--overlay-title);
   margin-bottom: 10px;
 }
 
 .program-description {
   font-size: 15px;
   line-height: 1.6;
-  color: #a6c8ff;
+  color: var(--overlay-muted);
 }
 
 .highlights-grid {
@@ -241,15 +241,15 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(120, 169, 255, 0.08);
+  background: var(--overlay-panel-strong-bg);
   padding: 12px 16px;
   border-radius: 8px;
-  border: 1px solid rgba(120, 169, 255, 0.2);
+  border: 1px solid var(--overlay-panel-border);
   transition: all 0.3s ease;
 }
 
 .highlight-item:hover {
-  background: rgba(120, 169, 255, 0.15);
+  background: var(--overlay-panel-hover-bg);
   transform: translateY(-2px);
 }
 
@@ -259,15 +259,15 @@
 
 .highlight-text {
   font-size: 13px;
-  color: #d0e2ff;
+  color: var(--overlay-text);
   font-weight: 500;
 }
 
 .skills-section {
   margin-top: 40px;
   padding: 28px;
-  background: rgba(120, 169, 255, 0.06);
-  border: 1px solid rgba(120, 169, 255, 0.2);
+  background: var(--overlay-panel-bg);
+  border: 1px solid var(--overlay-panel-border);
   border-radius: 16px;
   animation: fadeSlideUp 0.6s ease-out 0.5s both;
 }
@@ -275,7 +275,7 @@
 .skills-title {
   font-size: 20px;
   font-weight: 600;
-  color: #f2f4f8;
+  color: var(--overlay-title);
   margin-bottom: 20px;
   display: flex;
   align-items: center;
@@ -293,16 +293,16 @@
 }
 
 .skill-category {
-  background: rgba(120, 169, 255, 0.05);
+  background: var(--overlay-panel-bg);
   padding: 20px;
   border-radius: 12px;
-  border: 1px solid rgba(120, 169, 255, 0.15);
+  border: 1px solid var(--overlay-panel-border);
 }
 
 .category-title {
   font-size: 15px;
   font-weight: 600;
-  color: #78a9ff;
+  color: var(--overlay-accent);
   margin-bottom: 12px;
 }
 
@@ -315,17 +315,17 @@
 .skill-tag {
   font-size: 12px;
   font-weight: 500;
-  color: #a6c8ff;
-  background: rgba(120, 169, 255, 0.12);
+  color: var(--overlay-muted);
+  background: var(--overlay-panel-hover-bg);
   padding: 6px 12px;
   border-radius: 6px;
-  border: 1px solid rgba(120, 169, 255, 0.2);
+  border: 1px solid var(--overlay-panel-border);
 }
 
 .card-footer {
   margin-top: 32px;
   padding-top: 24px;
-  border-top: 1px solid rgba(120, 169, 255, 0.2);
+  border-top: 1px solid var(--overlay-divider);
   animation: fadeSlideDown 0.5s ease-out 0.6s both;
 }
 
@@ -344,7 +344,7 @@
   display: block;
   font-size: 32px;
   font-weight: 700;
-  color: #78a9ff;
+  color: var(--overlay-accent);
   margin-bottom: 6px;
   font-family: 'IBM Plex Mono', monospace;
 }
@@ -352,7 +352,7 @@
 .stat-label {
   display: block;
   font-size: 12px;
-  color: #a6c8ff;
+  color: var(--overlay-muted);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -363,7 +363,7 @@
   justify-content: center;
   gap: 8px;
   font-size: 13px;
-  color: #78a9ff;
+  color: var(--overlay-accent);
   opacity: 0.8;
   font-family: 'IBM Plex Mono', monospace;
 }
@@ -372,7 +372,7 @@
   display: inline-block;
   width: 8px;
   height: 8px;
-  background: #78a9ff;
+  background: var(--overlay-accent);
   border-radius: 50%;
   animation: pulse 2s ease-in-out infinite;
 }

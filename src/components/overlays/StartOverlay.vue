@@ -132,7 +132,7 @@ const getParticleStyle = (i: number) => {
   align-items: center;
   justify-content: center;
   /* IBM Deep Blue to Black gradient */
-  background: linear-gradient(135deg, #001d6c 0%, #00114173 50%, #000000 100%);
+  background: var(--start-bg);
   backdrop-filter: blur(12px);
   text-align: center;
   opacity: 1;
@@ -157,7 +157,7 @@ const getParticleStyle = (i: number) => {
 .particle {
   position: absolute;
   border-radius: 50%;
-  background: #d0e1ff;
+  background: var(--start-particle);
   /* IBM Blue 20 */
   opacity: 0.15;
 }
@@ -194,7 +194,7 @@ const getParticleStyle = (i: number) => {
   margin: 0 0 8px;
   font-size: 56px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--start-title);
   letter-spacing: -0.01em;
   font-family: 'IBM Plex Sans', sans-serif;
   /* Recommended font if available */
@@ -212,7 +212,7 @@ const getParticleStyle = (i: number) => {
   margin: 0;
   font-size: 36px;
   font-weight: 400;
-  color: #78a9ff;
+  color: var(--start-typed);
   /* IBM Blue 30 */
   display: inline-flex;
   align-items: center;
@@ -224,7 +224,7 @@ const getParticleStyle = (i: number) => {
   display: inline-block;
   width: 3px;
   height: 36px;
-  background: #0f62fe;
+  background: var(--start-cursor);
   /* IBM Blue 60 */
   margin-left: 8px;
   transition: opacity 0.1s;
@@ -238,7 +238,7 @@ const getParticleStyle = (i: number) => {
 .subtitle {
   margin: 0 0 48px;
   font-size: 16px;
-  color: #c6c6c6;
+  color: var(--start-subtitle);
   /* IBM Gray 30 */
   font-weight: 300;
   letter-spacing: 0.05em;
@@ -258,19 +258,19 @@ const getParticleStyle = (i: number) => {
   padding: 6px 14px;
   border-radius: 4px;
   /* IBM style uses less rounded corners */
-  background: rgba(15, 98, 254, 0.1);
+  background: var(--start-pill-bg);
   backdrop-filter: blur(10px);
-  color: #d0e1ff;
+  color: var(--start-pill-text);
   font-size: 13px;
   font-weight: 400;
-  border: 1px solid rgba(15, 98, 254, 0.3);
+  border: 1px solid var(--start-pill-border);
   transition: all 0.2s ease;
 }
 
 .pill:hover {
-  background: rgba(15, 98, 254, 0.25);
-  border-color: #0f62fe;
-  color: #ffffff;
+  background: var(--start-pill-hover-bg);
+  border-color: var(--start-pill-hover-border);
+  color: var(--start-pill-hover-text);
 }
 
 /* CTA & Hint */
@@ -285,7 +285,7 @@ const getParticleStyle = (i: number) => {
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #d0e1ff;
+  color: var(--start-hint);
   /* IBM Blue 20 */
   font-size: 14px;
   text-transform: uppercase;
@@ -315,9 +315,9 @@ const getParticleStyle = (i: number) => {
 
 .kbd {
   padding: 2px 8px;
-  background: #393939;
-  border: 1px solid #525252;
-  color: #f4f4f4;
+  background: var(--start-kbd-bg);
+  border: 1px solid var(--start-kbd-border);
+  color: var(--start-kbd-text);
   border-radius: 2px;
   font-size: 11px;
   font-family: 'IBM Plex Mono', monospace;

@@ -21,7 +21,8 @@ import {
     faHouse,
     faTimeline,
     faSchool,
-    faArrowUpRightFromSquare
+    faArrowUpRightFromSquare,
+    faLightbulb
 } from '@fortawesome/free-solid-svg-icons'
 
 import {
@@ -43,6 +44,7 @@ library.add(
     faBars,
     faSchool,
     faArrowUpRightFromSquare,
+    faLightbulb,
     faLinkedin,
     faFacebook
 )

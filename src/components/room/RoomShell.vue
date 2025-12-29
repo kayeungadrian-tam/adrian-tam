@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount, onMounted, watch } from 'vue'
 import * as THREE from 'three'
 
 type FloorTextureConfig = {
@@ -26,29 +26,55 @@ const props = defineProps<{
   roomDepth: number
   roomHeight?: number
   floorTextureConfig?: FloorTextureConfig
+  theme: 'dark' | 'light'
 }>()
 
 let meshes: THREE.Mesh[] = []
 let floorTexture: THREE.CanvasTexture | null = null
+let floorMaterial: THREE.MeshStandardMaterial | null = null
+let backWallMaterial: THREE.MeshStandardMaterial | null = null
+let leftWallMaterial: THREE.MeshStandardMaterial | null = null
+let rightWallMaterial: THREE.MeshStandardMaterial | null = null
 
-const createFloorTexture = () => {
+const getThemeFloorOverrides = (theme: 'dark' | 'light'): FloorTextureConfig => {
+  if (theme === 'dark') {
+    return {
+      baseColor: '#111826',
+      plankColorA: '#141d2b',
+      plankColorB: '#0f1826',
+      grainColor: '90, 100, 120',
+      plankLineAlpha: 0.22,
+      seamLineAlpha: 0.32,
+    }
+  }
+  return {
+    baseColor: '#f2efe9',
+    plankColorA: '#ece7df',
+    plankColorB: '#f5f2ec',
+    grainColor: '60, 50, 40',
+    plankLineAlpha: 0.18,
+    seamLineAlpha: 0.25,
+  }
+}
+
+const createFloorTexture = (overrides?: FloorTextureConfig) => {
   const canvas = document.createElement('canvas')
   const config: Required<FloorTextureConfig> = {
-    size: props.floorTextureConfig?.size ?? 512,
-    plankCount: props.floorTextureConfig?.plankCount ?? 8,
-    plankLineAlpha: props.floorTextureConfig?.plankLineAlpha ?? 0.18,
-    plankLineWidth: props.floorTextureConfig?.plankLineWidth ?? 2,
-    seamLineAlpha: props.floorTextureConfig?.seamLineAlpha ?? 0.25,
-    seamLineWidth: props.floorTextureConfig?.seamLineWidth ?? 3,
-    grainCount: props.floorTextureConfig?.grainCount ?? 1200,
-    grainAlphaMin: props.floorTextureConfig?.grainAlphaMin ?? 0.05,
-    grainAlphaMax: props.floorTextureConfig?.grainAlphaMax ?? 0.08,
-    repeat: props.floorTextureConfig?.repeat ?? 3,
-    anisotropy: props.floorTextureConfig?.anisotropy ?? 6,
-    baseColor: props.floorTextureConfig?.baseColor ?? '#f2efe9',
-    plankColorA: props.floorTextureConfig?.plankColorA ?? '#ece7df',
-    plankColorB: props.floorTextureConfig?.plankColorB ?? '#f5f2ec',
-    grainColor: props.floorTextureConfig?.grainColor ?? '60, 50, 40',
+    size: overrides?.size ?? props.floorTextureConfig?.size ?? 512,
+    plankCount: overrides?.plankCount ?? props.floorTextureConfig?.plankCount ?? 8,
+    plankLineAlpha: overrides?.plankLineAlpha ?? props.floorTextureConfig?.plankLineAlpha ?? 0.18,
+    plankLineWidth: overrides?.plankLineWidth ?? props.floorTextureConfig?.plankLineWidth ?? 2,
+    seamLineAlpha: overrides?.seamLineAlpha ?? props.floorTextureConfig?.seamLineAlpha ?? 0.25,
+    seamLineWidth: overrides?.seamLineWidth ?? props.floorTextureConfig?.seamLineWidth ?? 3,
+    grainCount: overrides?.grainCount ?? props.floorTextureConfig?.grainCount ?? 1200,
+    grainAlphaMin: overrides?.grainAlphaMin ?? props.floorTextureConfig?.grainAlphaMin ?? 0.05,
+    grainAlphaMax: overrides?.grainAlphaMax ?? props.floorTextureConfig?.grainAlphaMax ?? 0.08,
+    repeat: overrides?.repeat ?? props.floorTextureConfig?.repeat ?? 3,
+    anisotropy: overrides?.anisotropy ?? props.floorTextureConfig?.anisotropy ?? 6,
+    baseColor: overrides?.baseColor ?? props.floorTextureConfig?.baseColor ?? '#f2efe9',
+    plankColorA: overrides?.plankColorA ?? props.floorTextureConfig?.plankColorA ?? '#ece7df',
+    plankColorB: overrides?.plankColorB ?? props.floorTextureConfig?.plankColorB ?? '#f5f2ec',
+    grainColor: overrides?.grainColor ?? props.floorTextureConfig?.grainColor ?? '60, 50, 40',
   }
   const size = config.size
   canvas.width = size
@@ -100,16 +126,43 @@ const createFloorTexture = () => {
   return texture
 }
 
+const applyTheme = (theme: 'dark' | 'light') => {
+  if (!floorMaterial || !backWallMaterial || !leftWallMaterial || !rightWallMaterial) {
+    return
+  }
+  const overrides = getThemeFloorOverrides(theme)
+  const nextTexture = createFloorTexture(overrides)
+  if (nextTexture) {
+    floorMaterial.map?.dispose()
+    floorMaterial.map = nextTexture
+    floorMaterial.needsUpdate = true
+    floorTexture = nextTexture
+  }
+  if (theme === 'dark') {
+    floorMaterial.color.set(0x0f1626)
+    floorMaterial.roughness = 0.92
+    backWallMaterial.color.set(0x1d2b46)
+    leftWallMaterial.color.set(0x162034)
+    rightWallMaterial.color.set(0x202c44)
+  } else {
+    floorMaterial.color.set(0xf5f3ef)
+    floorMaterial.roughness = 0.85
+    backWallMaterial.color.set(0xf5d7c2)
+    leftWallMaterial.color.set(0xf0cdb4)
+    rightWallMaterial.color.set(0xf6dec8)
+  }
+}
+
 onMounted(() => {
   if (!props.scene) {
     return
   }
 
   const roomHeight = props.roomHeight ?? 5.2
-  floorTexture = createFloorTexture()
+  floorTexture = createFloorTexture(getThemeFloorOverrides(props.theme))
 
   const floorGeometry = new THREE.PlaneGeometry(props.roomWidth, props.roomDepth)
-  const floorMaterial = new THREE.MeshStandardMaterial({
+  floorMaterial = new THREE.MeshStandardMaterial({
     color: 0xf5f3ef,
     roughness: 0.85,
     metalness: 0,
@@ -133,6 +186,7 @@ onMounted(() => {
   )
   if (backWall.material instanceof THREE.MeshStandardMaterial) {
     backWall.material.color.set(0xf5d7c2)
+    backWallMaterial = backWall.material
   }
   backWall.position.set(0, roomHeight / 2, -props.roomDepth / 2)
   backWall.receiveShadow = true
@@ -145,6 +199,7 @@ onMounted(() => {
   )
   if (leftWall.material instanceof THREE.MeshStandardMaterial) {
     leftWall.material.color.set(0xf0cdb4)
+    leftWallMaterial = leftWall.material
   }
   leftWall.rotation.y = Math.PI / 2
   leftWall.position.set(-props.roomWidth / 2, roomHeight / 2, 0)
@@ -158,12 +213,15 @@ onMounted(() => {
   )
   if (rightWall.material instanceof THREE.MeshStandardMaterial) {
     rightWall.material.color.set(0xf6dec8)
+    rightWallMaterial = rightWall.material
   }
   rightWall.rotation.y = -Math.PI / 2
   rightWall.position.set(props.roomWidth / 2, roomHeight / 2, 0)
   rightWall.receiveShadow = true
   props.scene.add(rightWall)
   meshes.push(rightWall)
+
+  applyTheme(props.theme)
 })
 
 onBeforeUnmount(() => {
@@ -184,6 +242,13 @@ onBeforeUnmount(() => {
     floorTexture = null
   }
 })
+
+watch(
+  () => props.theme,
+  (value) => {
+    applyTheme(value)
+  }
+)
 </script>
 
 <template></template>
