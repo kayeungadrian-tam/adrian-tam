@@ -9,6 +9,7 @@ const props = defineProps<{
   loader: GLTFLoader | null
   position: THREE.Vector3
   rotationY?: number
+  scale?: number
 }>()
 
 const emit = defineEmits<{
@@ -29,7 +30,7 @@ const loadModel = async () => {
       new URL('../../assets/models/male_human_low-poly_base.glb', import.meta.url).href
     )
     gltf.scene.position.set(0, 0, 0)
-    gltf.scene.scale.setScalar(1)
+    gltf.scene.scale.setScalar(props.scale ?? 1)
     gltf.scene.traverse((node: THREE.Object3D) => {
       const name = node.name.toLowerCase()
       if (!headNode && (name === 'head' || name.includes('head'))) {

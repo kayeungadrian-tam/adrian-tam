@@ -4,21 +4,32 @@ import * as THREE from 'three'
 import { Text } from 'troika-three-text'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
+
+// Overlays
 import WorkOverlay from './overlays/WorkOverlay.vue'
 import AboutOverlay from './overlays/AboutOverlay.vue'
 import EducationOverlay from './overlays/EducationOverlay.vue'
 import StartOverlay from './overlays/StartOverlay.vue'
+import AwardsOverlay from './overlays/AwardsOverlay.vue'
+
+// Objects
 import TableModel from './objects/table.vue'
 import BookshelfModel from './objects/bookshelf.vue'
 import ChairModel from './objects/chair.vue'
 import AvatarModel from './objects/avatar.vue'
-import SceneLights from './lights/SceneLights.vue'
 import BallModel from './objects/ball.vue'
+import SceneLights from './lights/SceneLights.vue'
 import PlayerRig from './objects/playerRig.vue'
 import CertificateModel from './objects/certificate.vue'
-import SceneCamera from './camera/SceneCamera.vue'
 import RoomShell from './room/RoomShell.vue'
+import CeilingLightModel from './objects/ceilingLight.vue'
+
+// Cameras
+import SceneCamera from './camera/SceneCamera.vue'
+
+// Config
 import { sceneLayout } from '../config/sceneLayout'
+import { createPlayerMovement } from './playerMovement'
 
 const container = ref<HTMLDivElement | null>(null)
 const hasStarted = ref(false)
@@ -26,16 +37,7 @@ const isFadingOut = ref(false)
 const theme = ref<'dark' | 'light'>('dark')
 const themeStorageKey = 'portfolio-theme'
 
-const movement = {
-  forward: false,
-  backward: false,
-  left: false,
-  right: false,
-}
 const clock = new THREE.Clock()
-let yaw = 0
-let pitch = 0
-let cameraHeight = 1.2
 
 let scene: THREE.Scene | null = null
 let camera: THREE.PerspectiveCamera | null = null
@@ -44,16 +46,18 @@ let resizeHandler: (() => void) | null = null
 let keyDownHandler: ((event: KeyboardEvent) => void) | null = null
 let keyUpHandler: ((event: KeyboardEvent) => void) | null = null
 let mouseMoveHandler: ((event: MouseEvent) => void) | null = null
-let clickHandler: (() => void) | null = null
+let pointerDownHandler: ((event: MouseEvent) => void) | null = null
+let pointerUpHandler: (() => void) | null = null
+let wheelHandler: ((event: WheelEvent) => void) | null = null
 let contextMenuHandler: ((event: MouseEvent) => void) | null = null
 
 let avatarHead: THREE.Object3D | null = null
 let playerRig: THREE.Object3D | null = null
 let ballCubeCamera: THREE.CubeCamera | null = null
 
-// ADD: Volumetric spotlight references
 let spotlightCone: THREE.Mesh | null = null
 let spotlightConeMaterial: THREE.MeshBasicMaterial | null = null
+let skyboxMesh: THREE.Mesh | null = null
 
 const sceneRef = shallowRef<THREE.Scene | null>(null)
 const gltfLoaderRef = shallowRef<GLTFLoader | null>(null)
@@ -74,15 +78,24 @@ const {
   ballPosition,
   tablePosition,
   tableRotationY,
+  tableTargetHeight,
   chairPosition,
+  chairTargetHeight,
   bookshelfPosition,
+  bookshelfTargetHeight,
   avatarPosition,
   avatarRotationY,
+  avatarScale,
   playerPosition,
+  playerTargetHeight,
   certificatePosition,
   certificateRotationY,
+  certificateTargetHeight,
+  ceilingLightPosition,
+  ceilingLightTargetHeight,
   labels,
   interactables,
+  movement: movementConfig,
 } = sceneLayout
 const ballVelocity = new THREE.Vector3()
 let ballMesh: THREE.Mesh | null = null
@@ -104,13 +117,11 @@ const applySceneTheme = (value: 'dark' | 'light') => {
   }
   if (value === 'dark') {
     scene.fog.color.set(0x0a1326)
-    scene.fog.density = 0.1
+    scene.fog.density = 0.08
   } else {
     scene.fog.color.set(0xe8edf3)
-    scene.fog.density = 0.08
+    scene.fog.density = 0.06
   }
-
-  // ADD: Update spotlight cone appearance based on theme
   if (spotlightConeMaterial) {
     if (value === 'dark') {
       spotlightConeMaterial.opacity = 0.15
@@ -245,9 +256,7 @@ const createLabel = (text: string) => {
   return group
 }
 
-// ADD: Create volumetric spotlight cone
 const createSpotlightCone = () => {
-  // Match your centerSpot from SceneLights.vue
   const spotPosition = new THREE.Vector3(0.6, 5.5, 0)
   const spotDistance = 5.5
   const spotAngle = THREE.MathUtils.degToRad(30)
@@ -255,7 +264,6 @@ const createSpotlightCone = () => {
   const radius = Math.tan(spotAngle) * spotDistance
   const geometry = new THREE.ConeGeometry(radius, spotDistance, 32, 1, true)
 
-  // Move so the tip is at the light position and the cone extends downward
   geometry.translate(0, -spotDistance / 2, 0)
 
   const material = new THREE.MeshBasicMaterial({
@@ -277,6 +285,17 @@ const createSpotlightCone = () => {
   return cone
 }
 
+const createSkybox = () => {
+  const geometry = new THREE.SphereGeometry(60, 32, 16)
+  const material = new THREE.MeshBasicMaterial({
+    color: 0xd8e6f7,
+    side: THREE.BackSide,
+  })
+  const mesh = new THREE.Mesh(geometry, material)
+  mesh.renderOrder = -1
+  return mesh
+}
+
 const startExperience = () => {
   if (hasStarted.value || isFadingOut.value) {
     return
@@ -287,7 +306,7 @@ const startExperience = () => {
 }
 
 type BallReadyPayload = { mesh: THREE.Mesh; cubeCamera: THREE.CubeCamera } | null
-type PlayerReadyPayload = THREE.Mesh | null
+type PlayerReadyPayload = THREE.Object3D | null
 
 const handleBallReady = (payload: BallReadyPayload) => {
   if (payload) {
@@ -307,21 +326,68 @@ const handleCameraReady = (payload: THREE.PerspectiveCamera | null) => {
   camera = payload
 }
 
-const velocity = new THREE.Vector3(0, 0, 0);
-const friction = 0.92;
-const acceleration = 0.005;
+// Camera smoothing for RPG feel
+const cameraLag = 0.08
+const cameraRotationLag = 0.12
 
-const delta = clock.getDelta();
-const moveSpeed = 3.0;
-const moveDistance = delta * moveSpeed;
+let targetCameraOffset = new THREE.Vector3()
+let currentCameraOffset = new THREE.Vector3()
 
-const direction = new THREE.Vector3(0, 0, 0);
+const playerMovement = createPlayerMovement({
+  walkSpeed: movementConfig.walkSpeed,
+  runSpeed: movementConfig.runSpeed,
+  moveAcceleration: movementConfig.moveAcceleration,
+  moveDamping: movementConfig.moveDamping,
+  rotationSmoothing: movementConfig.rotationSmoothing,
+  cameraPitchLimits: movementConfig.cameraPitchLimits,
+  mouseSensitivity: movementConfig.mouseSensitivity,
+  zoomLimits: movementConfig.zoomLimits,
+  zoomSensitivity: movementConfig.zoomSensitivity,
+  initialYaw: Math.PI,
+  initialOrbitYaw: 0,
+  initialOrbitPitch: 0.3,
+  getHasStarted: () => hasStarted.value,
+  isFocusActive: () => focus.active,
+})
+const movementState = playerMovement.state
+let lastFocusOpacity = 1
 
-let updateTimer = 0;
-const updateInterval = 5;
+const updateRigOpacity = (rig: THREE.Object3D, opacity: number) => {
+  rig.traverse((node: THREE.Object3D) => {
+    if ((node as THREE.Mesh).isMesh) {
+      const mesh = node as THREE.Mesh
+      const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material]
+      materials.forEach((material) => {
+        if (!material) return
+        if ('opacity' in material) {
+          material.transparent = true
+          material.opacity = opacity
+        }
+      })
+    }
+  })
+}
 
-const rotationSpeed = 0.95;
-const walkSpeed = 2.5;
+const setPlayerAnimation = (state: 'idle' | 'walk' | 'run') => {
+  if (!playerRig) return
+  const actions = playerRig.userData?.actions as
+    | Record<string, THREE.AnimationAction>
+    | undefined
+  const nextAction =
+    actions?.[state] ?? actions?.walk ?? actions?.idle ?? actions?.run
+  if (!nextAction) return
+  const currentAction = playerRig.userData?.activeAction as
+    | THREE.AnimationAction
+    | undefined
+  if (currentAction === nextAction) return
+  nextAction.reset()
+  nextAction.fadeIn(0.15)
+  nextAction.play()
+  if (currentAction) {
+    currentAction.fadeOut(0.15)
+  }
+  playerRig.userData.activeAction = nextAction
+}
 
 onMounted(async () => {
   initTheme()
@@ -364,10 +430,14 @@ onMounted(async () => {
     scene.add(certificateLabel)
   }
 
-  // ADD: Create and add volumetric spotlight cone
   spotlightCone = createSpotlightCone()
   if (spotlightCone) {
     scene.add(spotlightCone)
+  }
+
+  skyboxMesh = createSkybox()
+  if (skyboxMesh) {
+    scene.add(skyboxMesh)
   }
 
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
@@ -386,6 +456,11 @@ onMounted(async () => {
   }
   window.addEventListener('resize', resizeHandler)
 
+  pointerDownHandler = playerMovement.handlePointerDown
+  pointerUpHandler = playerMovement.handlePointerUp
+  mouseMoveHandler = playerMovement.handleMouseMove
+  wheelHandler = playerMovement.handleWheel
+
   keyDownHandler = (event: KeyboardEvent) => {
     if (event.code === 'Enter') {
       hasStarted.value = false
@@ -398,8 +473,7 @@ onMounted(async () => {
         camera.position.copy(intro.from)
         camera.lookAt(0, 1.2, 0)
       }
-      yaw = 0
-      pitch = 0
+      playerMovement.resetState()
       event.preventDefault()
       return
     }
@@ -437,20 +511,14 @@ onMounted(async () => {
     if (!hasStarted.value) {
       return
     }
-    if (event.code === 'KeyW') movement.forward = true
-    if (event.code === 'KeyS') movement.backward = true
-    if (event.code === 'KeyA') movement.left = true
-    if (event.code === 'KeyD') movement.right = true
+    playerMovement.handleKeyDown(event)
   }
 
   keyUpHandler = (event: KeyboardEvent) => {
     if (!hasStarted.value) {
       return
     }
-    if (event.code === 'KeyW') movement.forward = false
-    if (event.code === 'KeyS') movement.backward = false
-    if (event.code === 'KeyA') movement.left = false
-    if (event.code === 'KeyD') movement.right = false
+    playerMovement.handleKeyUp(event)
   }
 
   contextMenuHandler = (event: MouseEvent) => {
@@ -460,6 +528,10 @@ onMounted(async () => {
   window.addEventListener('keydown', keyDownHandler)
   window.addEventListener('keyup', keyUpHandler)
   renderer.domElement.addEventListener('contextmenu', contextMenuHandler)
+  renderer.domElement.addEventListener('mousedown', pointerDownHandler)
+  window.addEventListener('mouseup', pointerUpHandler)
+  window.addEventListener('mousemove', mouseMoveHandler)
+  renderer.domElement.addEventListener('wheel', wheelHandler, { passive: false })
 
   renderer.setAnimationLoop(animate)
 })
@@ -481,14 +553,22 @@ onBeforeUnmount(() => {
   if (keyUpHandler) {
     window.removeEventListener('keyup', keyUpHandler)
   }
+  if (pointerDownHandler && renderer) {
+    renderer.domElement.removeEventListener('mousedown', pointerDownHandler)
+  }
+  if (pointerUpHandler) {
+    window.removeEventListener('mouseup', pointerUpHandler)
+  }
   if (mouseMoveHandler) {
     window.removeEventListener('mousemove', mouseMoveHandler)
+  }
+  if (wheelHandler && renderer) {
+    renderer.domElement.removeEventListener('wheel', wheelHandler)
   }
   if (contextMenuHandler && renderer) {
     renderer.domElement.removeEventListener('contextmenu', contextMenuHandler)
   }
 
-  // ADD: Cleanup volumetric cone
   if (spotlightCone && scene) {
     scene.remove(spotlightCone)
     spotlightCone.geometry.dispose()
@@ -497,6 +577,17 @@ onBeforeUnmount(() => {
     }
     spotlightCone = null
     spotlightConeMaterial = null
+  }
+  if (skyboxMesh && scene) {
+    scene.remove(skyboxMesh)
+    skyboxMesh.geometry.dispose()
+    const material = skyboxMesh.material
+    if (Array.isArray(material)) {
+      material.forEach((item) => item.dispose())
+    } else if (material) {
+      material.dispose()
+    }
+    skyboxMesh = null
   }
 
   if (renderer && container.value) {
@@ -515,56 +606,35 @@ function animate() {
 
   const delta = clock.getDelta();
 
-  // ADD: Animate spotlight cone (subtle pulsing and rotation)
+  const mixer = playerRig?.userData?.mixer as THREE.AnimationMixer | undefined
+  if (mixer) {
+    mixer.update(delta)
+  }
+
   if (spotlightCone && spotlightConeMaterial) {
     const time = performance.now() * 0.001
     const baseOpacity = theme.value === 'dark' ? 0.15 : 0.01
     spotlightConeMaterial.opacity = baseOpacity + Math.sin(time * 0.5) * 0.03
   }
 
-  if (!focus.active) {
-    if (movement.left) {
-      yaw += rotationSpeed * delta;
-    }
-    if (movement.right) {
-      yaw -= rotationSpeed * delta;
-    }
-  }
-
-  const forwardDir = new THREE.Vector3(0, 0, -1);
-  const horizontalRotation = new THREE.Quaternion();
-  horizontalRotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), yaw);
-  forwardDir.applyQuaternion(horizontalRotation);
-
+  playerMovement.updateMovement({
+    delta,
+    playerRig,
+    focusActive: focus.active,
+    roomWidth,
+    roomDepth,
+    playerRadius,
+    setPlayerAnimation,
+  })
   if (playerRig) {
-    playerRig.rotation.y = yaw;
-    const mesh = playerRig as THREE.Mesh
-    if (mesh.material instanceof THREE.MeshStandardMaterial) {
-      mesh.material.opacity = focus.active ? 0.35 : 1
+    const targetOpacity = focus.active ? 0.35 : 1
+    if (Math.abs(targetOpacity - lastFocusOpacity) > 0.01) {
+      updateRigOpacity(playerRig, targetOpacity)
+      lastFocusOpacity = targetOpacity
     }
   }
 
-  const moveDelta = new THREE.Vector3(0, 0, 0);
-  if (!focus.active) {
-    if (movement.forward) {
-      moveDelta.add(forwardDir);
-    }
-    if (movement.backward) {
-      moveDelta.sub(forwardDir);
-    }
-  }
-
-  if (moveDelta.lengthSq() > 0) {
-    moveDelta.normalize();
-    if (playerRig) {
-      playerRig.position.addScaledVector(moveDelta, walkSpeed * delta);
-      const halfWidth = roomWidth / 2 - playerRadius
-      const halfDepth = roomDepth / 2 - playerRadius
-      playerRig.position.x = Math.max(-halfWidth, Math.min(halfWidth, playerRig.position.x))
-      playerRig.position.z = Math.max(-halfDepth, Math.min(halfDepth, playerRig.position.z))
-    }
-  }
-
+  // Ball physics
   if (playerRig && ballMesh) {
     const toBall = new THREE.Vector3().subVectors(ballMesh.position, playerRig.position)
     const distance = toBall.length()
@@ -573,7 +643,8 @@ function animate() {
       const pushDir = toBall.normalize()
       const overlap = minDistance - distance
       ballMesh.position.addScaledVector(pushDir, overlap)
-      ballVelocity.addScaledVector(pushDir, 2.2)
+      const pushForce = movementState.moveVelocity.length() * 3.5
+      ballVelocity.addScaledVector(pushDir, pushForce)
     }
   }
 
@@ -605,13 +676,15 @@ function animate() {
     ballMesh.position.y = ballRadius
   }
 
+  // Interactable detection
   if (playerRig && !focus.active) {
     let nearest = ''
     let nearestDist = Infinity
     const playerPos = playerRig.position
     for (const item of interactables) {
       const dist = playerPos.distanceTo(item.position)
-      if (dist < 2.5 && dist < nearestDist) {
+      const triggerRadius = item.triggerRadius ?? 2.5
+      if (dist < triggerRadius && dist < nearestDist) {
         nearest = item.id
         nearestDist = dist
       }
@@ -621,6 +694,7 @@ function animate() {
     nearbyId.value = ''
   }
 
+  // Camera control
   if (playerRig && focus.active) {
     const elapsed = performance.now() - focus.startTime
     const t = Math.min(Math.max(elapsed / focus.durationMs, 0), 1)
@@ -632,44 +706,47 @@ function animate() {
       focus.transitioning = false
     }
   } else if (playerRig) {
-    const offsetRotation = new THREE.Quaternion();
-    offsetRotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), yaw);
-    const targetOffset = followOffset.clone().applyQuaternion(offsetRotation);
-    const targetPos = playerRig.position.clone().add(targetOffset);
+    // Smooth camera follow with lag
+    const offsetRotation = new THREE.Euler(
+      movementState.cameraOrbitPitch,
+      movementState.cameraOrbitYaw,
+      0,
+      'YXZ'
+    )
+    targetCameraOffset = followOffset.clone().applyEuler(offsetRotation).multiplyScalar(
+      movementState.cameraZoom
+    )
+
+    currentCameraOffset.lerp(targetCameraOffset, cameraLag)
+    const targetPos = playerRig.position.clone().add(currentCameraOffset)
 
     if (intro.active) {
-      const elapsed = performance.now() - intro.startTime;
-      const t = Math.min(Math.max(elapsed / intro.durationMs, 0), 1);
-      const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-      camera.position.lerpVectors(intro.from, targetPos, eased);
-      camera.lookAt(
-        playerRig.position.x,
-        playerRig.position.y + 0.6,
-        playerRig.position.z
-      );
+      const elapsed = performance.now() - intro.startTime
+      const t = Math.min(Math.max(elapsed / intro.durationMs, 0), 1)
+      const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2
+      camera.position.lerpVectors(intro.from, targetPos, eased)
+      camera.lookAt(playerRig.position.x, playerRig.position.y + 0.6, playerRig.position.z)
       if (t >= 1) {
-        intro.active = false;
-        hasStarted.value = true;
-        isFadingOut.value = false;
+        intro.active = false
+        hasStarted.value = true
+        isFadingOut.value = false
       }
     } else {
-      camera.position.copy(targetPos);
-      camera.lookAt(
+      camera.position.lerp(targetPos, cameraRotationLag)
+      const lookTarget = new THREE.Vector3(
         playerRig.position.x,
         playerRig.position.y + 0.6,
         playerRig.position.z
-      );
+      )
+      camera.lookAt(lookTarget)
     }
-  } else {
-    camera.position.y = cameraHeight;
-    camera.rotation.set(pitch, yaw, 0, 'YXZ');
   }
 
   if (avatarHead) {
-    const headTarget = new THREE.Vector3();
-    camera.getWorldPosition(headTarget);
-    avatarHead.lookAt(headTarget);
-    avatarHead.rotateY(Math.PI);
+    const headTarget = new THREE.Vector3()
+    camera.getWorldPosition(headTarget)
+    avatarHead.lookAt(headTarget)
+    avatarHead.rotateY(Math.PI)
   }
 
   if (labelBillboards.length > 0) {
@@ -685,20 +762,15 @@ function animate() {
     ballMesh.visible = true
   }
 
-  renderer.render(scene, camera);
+  renderer.render(scene, camera)
 }
 </script>
 
 <template>
   <div class="threejs-stage">
-    <button
-      class="theme-toggle"
-      type="button"
-      @click.stop="toggleTheme"
-      :aria-pressed="theme === 'dark'"
+    <button class="theme-toggle" type="button" @click.stop="toggleTheme" :aria-pressed="theme === 'dark'"
       :aria-label="`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`"
-      :title="`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`"
-    >
+      :title="`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`">
       <fa class="theme-toggle__icon" icon="lightbulb" aria-hidden="true" />
     </button>
     <div ref="container" class="threejs-canvas"></div>
@@ -707,16 +779,20 @@ function animate() {
     <SceneLights v-if="sceneRef" :scene="sceneRef" :theme="theme" />
     <BallModel v-if="sceneRef" :scene="sceneRef" :position="ballPosition" :radius="ballRadius"
       @ready="handleBallReady" />
-    <PlayerRig v-if="sceneRef" :scene="sceneRef" :position="playerPosition" @ready="handlePlayerReady" />
+    <PlayerRig v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef" :position="playerPosition"
+      :target-height="playerTargetHeight" @ready="handlePlayerReady" />
+    <CeilingLightModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef"
+      :position="ceilingLightPosition" :target-height="ceilingLightTargetHeight" />
     <CertificateModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef"
-      :position="certificatePosition" :rotation-y="certificateRotationY" />
+      :position="certificatePosition" :rotation-y="certificateRotationY" :target-height="certificateTargetHeight" />
     <TableModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef" :position="tablePosition"
-      :rotation-y="tableRotationY" />
+      :rotation-y="tableRotationY" :target-height="tableTargetHeight" />
     <BookshelfModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef"
-      :position="bookshelfPosition" />
-    <ChairModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef" :position="chairPosition" />
+      :position="bookshelfPosition" :target-height="bookshelfTargetHeight" />
+    <ChairModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef"
+      :position="chairPosition" :target-height="chairTargetHeight" />
     <AvatarModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef" :position="avatarPosition"
-      :rotation-y="avatarRotationY" @head-ready="avatarHead = $event" />
+      :rotation-y="avatarRotationY" :scale="avatarScale" @head-ready="avatarHead = $event" />
     <div v-if="hasStarted" class="threejs-hint">Press Enter to return</div>
     <div v-if="hasStarted && nearbyId && !focus.active" class="threejs-prompt">
       Press Spacebar to view
@@ -733,7 +809,12 @@ function animate() {
     <Transition name="overlay-fade">
       <EducationOverlay v-if="focus.active && focus.targetId === 'bookshelf'" />
     </Transition>
+    <Transition name="overlay-fade">
+      <AwardsOverlay v-if="focus.active && focus.targetId === 'certificate'" />
+    </Transition>
+
     <StartOverlay v-if="!hasStarted || isFadingOut" :is-fading-out="isFadingOut" @fade="startExperience" />
+
   </div>
 </template>
 

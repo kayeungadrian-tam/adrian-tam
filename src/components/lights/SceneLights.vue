@@ -18,42 +18,6 @@ let centerSpot: THREE.SpotLight | null = null
 let accentLight: THREE.PointLight | null = null
 
 // ADD THESE: Volumetric light cone mesh
-let spotlightCone: THREE.Mesh | null = null
-let spotlightConeMaterial: THREE.MeshBasicMaterial | null = null
-
-const createSpotlightCone = () => {
-  if (!centerSpot) return null
-
-  // Create a cone geometry that matches the spotlight
-  const height = centerSpot.distance || 10
-  const radius = Math.tan(centerSpot.angle) * height
-
-  const geometry = new THREE.ConeGeometry(radius, height, 32, 1, true)
-
-  // Rotate to point downward
-  geometry.rotateX(Math.PI / 2)
-
-  // Move so the tip is at the light position
-  geometry.translate(0, 0, -height / 2)
-
-  const material = new THREE.MeshBasicMaterial({
-    color: 0xd6e4ff,
-    transparent: true,
-    opacity: 0.12,
-    side: THREE.DoubleSide,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
-  })
-
-  spotlightConeMaterial = material
-
-  const cone = new THREE.Mesh(geometry, material)
-  cone.position.copy(centerSpot.position)
-  cone.lookAt(centerSpotTarget?.position || new THREE.Vector3(0, 0, 0))
-
-  return cone
-}
-
 const applyTheme = (value: 'dark' | 'light') => {
   if (!ambientLight || !hemiLight || !keyLight || !fillLight || !morningSun || !centerSpot || !accentLight) {
     return
@@ -79,14 +43,6 @@ const applyTheme = (value: 'dark' | 'light') => {
     accentLight.color.set(0x3b6dd6)
     accentLight.intensity = 0.7
 
-    // UPDATE: Show volumetric cone in dark mode
-    if (spotlightCone) {
-      spotlightCone.visible = true
-      if (spotlightConeMaterial) {
-        spotlightConeMaterial.opacity = 0.15
-        spotlightConeMaterial.color.set(0xFFF9D6)
-      }
-    }
   } else {
     ambientLight.color.set(0xcccccc)
     ambientLight.intensity = 0.7
@@ -108,14 +64,6 @@ const applyTheme = (value: 'dark' | 'light') => {
     accentLight.color.set(0xffa366)
     accentLight.intensity = 1.4
 
-    // UPDATE: Hide or reduce cone in light mode
-    if (spotlightCone) {
-      spotlightCone.visible = true
-      if (spotlightConeMaterial) {
-        spotlightConeMaterial.opacity = 0.06
-        spotlightConeMaterial.color.set(0xfff4e0)
-      }
-    }
   }
 }
 
@@ -164,12 +112,6 @@ onMounted(() => {
     props.scene.add(centerSpotTarget)
   }
 
-  // ADD: Create and add volumetric spotlight cone
-  spotlightCone = createSpotlightCone()
-  if (spotlightCone) {
-    props.scene.add(spotlightCone)
-  }
-
   applyTheme(props.theme)
 })
 
@@ -188,16 +130,6 @@ onBeforeUnmount(() => {
     centerSpotTarget = null
   }
 
-  // ADD: Cleanup volumetric cone
-  if (spotlightCone) {
-    props.scene.remove(spotlightCone)
-    spotlightCone.geometry.dispose()
-    if (spotlightConeMaterial) {
-      spotlightConeMaterial.dispose()
-    }
-    spotlightCone = null
-    spotlightConeMaterial = null
-  }
 })
 
 watch(
