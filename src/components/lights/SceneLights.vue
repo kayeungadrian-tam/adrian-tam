@@ -23,17 +23,17 @@ const applyTheme = (value: 'dark' | 'light') => {
     return
   }
   if (value === 'dark') {
-    ambientLight.color.set(0x2a3552)
-    ambientLight.intensity = 0.35
-    hemiLight.color.set(0x1b2b54)
-    hemiLight.groundColor.set(0x0b0f1f)
-    hemiLight.intensity = 0.6
-    keyLight.color.set(0x9fb6ff)
-    keyLight.intensity = 0.85
-    fillLight.color.set(0x2a3f66)
-    fillLight.intensity = 0.4
-    morningSun.color.set(0xb3c9ff)
-    morningSun.intensity = 1.6
+    ambientLight.color.set(0x5b4b6f)
+    ambientLight.intensity = 0.45
+    hemiLight.color.set(0x4c4f7b)
+    hemiLight.groundColor.set(0x1c1523)
+    hemiLight.intensity = 0.7
+    keyLight.color.set(0xb8a3ff)
+    keyLight.intensity = 0.95
+    fillLight.color.set(0x6d5a7d)
+    fillLight.intensity = 0.5
+    morningSun.color.set(0xffb48f)
+    morningSun.intensity = 1.5
     morningSun.distance = 28
     morningSun.angle = Math.PI / 8
     centerSpot.color.set(0xd6e4ff)

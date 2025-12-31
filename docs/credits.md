@@ -17,3 +17,7 @@ https://sketchfab.com/3d-models/wooden-bookshelf-1a3b0a1ec8c349a5be20cf66ee2a1d9
 **Ceiling light**
 
 https://sketchfab.com/3d-models/ceiling-light-3e65cebe43b144ca802101d482b9c193#download
+
+**Drawer**
+
+https://sketchfab.com/3d-models/simple-drawer-0bf505468cc446be92fe016173a69e13#download

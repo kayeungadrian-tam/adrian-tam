@@ -26,9 +26,10 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 import {
-    faGithub,
-    faLinkedin,
-    faFacebook
+  faGithub,
+  faLinkedin,
+  faGoogle,
+  faFacebook
 } from '@fortawesome/free-brands-svg-icons'
 
 import "./style.css";
@@ -46,6 +47,7 @@ library.add(
     faArrowUpRightFromSquare,
     faLightbulb,
     faLinkedin,
+    faGoogle,
     faFacebook
 )
 

@@ -21,11 +21,20 @@ const tablePosition_z = 1.2;
 const tableRotationY = 0;
 const tableTargetHeight = 1.5;
 
-const avatarPosition_x = 1.8;
-const avatarPosition_y = 0.0;
-const avatarPosition_z = -1.6;
-const avatarScale = 1.0;
+// Drawer
+const drawerPosition_x = -2.2;
+const drawerPosition_y = 0.0;
+const drawerPosition_z = 0.6;
+const drawerRotationY = Math.PI / 2;
+const drawerTargetHeight = 0.9;
 
+// Avatar
+const avatarPosition_x = 5.0;
+const avatarPosition_y = 0.0;
+const avatarPosition_z = -4.0;
+const avatarScale = 0.4;
+
+// Player
 const playerPosition_x = 2.4;
 const playerPosition_y = 0.0;
 const playerPosition_z = 4.4;
@@ -50,8 +59,13 @@ const ceilingLightTargetHeight = 0.15;
 
 const roomWidth = 12;
 const roomDepth = 10;
+const roomHeight = 5.2;
+const wallThickness = 0.18;
+const floorThickness = 0.12;
+const roofThickness = 0.08;
 const playerRadius = 0.4;
 const ballRadius = 0.25;
+const floorOvershoot = 1.2;
 
 const cameraOffset = new THREE.Vector3(0, 0.5, 1.2);
 // const certificateCameraOffset = new THREE.Vector3(0, 0.5, -2.2);
@@ -74,8 +88,13 @@ export const sceneLayout = {
   followOffset: new THREE.Vector3(0, 6.5, 5.5),
   roomWidth: roomWidth,
   roomDepth: roomDepth,
+  roomHeight: roomHeight,
+  wallThickness: wallThickness,
+  floorThickness: floorThickness,
+  roofThickness: roofThickness,
   playerRadius: playerRadius,
   ballRadius: ballRadius,
+  floorOvershoot: floorOvershoot,
   movement: {
     walkSpeed: walkSpeed,
     runSpeed: runSpeed,
@@ -91,6 +110,9 @@ export const sceneLayout = {
   tablePosition: new THREE.Vector3(tablePosition_x, tablePosition_y, tablePosition_z),
   tableRotationY: tableRotationY,
   tableTargetHeight: tableTargetHeight,
+  drawerPosition: new THREE.Vector3(drawerPosition_x, drawerPosition_y, drawerPosition_z),
+  drawerRotationY: drawerRotationY,
+  drawerTargetHeight: drawerTargetHeight,
   chairPosition: new THREE.Vector3(chairPosition_x, chairPosition_y, chairPosition_z),
   chairTargetHeight: chairTargetHeight,
   bookshelfPosition: new THREE.Vector3(bookshelfPosition_x, bookshelfPosition_y, bookshelfPosition_z),
@@ -113,6 +135,7 @@ export const sceneLayout = {
   ceilingLightTargetHeight: ceilingLightTargetHeight,
   labels: [
     {
+      id: 'bookshelf',
       text: 'Education',
       position: new THREE.Vector3(
         bookshelfPosition_x,
@@ -121,18 +144,26 @@ export const sceneLayout = {
       ),
     },
     {
+      id: 'table',
       text: 'Work',
       position: new THREE.Vector3(tablePosition_x, tablePosition_y + 2.0, tablePosition_z),
     },
     {
-      text: 'About me',
-      position: new THREE.Vector3(chairPosition_x, chairPosition_y + 1.4, chairPosition_z),
+      id: 'drawer',
+      text: 'Projects',
+      position: new THREE.Vector3(drawerPosition_x, drawerPosition_y + 1.6, drawerPosition_z),
     },
     {
+      id: 'chair',
+      text: 'About me',
+      position: new THREE.Vector3(chairPosition_x, chairPosition_y + 1.9, chairPosition_z),
+    },
+    {
+      id: 'certificate',
       text: 'Awards',
       position: new THREE.Vector3(
         certificatePosition_x + labelOffset.x,
-        certificatePosition_y + 0.7,
+        certificatePosition_y + 1.2,
         certificatePosition_z + labelOffset.z
       ),
     },
@@ -141,6 +172,12 @@ export const sceneLayout = {
     {
       id: 'table',
       position: new THREE.Vector3(tablePosition_x, tablePosition_y + 1.0, tablePosition_z),
+      cameraOffset: cameraOffset,
+      triggerRadius: 2.5,
+    },
+    {
+      id: 'drawer',
+      position: new THREE.Vector3(drawerPosition_x, drawerPosition_y + 0.8, drawerPosition_z),
       cameraOffset: cameraOffset,
       triggerRadius: 2.5,
     },

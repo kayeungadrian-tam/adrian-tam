@@ -11,6 +11,7 @@ import AboutOverlay from './overlays/AboutOverlay.vue'
 import EducationOverlay from './overlays/EducationOverlay.vue'
 import StartOverlay from './overlays/StartOverlay.vue'
 import AwardsOverlay from './overlays/AwardsOverlay.vue'
+import ProjectsOverlay from './overlays/ProjectsOverlay.vue'
 
 // Objects
 import TableModel from './objects/table.vue'
@@ -21,6 +22,7 @@ import BallModel from './objects/ball.vue'
 import SceneLights from './lights/SceneLights.vue'
 import PlayerRig from './objects/playerRig.vue'
 import CertificateModel from './objects/certificate.vue'
+import DrawerModel from './objects/drawer.vue'
 import RoomShell from './room/RoomShell.vue'
 import CeilingLightModel from './objects/ceilingLight.vue'
 
@@ -57,7 +59,8 @@ let ballCubeCamera: THREE.CubeCamera | null = null
 
 let spotlightCone: THREE.Mesh | null = null
 let spotlightConeMaterial: THREE.MeshBasicMaterial | null = null
-let skyboxMesh: THREE.Mesh | null = null
+let skyboxTexture: THREE.Texture | null = null
+let backWallMaterial: THREE.MeshStandardMaterial | null = null
 
 const sceneRef = shallowRef<THREE.Scene | null>(null)
 const gltfLoaderRef = shallowRef<GLTFLoader | null>(null)
@@ -73,12 +76,20 @@ const {
   followOffset,
   roomWidth,
   roomDepth,
+  roomHeight,
+  wallThickness,
+  floorThickness,
+  roofThickness,
+  floorOvershoot,
   playerRadius,
   ballRadius,
   ballPosition,
   tablePosition,
   tableRotationY,
   tableTargetHeight,
+  drawerPosition,
+  drawerRotationY,
+  drawerTargetHeight,
   chairPosition,
   chairTargetHeight,
   bookshelfPosition,
@@ -100,6 +111,51 @@ const {
 const ballVelocity = new THREE.Vector3()
 let ballMesh: THREE.Mesh | null = null
 const labelBillboards: THREE.Object3D[] = []
+type TroikaLabel = Text & {
+  color: string
+  outlineColor: string
+  outlineWidth: number
+  fillOpacity?: number
+}
+
+const labelRegistry = new Map<
+  string,
+  {
+    group: THREE.Object3D
+    backplate: THREE.MeshStandardMaterial
+    label: TroikaLabel
+    shadow: TroikaLabel
+    defaults: {
+      backplateColor: THREE.Color
+      emissive: THREE.Color
+      emissiveIntensity: number
+      labelColor: string
+      outlineColor: string
+      outlineWidth: number
+      shadowColor: string
+      shadowOpacity: number
+    }
+  }
+>()
+let activeLabelId = ''
+let activeLabelBackplate: THREE.MeshStandardMaterial | null = null
+let activeLabelGroup: THREE.Object3D | null = null
+const floorWidth = roomWidth + floorOvershoot * 2
+const floorDepth = roomDepth + floorOvershoot * 2
+const wallColliders = [
+  {
+    center: new THREE.Vector3(0, roomHeight / 2, -roomDepth / 2 - wallThickness / 2),
+    halfSize: new THREE.Vector3(roomWidth / 2, roomHeight / 2, wallThickness / 2),
+  },
+  {
+    center: new THREE.Vector3(-roomWidth / 2 - wallThickness / 2, roomHeight / 2, 0),
+    halfSize: new THREE.Vector3(wallThickness / 2, roomHeight / 2, roomDepth / 2),
+  },
+  {
+    center: new THREE.Vector3(roomWidth / 2 + wallThickness / 2, roomHeight / 2, 0),
+    halfSize: new THREE.Vector3(wallThickness / 2, roomHeight / 2, roomDepth / 2),
+  },
+]
 
 const applyTheme = (value: 'dark' | 'light') => {
   theme.value = value
@@ -116,8 +172,8 @@ const applySceneTheme = (value: 'dark' | 'light') => {
     return
   }
   if (value === 'dark') {
-    scene.fog.color.set(0x0a1326)
-    scene.fog.density = 0.08
+    scene.fog.color.set(0x2a2030)
+    scene.fog.density = 0.04
   } else {
     scene.fog.color.set(0xe8edf3)
     scene.fog.density = 0.06
@@ -129,6 +185,16 @@ const applySceneTheme = (value: 'dark' | 'light') => {
     } else {
       spotlightConeMaterial.opacity = 0.06
       spotlightConeMaterial.color.set(0xfff4e0)
+    }
+  }
+  if (scene) {
+    if (skyboxTexture) {
+      skyboxTexture.dispose()
+      skyboxTexture = null
+    }
+    skyboxTexture = createSkybox()
+    if (skyboxTexture) {
+      scene.background = skyboxTexture
     }
   }
 }
@@ -163,7 +229,7 @@ const focus = reactive({
   toLook: new THREE.Vector3(),
 })
 
-const createLabel = (text: string) => {
+const createLabel = (text: string, id?: string) => {
   const group = new THREE.Group()
   const backplate = new THREE.Mesh(
     new THREE.ExtrudeGeometry(new THREE.Shape(), {
@@ -187,7 +253,7 @@ const createLabel = (text: string) => {
   backplate.receiveShadow = true
   group.add(backplate)
 
-  const shadow = new Text()
+  const shadow = new Text() as TroikaLabel
   shadow.text = text
   shadow.fontSize = 0.28
   shadow.color = '#0a122c'
@@ -203,7 +269,7 @@ const createLabel = (text: string) => {
     }
   })
 
-  const label = new Text()
+  const label = new Text() as TroikaLabel
   label.text = text
   label.fontSize = 0.28
   label.color = '#d0e2ff'
@@ -253,7 +319,61 @@ const createLabel = (text: string) => {
   label.receiveShadow = false
   group.add(shadow, label)
   labelBillboards.push(group)
+  if (id && backplate.material instanceof THREE.MeshStandardMaterial) {
+    labelRegistry.set(id, {
+      group,
+      backplate: backplate.material,
+      label,
+      shadow,
+      defaults: {
+        backplateColor: backplate.material.color.clone(),
+        emissive: backplate.material.emissive.clone(),
+        emissiveIntensity: backplate.material.emissiveIntensity,
+        labelColor: label.color as string,
+        outlineColor: label.outlineColor as string,
+        outlineWidth: label.outlineWidth,
+        shadowColor: shadow.color as string,
+        shadowOpacity: shadow.fillOpacity ?? 0.55,
+      },
+    })
+  }
   return group
+}
+
+const setLabelActive = (id: string) => {
+  if (id === activeLabelId) {
+    return
+  }
+  if (activeLabelId && labelRegistry.has(activeLabelId)) {
+    const entry = labelRegistry.get(activeLabelId)
+    if (entry) {
+      entry.backplate.color.copy(entry.defaults.backplateColor)
+      entry.backplate.emissive.copy(entry.defaults.emissive)
+      entry.backplate.emissiveIntensity = entry.defaults.emissiveIntensity
+      entry.label.color = entry.defaults.labelColor
+      entry.label.outlineColor = entry.defaults.outlineColor
+      entry.label.outlineWidth = entry.defaults.outlineWidth
+      entry.shadow.color = entry.defaults.shadowColor
+      entry.shadow.fillOpacity = entry.defaults.shadowOpacity
+    }
+  }
+  activeLabelId = id
+  activeLabelBackplate = null
+  activeLabelGroup = null
+  if (id && labelRegistry.has(id)) {
+    const entry = labelRegistry.get(id)
+    if (entry) {
+      activeLabelBackplate = entry.backplate
+      activeLabelGroup = entry.group
+      entry.label.color = '#FFFFFF'
+      entry.shadow.fillOpacity = Math.min(entry.defaults.shadowOpacity + 0.08, 0.8)
+      entry.backplate.color
+        .copy(entry.defaults.backplateColor)
+        .multiplyScalar(1.5)
+      entry.backplate.emissive.copy(entry.backplate.color)
+      entry.backplate.emissiveIntensity = 0.5
+    }
+  }
 }
 
 const createSpotlightCone = () => {
@@ -286,14 +406,65 @@ const createSpotlightCone = () => {
 }
 
 const createSkybox = () => {
-  const geometry = new THREE.SphereGeometry(60, 32, 16)
-  const material = new THREE.MeshBasicMaterial({
-    color: 0xd8e6f7,
-    side: THREE.BackSide,
-  })
-  const mesh = new THREE.Mesh(geometry, material)
-  mesh.renderOrder = -1
-  return mesh
+  const size = 2048
+  const canvas = document.createElement('canvas')
+  canvas.width = size
+  canvas.height = size
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return null
+
+  if (theme.value === 'light') {
+    const gradient = ctx.createLinearGradient(0, 0, 0, size)
+    gradient.addColorStop(0, '#cfe0f6')
+    gradient.addColorStop(0.55, '#e9eef7')
+    gradient.addColorStop(1, '#f7e9d2')
+    ctx.fillStyle = gradient
+    ctx.fillRect(0, 0, size, size)
+
+    // Cloud bands
+    for (let i = 0; i < 32; i += 1) {
+      const y = size * (0.45 + Math.random() * 0.35)
+      const width = size * (0.35 + Math.random() * 0.6)
+      const height = size * (0.02 + Math.random() * 0.05)
+      const x = Math.random() * (size - width)
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.3)'
+      ctx.beginPath()
+      ctx.ellipse(x + width / 2, y, width / 2, height, 0, 0, Math.PI * 2)
+      ctx.fill()
+    }
+  } else {
+    const gradient = ctx.createLinearGradient(0, 0, 0, size)
+    gradient.addColorStop(0, '#0a0d1c')
+    gradient.addColorStop(0.6, '#131429')
+    gradient.addColorStop(1, '#1d1a2f')
+    ctx.fillStyle = gradient
+    ctx.fillRect(0, 0, size, size)
+
+    // Star field
+    const starCount = 700
+    for (let i = 0; i < starCount; i += 1) {
+      const x = Math.random() * size
+      const y = Math.random() * size
+      const radius = Math.random() * 1.4 + 0.3
+      const alpha = 0.15 + Math.random() * 0.6
+      ctx.fillStyle = `rgba(220, 226, 255, ${alpha})`
+      ctx.beginPath()
+      ctx.arc(x, y, radius, 0, Math.PI * 2)
+      ctx.fill()
+    }
+
+    // Soft haze near the horizon
+    const haze = ctx.createLinearGradient(0, size * 0.6, 0, size)
+    haze.addColorStop(0, 'rgba(40, 34, 58, 0)')
+    haze.addColorStop(1, 'rgba(62, 48, 72, 0.35)')
+    ctx.fillStyle = haze
+    ctx.fillRect(0, size * 0.6, size, size * 0.4)
+  }
+
+  const texture = new THREE.CanvasTexture(canvas)
+  // Important for a background texture to look correct:
+  texture.colorSpace = THREE.SRGBColorSpace
+  return texture
 }
 
 const startExperience = () => {
@@ -324,6 +495,10 @@ const handlePlayerReady = (payload: PlayerReadyPayload) => {
 
 const handleCameraReady = (payload: THREE.PerspectiveCamera | null) => {
   camera = payload
+}
+
+const handleBackWallReady = (material: THREE.MeshStandardMaterial | null) => {
+  backWallMaterial = material
 }
 
 // Camera smoothing for RPG feel
@@ -406,28 +581,12 @@ onMounted(async () => {
   gltfLoader.setDRACOLoader(dracoLoader)
   gltfLoaderRef.value = gltfLoader
 
-  const shelfLabel = createLabel('Education')
-  if (shelfLabel) {
-    shelfLabel.position.copy(bookshelfPosition).add(new THREE.Vector3(0, 2.6, 0))
-    scene.add(shelfLabel)
-  }
-
-  const tableLabel = createLabel('Work')
-  if (tableLabel) {
-    tableLabel.position.copy(tablePosition).add(new THREE.Vector3(0, 2.0, 0))
-    scene.add(tableLabel)
-  }
-
-  const chairLabel = createLabel('About me')
-  if (chairLabel) {
-    chairLabel.position.copy(chairPosition).add(new THREE.Vector3(0, 1.65, 0))
-    scene.add(chairLabel)
-  }
-
-  const certificateLabel = createLabel('Awards')
-  if (certificateLabel) {
-    certificateLabel.position.copy(certificatePosition).add(new THREE.Vector3(0, 1.0, 0))
-    scene.add(certificateLabel)
+  for (const label of labels) {
+    const labelMesh = createLabel(label.text, label.id)
+    if (labelMesh) {
+      labelMesh.position.copy(label.position)
+      scene.add(labelMesh)
+    }
   }
 
   spotlightCone = createSpotlightCone()
@@ -435,9 +594,9 @@ onMounted(async () => {
     scene.add(spotlightCone)
   }
 
-  skyboxMesh = createSkybox()
-  if (skyboxMesh) {
-    scene.add(skyboxMesh)
+  skyboxTexture = createSkybox()
+  if (skyboxTexture && scene) {
+    scene.background = skyboxTexture
   }
 
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
@@ -477,7 +636,7 @@ onMounted(async () => {
       event.preventDefault()
       return
     }
-    if (focus.active && (event.code === 'Escape' || event.code === 'Space')) {
+    if (focus.active && (event.code === 'KeyQ' || event.code === 'Space')) {
       focus.active = false
       focus.transitioning = false
       event.preventDefault()
@@ -578,16 +737,12 @@ onBeforeUnmount(() => {
     spotlightCone = null
     spotlightConeMaterial = null
   }
-  if (skyboxMesh && scene) {
-    scene.remove(skyboxMesh)
-    skyboxMesh.geometry.dispose()
-    const material = skyboxMesh.material
-    if (Array.isArray(material)) {
-      material.forEach((item) => item.dispose())
-    } else if (material) {
-      material.dispose()
+  if (skyboxTexture) {
+    skyboxTexture.dispose()
+    skyboxTexture = null
+    if (scene?.background) {
+      scene.background = null
     }
-    skyboxMesh = null
   }
 
   if (renderer && container.value) {
@@ -621,8 +776,9 @@ function animate() {
     delta,
     playerRig,
     focusActive: focus.active,
-    roomWidth,
-    roomDepth,
+    roomWidth: floorWidth,
+    roomDepth: floorDepth,
+    wallColliders,
     playerRadius,
     setPlayerAnimation,
   })
@@ -631,6 +787,17 @@ function animate() {
     if (Math.abs(targetOpacity - lastFocusOpacity) > 0.01) {
       updateRigOpacity(playerRig, targetOpacity)
       lastFocusOpacity = targetOpacity
+    }
+  }
+  if (backWallMaterial && playerRig) {
+    const backWallZ = -roomDepth / 2 - wallThickness / 2
+    const distanceBehind = backWallZ - playerRig.position.z
+    const fadeStart = 0.15
+    const fadeEnd = 1.2
+    const t = Math.min(Math.max((distanceBehind - fadeStart) / (fadeEnd - fadeStart), 0), 1)
+    const targetOpacity = 1 - t * 0.6
+    if (Math.abs(backWallMaterial.opacity - targetOpacity) > 0.01) {
+      backWallMaterial.opacity = targetOpacity
     }
   }
 
@@ -692,6 +859,16 @@ function animate() {
     nearbyId.value = nearest
   } else if (focus.active) {
     nearbyId.value = ''
+  }
+  const highlightId = !focus.active ? nearbyId.value : ''
+  setLabelActive(highlightId)
+  if (activeLabelBackplate) {
+    const pulse = Math.sin(performance.now() * 0.004) * 0.15
+    activeLabelBackplate.emissiveIntensity = 0.35 + pulse
+  }
+  if (activeLabelGroup) {
+    const scalePulse = 1 + Math.sin(performance.now() * 0.004) * 0.015
+    activeLabelGroup.scale.setScalar(scalePulse)
   }
 
   // Camera control
@@ -768,14 +945,20 @@ function animate() {
 
 <template>
   <div class="threejs-stage">
-    <button class="theme-toggle" type="button" @click.stop="toggleTheme" :aria-pressed="theme === 'dark'"
-      :aria-label="`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`"
-      :title="`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`">
+    <button class="theme-toggle" type="button" @click.stop="toggleTheme"
+      v-bind="{
+        'aria-pressed': theme === 'dark',
+        'aria-label': `Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`,
+        title: `Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`,
+      }">
       <fa class="theme-toggle__icon" icon="lightbulb" aria-hidden="true" />
     </button>
     <div ref="container" class="threejs-canvas"></div>
     <SceneCamera :container="container" :intro-from="intro.from" :look-at="introLookAt" @ready="handleCameraReady" />
-    <RoomShell v-if="sceneRef" :scene="sceneRef" :room-width="roomWidth" :room-depth="roomDepth" :theme="theme" />
+    <RoomShell v-if="sceneRef" :scene="sceneRef" :room-width="roomWidth" :room-depth="roomDepth"
+      :room-height="roomHeight" :wall-thickness="wallThickness" :floor-thickness="floorThickness"
+      :roof-thickness="roofThickness" :floor-overshoot="floorOvershoot" :theme="theme"
+      @back-wall-ready="handleBackWallReady" />
     <SceneLights v-if="sceneRef" :scene="sceneRef" :theme="theme" />
     <BallModel v-if="sceneRef" :scene="sceneRef" :position="ballPosition" :radius="ballRadius"
       @ready="handleBallReady" />
@@ -783,14 +966,16 @@ function animate() {
       :target-height="playerTargetHeight" @ready="handlePlayerReady" />
     <CeilingLightModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef"
       :position="ceilingLightPosition" :target-height="ceilingLightTargetHeight" />
+    <DrawerModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef" :position="drawerPosition"
+      :rotation-y="drawerRotationY" :target-height="drawerTargetHeight" />
     <CertificateModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef"
       :position="certificatePosition" :rotation-y="certificateRotationY" :target-height="certificateTargetHeight" />
     <TableModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef" :position="tablePosition"
       :rotation-y="tableRotationY" :target-height="tableTargetHeight" />
     <BookshelfModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef"
       :position="bookshelfPosition" :target-height="bookshelfTargetHeight" />
-    <ChairModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef"
-      :position="chairPosition" :target-height="chairTargetHeight" />
+    <ChairModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef" :position="chairPosition"
+      :target-height="chairTargetHeight" />
     <AvatarModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef" :position="avatarPosition"
       :rotation-y="avatarRotationY" :scale="avatarScale" @head-ready="avatarHead = $event" />
     <div v-if="hasStarted" class="threejs-hint">Press Enter to return</div>
@@ -798,7 +983,7 @@ function animate() {
       Press Spacebar to view
     </div>
     <div v-if="focus.active" class="threejs-prompt">
-      Press Esc to return
+      Press Q to return
     </div>
     <Transition name="overlay-fade">
       <WorkOverlay v-if="focus.active && focus.targetId === 'table'" />
@@ -811,6 +996,9 @@ function animate() {
     </Transition>
     <Transition name="overlay-fade">
       <AwardsOverlay v-if="focus.active && focus.targetId === 'certificate'" />
+    </Transition>
+    <Transition name="overlay-fade">
+      <ProjectsOverlay v-if="focus.active && focus.targetId === 'drawer'" />
     </Transition>
 
     <StartOverlay v-if="!hasStarted || isFadingOut" :is-fading-out="isFadingOut" @fade="startExperience" />

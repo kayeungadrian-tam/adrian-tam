@@ -147,48 +147,68 @@
   color: var(--overlay-muted);
 }
 
-.philosophy-section {
-  margin: 40px 0 20px;
-  padding: 28px;
-  background: var(--overlay-panel-strong-bg);
-  border-left: 4px solid var(--overlay-accent);
-  border-radius: 12px;
+.social-section {
+  margin: 36px 0 20px;
   animation: fadeSlideUp 0.5s ease-out 0.7s both;
 }
 
-.philosophy-quote {
-  font-size: 17px;
-  line-height: 1.6;
-  color: var(--overlay-text);
-  font-style: italic;
-  margin: 0 0 12px;
-  quotes: """ """ "'" "'";
+.social-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
 }
 
-.philosophy-quote::before {
-  content: open-quote;
-  color: var(--overlay-accent);
-  font-size: 32px;
-  line-height: 0;
-  margin-right: 8px;
-  vertical-align: -0.4em;
+.social-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 12px;
+  row-gap: 4px;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--overlay-panel-border);
+  background: var(--overlay-panel-strong-bg);
+  color: var(--overlay-title);
+  text-decoration: none;
+  transition: all 0.25s ease;
 }
 
-.philosophy-quote::after {
-  content: close-quote;
-  color: var(--overlay-accent);
-  font-size: 32px;
-  line-height: 0;
-  margin-left: 8px;
-  vertical-align: -0.4em;
+.social-card:hover {
+  border-color: var(--overlay-panel-hover-border);
+  background: var(--overlay-panel-hover-bg);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(15, 98, 254, 0.2);
 }
 
-.quote-author {
-  display: block;
-  font-size: 13px;
+.social-icon {
+  grid-row: 1 / span 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--overlay-highlight-bg);
+  border: 1px solid var(--overlay-highlight-border);
   color: var(--overlay-accent);
+}
+
+.social-fa {
+  width: 22px;
+  height: 22px;
+  font-size: 22px;
+}
+
+
+.social-label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.social-handle {
+  font-size: 12px;
+  color: var(--overlay-muted);
   font-family: 'IBM Plex Mono', monospace;
-  margin-top: 8px;
 }
 
 .card-footer {

@@ -164,7 +164,7 @@
         <div class="close-hint">
           <span class="pulse-dot"></span>
           Press
-          <kbd class="kbd">ESC</kbd>
+          <kbd class="kbd">Q</kbd>
           to close_
         </div>
       </div>

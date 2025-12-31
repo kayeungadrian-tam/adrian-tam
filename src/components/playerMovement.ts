@@ -32,6 +32,10 @@ export type UpdateMovementArgs = {
   focusActive: boolean
   roomWidth: number
   roomDepth: number
+  wallColliders?: Array<{
+    center: THREE.Vector3
+    halfSize: THREE.Vector3
+  }>
   playerRadius: number
   setPlayerAnimation: (state: 'idle' | 'walk' | 'run') => void
 }
@@ -172,6 +176,22 @@ export const createPlayerMovement = (config: PlayerMovementConfig) => {
       const halfDepth = roomDepth / 2 - playerRadius
       playerRig.position.x = Math.max(-halfWidth, Math.min(halfWidth, playerRig.position.x))
       playerRig.position.z = Math.max(-halfDepth, Math.min(halfDepth, playerRig.position.z))
+
+      if (args.wallColliders && args.wallColliders.length > 0) {
+        for (const wall of args.wallColliders) {
+          const dx = playerRig.position.x - wall.center.x
+          const dz = playerRig.position.z - wall.center.z
+          const overlapX = wall.halfSize.x + playerRadius - Math.abs(dx)
+          const overlapZ = wall.halfSize.z + playerRadius - Math.abs(dz)
+          if (overlapX > 0 && overlapZ > 0) {
+            if (overlapX < overlapZ) {
+              playerRig.position.x += dx > 0 ? overlapX : -overlapX
+            } else {
+              playerRig.position.z += dz > 0 ? overlapZ : -overlapZ
+            }
+          }
+        }
+      }
     }
   }
 

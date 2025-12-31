@@ -25,8 +25,16 @@ const props = defineProps<{
   roomWidth: number
   roomDepth: number
   roomHeight?: number
+  floorOvershoot?: number
+  wallThickness?: number
+  floorThickness?: number
+  roofThickness?: number
   floorTextureConfig?: FloorTextureConfig
   theme: 'dark' | 'light'
+}>()
+
+const emit = defineEmits<{
+  (event: 'back-wall-ready', material: THREE.MeshStandardMaterial | null): void
 }>()
 
 let meshes: THREE.Mesh[] = []
@@ -207,18 +215,18 @@ const applyTheme = (theme: 'dark' | 'light') => {
     wallTexture = nextWallTexture
   }
   if (theme === 'dark') {
-    floorMaterial.color.set(0x0f1626)
-    floorMaterial.roughness = 0.92
-    backWallMaterial.color.set(0x1d2b46)
-    leftWallMaterial.color.set(0x162034)
-    rightWallMaterial.color.set(0x202c44)
-    backWallMaterial.roughness = 0.95
-    leftWallMaterial.roughness = 0.95
-    rightWallMaterial.roughness = 0.95
+    floorMaterial.color.set(0x3b2e3a)
+    floorMaterial.roughness = 0.82
+    backWallMaterial.color.set(0x4a3a4e)
+    leftWallMaterial.color.set(0x433347)
+    rightWallMaterial.color.set(0x503f54)
+    backWallMaterial.roughness = 0.86
+    leftWallMaterial.roughness = 0.86
+    rightWallMaterial.roughness = 0.86
     if (roofMaterial) {
       roofMaterial.color.copy(floorMaterial.color)
       roofMaterial.roughness = floorMaterial.roughness
-      roofMaterial.opacity = 0.3
+      roofMaterial.opacity = 0.32
     }
   } else {
     floorMaterial.color.set(0xf5f3ef)
@@ -243,10 +251,10 @@ onMounted(() => {
   }
 
   const roomHeight = props.roomHeight ?? 5.2
-  const wallThickness = 0.18
-  const floorThickness = 0.12
-  const floorOvershoot = 1.2
-  const roofThickness = 0.08
+  const wallThickness = props.wallThickness ?? 0.18
+  const floorThickness = props.floorThickness ?? 0.12
+  const floorOvershoot = props.floorOvershoot ?? 0
+  const roofThickness = props.roofThickness ?? 0.08
   floorTexture = createFloorTexture(getThemeFloorOverrides(props.theme))
 
   const floorGeometry = new THREE.BoxGeometry(
@@ -277,7 +285,10 @@ onMounted(() => {
   )
   if (backWall.material instanceof THREE.MeshStandardMaterial) {
     backWall.material.color.set(0xf5d7c2)
+    backWall.material.transparent = true
+    backWall.material.opacity = 1
     backWallMaterial = backWall.material
+    emit('back-wall-ready', backWall.material)
   }
   backWall.position.set(0, roomHeight / 2, -props.roomDepth / 2 - wallThickness / 2)
   backWall.receiveShadow = true
@@ -348,6 +359,7 @@ onBeforeUnmount(() => {
     wallTexture.dispose()
     wallTexture = null
   }
+  emit('back-wall-ready', null)
 })
 
 watch(
