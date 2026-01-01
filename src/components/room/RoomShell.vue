@@ -34,7 +34,12 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (event: 'back-wall-ready', material: THREE.MeshStandardMaterial | null): void
+  (event: 'back-wall-ready', payload: { material: THREE.MeshStandardMaterial | null; mesh: THREE.Mesh | null }): void
+  (event: 'walls-ready', payload: {
+    back: THREE.MeshStandardMaterial | null
+    left: THREE.MeshStandardMaterial | null
+    right: THREE.MeshStandardMaterial | null
+  }): void
 }>()
 
 let meshes: THREE.Mesh[] = []
@@ -288,7 +293,7 @@ onMounted(() => {
     backWall.material.transparent = true
     backWall.material.opacity = 1
     backWallMaterial = backWall.material
-    emit('back-wall-ready', backWall.material)
+    emit('back-wall-ready', { material: backWall.material, mesh: backWall })
   }
   backWall.position.set(0, roomHeight / 2, -props.roomDepth / 2 - wallThickness / 2)
   backWall.receiveShadow = true
@@ -301,6 +306,8 @@ onMounted(() => {
   )
   if (leftWall.material instanceof THREE.MeshStandardMaterial) {
     leftWall.material.color.set(0xf0cdb4)
+    leftWall.material.transparent = true
+    leftWall.material.opacity = 1
     leftWallMaterial = leftWall.material
   }
   leftWall.position.set(-props.roomWidth / 2 - wallThickness / 2, roomHeight / 2, 0)
@@ -314,12 +321,20 @@ onMounted(() => {
   )
   if (rightWall.material instanceof THREE.MeshStandardMaterial) {
     rightWall.material.color.set(0xf6dec8)
+    rightWall.material.transparent = true
+    rightWall.material.opacity = 1
     rightWallMaterial = rightWall.material
   }
   rightWall.position.set(props.roomWidth / 2 + wallThickness / 2, roomHeight / 2, 0)
   rightWall.receiveShadow = true
   props.scene.add(rightWall)
   meshes.push(rightWall)
+
+  emit('walls-ready', {
+    back: backWallMaterial,
+    left: leftWallMaterial,
+    right: rightWallMaterial,
+  })
 
   const roofGeometry = new THREE.BoxGeometry(
     props.roomWidth + wallThickness * 2,
@@ -359,7 +374,8 @@ onBeforeUnmount(() => {
     wallTexture.dispose()
     wallTexture = null
   }
-  emit('back-wall-ready', null)
+  emit('back-wall-ready', { material: null, mesh: null })
+  emit('walls-ready', { back: null, left: null, right: null })
 })
 
 watch(

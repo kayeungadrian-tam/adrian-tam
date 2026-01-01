@@ -22,7 +22,10 @@ import {
     faTimeline,
     faSchool,
     faArrowUpRightFromSquare,
-    faLightbulb
+    faLightbulb,
+    faVolumeHigh,
+    faVolumeXmark,
+    faMousePointer
 } from '@fortawesome/free-solid-svg-icons'
 
 import {
@@ -46,6 +49,9 @@ library.add(
     faSchool,
     faArrowUpRightFromSquare,
     faLightbulb,
+    faVolumeHigh,
+    faVolumeXmark,
+    faMousePointer,
     faLinkedin,
     faGoogle,
     faFacebook

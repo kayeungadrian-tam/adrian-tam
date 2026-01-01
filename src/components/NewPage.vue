@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, reactive, ref, shallowRef, watch } from 'vue'
 import * as THREE from 'three'
-import { Text } from 'troika-three-text'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 
@@ -32,12 +31,20 @@ import SceneCamera from './camera/SceneCamera.vue'
 // Config
 import { sceneLayout } from '../config/sceneLayout'
 import { createPlayerMovement } from './playerMovement'
+import { createAudioController } from './audioController'
+import { createThemeManager } from './useThemeManager'
+import { createLabelManager } from './labelManager'
+import { createGraffiti, createSkyboxTexture, createSpotlightCone } from './sceneVisuals'
+import { updateWallOcclusion } from './sceneOcclusion'
 
 const container = ref<HTMLDivElement | null>(null)
+const themeStorageKey = 'portfolio-theme'
 const hasStarted = ref(false)
 const isFadingOut = ref(false)
-const theme = ref<'dark' | 'light'>('dark')
-const themeStorageKey = 'portfolio-theme'
+const themeManager = createThemeManager({ storageKey: themeStorageKey })
+const theme = themeManager.theme
+const audioEnabled = ref(true)
+const menuOpen = ref(false)
 
 const clock = new THREE.Clock()
 
@@ -61,6 +68,10 @@ let spotlightCone: THREE.Mesh | null = null
 let spotlightConeMaterial: THREE.MeshBasicMaterial | null = null
 let skyboxTexture: THREE.Texture | null = null
 let backWallMaterial: THREE.MeshStandardMaterial | null = null
+let backWallMesh: THREE.Mesh | null = null
+let leftWallMaterial: THREE.MeshStandardMaterial | null = null
+let rightWallMaterial: THREE.MeshStandardMaterial | null = null
+let graffitiGroup: THREE.Object3D | null = null
 
 const sceneRef = shallowRef<THREE.Scene | null>(null)
 const gltfLoaderRef = shallowRef<GLTFLoader | null>(null)
@@ -108,38 +119,15 @@ const {
   interactables,
   movement: movementConfig,
 } = sceneLayout
+const overlayMenuItems = labels
+  .filter((label) => typeof label.id === 'string' && label.id.length > 0)
+  .map((label) => ({
+    id: label.id as string,
+    label: label.text,
+  }))
 const ballVelocity = new THREE.Vector3()
 let ballMesh: THREE.Mesh | null = null
-const labelBillboards: THREE.Object3D[] = []
-type TroikaLabel = Text & {
-  color: string
-  outlineColor: string
-  outlineWidth: number
-  fillOpacity?: number
-}
-
-const labelRegistry = new Map<
-  string,
-  {
-    group: THREE.Object3D
-    backplate: THREE.MeshStandardMaterial
-    label: TroikaLabel
-    shadow: TroikaLabel
-    defaults: {
-      backplateColor: THREE.Color
-      emissive: THREE.Color
-      emissiveIntensity: number
-      labelColor: string
-      outlineColor: string
-      outlineWidth: number
-      shadowColor: string
-      shadowOpacity: number
-    }
-  }
->()
-let activeLabelId = ''
-let activeLabelBackplate: THREE.MeshStandardMaterial | null = null
-let activeLabelGroup: THREE.Object3D | null = null
+const labelManager = createLabelManager()
 const floorWidth = roomWidth + floorOvershoot * 2
 const floorDepth = roomDepth + floorOvershoot * 2
 const wallColliders = [
@@ -157,63 +145,54 @@ const wallColliders = [
   },
 ]
 
-const applyTheme = (value: 'dark' | 'light') => {
-  theme.value = value
-  if (typeof document !== 'undefined') {
-    document.documentElement.setAttribute('data-theme', value)
-  }
-  if (typeof localStorage !== 'undefined') {
-    localStorage.setItem(themeStorageKey, value)
-  }
-}
-
-const applySceneTheme = (value: 'dark' | 'light') => {
-  if (!scene || !(scene.fog instanceof THREE.FogExp2)) {
-    return
-  }
-  if (value === 'dark') {
-    scene.fog.color.set(0x2a2030)
-    scene.fog.density = 0.04
-  } else {
-    scene.fog.color.set(0xe8edf3)
-    scene.fog.density = 0.06
-  }
-  if (spotlightConeMaterial) {
-    if (value === 'dark') {
-      spotlightConeMaterial.opacity = 0.15
-      spotlightConeMaterial.color.set(0xd6e4ff)
-    } else {
-      spotlightConeMaterial.opacity = 0.06
-      spotlightConeMaterial.color.set(0xfff4e0)
-    }
-  }
-  if (scene) {
-    if (skyboxTexture) {
-      skyboxTexture.dispose()
-      skyboxTexture = null
-    }
-    skyboxTexture = createSkybox()
-    if (skyboxTexture) {
-      scene.background = skyboxTexture
-    }
-  }
-}
-
-const initTheme = () => {
-  if (typeof window === 'undefined') {
-    return
-  }
-  const stored = typeof localStorage !== 'undefined' ? localStorage.getItem(themeStorageKey) : null
-  if (stored === 'light' || stored === 'dark') {
-    applyTheme(stored)
-    return
-  }
-  const prefersDark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)').matches : false
-  applyTheme(prefersDark ? 'dark' : 'light')
-}
-
 const toggleTheme = () => {
-  applyTheme(theme.value === 'dark' ? 'light' : 'dark')
+  themeManager.toggleTheme()
+}
+
+const setSkyboxTexture = (texture: THREE.Texture | null) => {
+  if (skyboxTexture) {
+    skyboxTexture.dispose()
+  }
+  skyboxTexture = texture
+}
+
+const toggleAudio = () => {
+  audioEnabled.value = !audioEnabled.value
+  audioController.toggle()
+}
+
+const toggleMenu = () => {
+  menuOpen.value = !menuOpen.value
+}
+
+const openOverlay = (id: string) => {
+  if (!camera) {
+    return
+  }
+  const target = interactables.find((item) => item.id === id)
+  if (!target) {
+    return
+  }
+  if (!hasStarted.value) {
+    hasStarted.value = true
+    isFadingOut.value = false
+    intro.active = false
+    focus.openedFromMenu = true
+  } else {
+    focus.openedFromMenu = false
+  }
+  focus.active = true
+  focus.transitioning = true
+  focus.targetId = target.id
+  focus.startTime = performance.now()
+  focus.fromPos.copy(camera.position)
+  const forward = new THREE.Vector3()
+  camera.getWorldDirection(forward)
+  focus.fromLook.copy(camera.position).add(forward)
+  const focusOffset = target.cameraOffset ?? new THREE.Vector3(0, 2.0, 2.4)
+  focus.toPos.copy(target.position).add(focusOffset)
+  focus.toLook.copy(target.position)
+  menuOpen.value = false
 }
 
 const nearbyId = ref('')
@@ -221,6 +200,7 @@ const focus = reactive({
   active: false,
   transitioning: false,
   targetId: '',
+  openedFromMenu: false,
   startTime: 0,
   durationMs: 1200,
   fromPos: new THREE.Vector3(),
@@ -229,244 +209,8 @@ const focus = reactive({
   toLook: new THREE.Vector3(),
 })
 
-const createLabel = (text: string, id?: string) => {
-  const group = new THREE.Group()
-  const backplate = new THREE.Mesh(
-    new THREE.ExtrudeGeometry(new THREE.Shape(), {
-      depth: 0.02,
-      bevelEnabled: true,
-      bevelThickness: 0.01,
-      bevelSize: 0.02,
-      bevelSegments: 2,
-      steps: 1,
-    }),
-    new THREE.MeshStandardMaterial({
-      color: 0x0f3a74,
-      roughness: 0.3,
-      metalness: 0.1,
-      emissive: 0x06162b,
-      emissiveIntensity: 0.4,
-    })
-  )
-  backplate.position.set(0, 0, -0.06)
-  backplate.castShadow = true
-  backplate.receiveShadow = true
-  group.add(backplate)
 
-  const shadow = new Text() as TroikaLabel
-  shadow.text = text
-  shadow.fontSize = 0.28
-  shadow.color = '#0a122c'
-  shadow.fillOpacity = 0.55
-  shadow.anchorX = 'center'
-  shadow.anchorY = 'middle'
-  shadow.position.set(0.03, -0.03, -0.02)
-  shadow.depthOffset = -2
-  shadow.sync(() => {
-    if (shadow.material) {
-      shadow.material.depthTest = false
-      shadow.material.transparent = true
-    }
-  })
-
-  const label = new Text() as TroikaLabel
-  label.text = text
-  label.fontSize = 0.28
-  label.color = '#d0e2ff'
-  label.outlineWidth = 0.01
-  label.outlineColor = '#0a122c'
-  label.anchorX = 'center'
-  label.anchorY = 'middle'
-  label.depthOffset = -1
-  label.sync(() => {
-    if (label.material) {
-      label.material.depthTest = false
-      label.material.transparent = true
-    }
-    const bounds = label.textRenderInfo?.blockBounds
-    if (!bounds) {
-      return
-    }
-    const width = bounds[2] - bounds[0]
-    const height = bounds[3] - bounds[1]
-    const padding = 0.08
-    const cornerRadius = 0.12
-    const plateShape = new THREE.Shape()
-    const w = width + padding * 2
-    const h = height + padding * 1
-    const r = Math.min(cornerRadius, w * 0.3, h * 0.5)
-    plateShape.moveTo(-w / 2 + r, -h / 2)
-    plateShape.lineTo(w / 2 - r, -h / 2)
-    plateShape.quadraticCurveTo(w / 2, -h / 2, w / 2, -h / 2 + r)
-    plateShape.lineTo(w / 2, h / 2 - r)
-    plateShape.quadraticCurveTo(w / 2, h / 2, w / 2 - r, h / 2)
-    plateShape.lineTo(-w / 2 + r, h / 2)
-    plateShape.quadraticCurveTo(-w / 2, h / 2, -w / 2, h / 2 - r)
-    plateShape.lineTo(-w / 2, -h / 2 + r)
-    plateShape.quadraticCurveTo(-w / 2, -h / 2, -w / 2 + r, -h / 2)
-    const geometry = new THREE.ExtrudeGeometry(plateShape, {
-      depth: 0.02,
-      bevelEnabled: true,
-      bevelThickness: 0.01,
-      bevelSize: 0.02,
-      bevelSegments: 2,
-      steps: 1,
-    })
-    backplate.geometry.dispose()
-    backplate.geometry = geometry
-  })
-  label.castShadow = true
-  label.receiveShadow = false
-  group.add(shadow, label)
-  labelBillboards.push(group)
-  if (id && backplate.material instanceof THREE.MeshStandardMaterial) {
-    labelRegistry.set(id, {
-      group,
-      backplate: backplate.material,
-      label,
-      shadow,
-      defaults: {
-        backplateColor: backplate.material.color.clone(),
-        emissive: backplate.material.emissive.clone(),
-        emissiveIntensity: backplate.material.emissiveIntensity,
-        labelColor: label.color as string,
-        outlineColor: label.outlineColor as string,
-        outlineWidth: label.outlineWidth,
-        shadowColor: shadow.color as string,
-        shadowOpacity: shadow.fillOpacity ?? 0.55,
-      },
-    })
-  }
-  return group
-}
-
-const setLabelActive = (id: string) => {
-  if (id === activeLabelId) {
-    return
-  }
-  if (activeLabelId && labelRegistry.has(activeLabelId)) {
-    const entry = labelRegistry.get(activeLabelId)
-    if (entry) {
-      entry.backplate.color.copy(entry.defaults.backplateColor)
-      entry.backplate.emissive.copy(entry.defaults.emissive)
-      entry.backplate.emissiveIntensity = entry.defaults.emissiveIntensity
-      entry.label.color = entry.defaults.labelColor
-      entry.label.outlineColor = entry.defaults.outlineColor
-      entry.label.outlineWidth = entry.defaults.outlineWidth
-      entry.shadow.color = entry.defaults.shadowColor
-      entry.shadow.fillOpacity = entry.defaults.shadowOpacity
-    }
-  }
-  activeLabelId = id
-  activeLabelBackplate = null
-  activeLabelGroup = null
-  if (id && labelRegistry.has(id)) {
-    const entry = labelRegistry.get(id)
-    if (entry) {
-      activeLabelBackplate = entry.backplate
-      activeLabelGroup = entry.group
-      entry.label.color = '#FFFFFF'
-      entry.shadow.fillOpacity = Math.min(entry.defaults.shadowOpacity + 0.08, 0.8)
-      entry.backplate.color
-        .copy(entry.defaults.backplateColor)
-        .multiplyScalar(1.5)
-      entry.backplate.emissive.copy(entry.backplate.color)
-      entry.backplate.emissiveIntensity = 0.5
-    }
-  }
-}
-
-const createSpotlightCone = () => {
-  const spotPosition = new THREE.Vector3(0.6, 5.5, 0)
-  const spotDistance = 5.5
-  const spotAngle = THREE.MathUtils.degToRad(30)
-
-  const radius = Math.tan(spotAngle) * spotDistance
-  const geometry = new THREE.ConeGeometry(radius, spotDistance, 32, 1, true)
-
-  geometry.translate(0, -spotDistance / 2, 0)
-
-  const material = new THREE.MeshBasicMaterial({
-    color: theme.value === 'dark' ? 0xFFF9D6 : 0xFAE987,
-    transparent: true,
-    opacity: theme.value === 'dark' ? 0.15 : 0.06,
-    side: THREE.DoubleSide,
-    depthTest: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
-  })
-
-  spotlightConeMaterial = material
-
-  const cone = new THREE.Mesh(geometry, material)
-  cone.position.copy(spotPosition)
-  cone.renderOrder = 1
-
-  return cone
-}
-
-const createSkybox = () => {
-  const size = 2048
-  const canvas = document.createElement('canvas')
-  canvas.width = size
-  canvas.height = size
-  const ctx = canvas.getContext('2d')
-  if (!ctx) return null
-
-  if (theme.value === 'light') {
-    const gradient = ctx.createLinearGradient(0, 0, 0, size)
-    gradient.addColorStop(0, '#cfe0f6')
-    gradient.addColorStop(0.55, '#e9eef7')
-    gradient.addColorStop(1, '#f7e9d2')
-    ctx.fillStyle = gradient
-    ctx.fillRect(0, 0, size, size)
-
-    // Cloud bands
-    for (let i = 0; i < 32; i += 1) {
-      const y = size * (0.45 + Math.random() * 0.35)
-      const width = size * (0.35 + Math.random() * 0.6)
-      const height = size * (0.02 + Math.random() * 0.05)
-      const x = Math.random() * (size - width)
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.3)'
-      ctx.beginPath()
-      ctx.ellipse(x + width / 2, y, width / 2, height, 0, 0, Math.PI * 2)
-      ctx.fill()
-    }
-  } else {
-    const gradient = ctx.createLinearGradient(0, 0, 0, size)
-    gradient.addColorStop(0, '#0a0d1c')
-    gradient.addColorStop(0.6, '#131429')
-    gradient.addColorStop(1, '#1d1a2f')
-    ctx.fillStyle = gradient
-    ctx.fillRect(0, 0, size, size)
-
-    // Star field
-    const starCount = 700
-    for (let i = 0; i < starCount; i += 1) {
-      const x = Math.random() * size
-      const y = Math.random() * size
-      const radius = Math.random() * 1.4 + 0.3
-      const alpha = 0.15 + Math.random() * 0.6
-      ctx.fillStyle = `rgba(220, 226, 255, ${alpha})`
-      ctx.beginPath()
-      ctx.arc(x, y, radius, 0, Math.PI * 2)
-      ctx.fill()
-    }
-
-    // Soft haze near the horizon
-    const haze = ctx.createLinearGradient(0, size * 0.6, 0, size)
-    haze.addColorStop(0, 'rgba(40, 34, 58, 0)')
-    haze.addColorStop(1, 'rgba(62, 48, 72, 0.35)')
-    ctx.fillStyle = haze
-    ctx.fillRect(0, size * 0.6, size, size * 0.4)
-  }
-
-  const texture = new THREE.CanvasTexture(canvas)
-  // Important for a background texture to look correct:
-  texture.colorSpace = THREE.SRGBColorSpace
-  return texture
-}
-
+const createSkybox = () => createSkyboxTexture(theme.value)
 const startExperience = () => {
   if (hasStarted.value || isFadingOut.value) {
     return
@@ -474,6 +218,7 @@ const startExperience = () => {
   isFadingOut.value = true
   intro.active = true
   intro.startTime = performance.now()
+  audioController.start()
 }
 
 type BallReadyPayload = { mesh: THREE.Mesh; cubeCamera: THREE.CubeCamera } | null
@@ -497,8 +242,31 @@ const handleCameraReady = (payload: THREE.PerspectiveCamera | null) => {
   camera = payload
 }
 
-const handleBackWallReady = (material: THREE.MeshStandardMaterial | null) => {
-  backWallMaterial = material
+const handleBackWallReady = (payload: { material: THREE.MeshStandardMaterial | null; mesh: THREE.Mesh | null }) => {
+  backWallMaterial = payload.material
+  backWallMesh = payload.mesh
+  if (!scene) {
+    return
+  }
+  if (graffitiGroup) {
+    scene.remove(graffitiGroup)
+    graffitiGroup = null
+  }
+  if (backWallMesh) {
+    graffitiGroup = createGraffiti('THE ROOM OF ADRIAN TAM')
+    graffitiGroup.position.set(0, roomHeight * 0.8, -4.7)
+    scene.add(graffitiGroup)
+  }
+}
+
+const handleWallsReady = (payload: {
+  back: THREE.MeshStandardMaterial | null
+  left: THREE.MeshStandardMaterial | null
+  right: THREE.MeshStandardMaterial | null
+}) => {
+  backWallMaterial = payload.back
+  leftWallMaterial = payload.left
+  rightWallMaterial = payload.right
 }
 
 // Camera smoothing for RPG feel
@@ -526,6 +294,11 @@ const playerMovement = createPlayerMovement({
 })
 const movementState = playerMovement.state
 let lastFocusOpacity = 1
+const audioController = createAudioController({
+  url: new URL('../assets/audio/321_long_BPM152.mp3', import.meta.url).href,
+  volume: 0.12,
+  enabled: audioEnabled.value,
+})
 
 const updateRigOpacity = (rig: THREE.Object3D, opacity: number) => {
   rig.traverse((node: THREE.Object3D) => {
@@ -565,14 +338,13 @@ const setPlayerAnimation = (state: 'idle' | 'walk' | 'run') => {
 }
 
 onMounted(async () => {
-  initTheme()
+  themeManager.initTheme()
   if (!container.value) {
     return
   }
 
   scene = new THREE.Scene()
   scene.fog = new THREE.FogExp2(0xe8edf3, 0.08)
-  applySceneTheme(theme.value)
   sceneRef.value = scene
 
   const dracoLoader = new DRACOLoader()
@@ -580,24 +352,27 @@ onMounted(async () => {
   const gltfLoader = new GLTFLoader()
   gltfLoader.setDRACOLoader(dracoLoader)
   gltfLoaderRef.value = gltfLoader
+  audioController.init()
 
   for (const label of labels) {
-    const labelMesh = createLabel(label.text, label.id)
+    const labelMesh = labelManager.createLabel(label.text, label.id)
     if (labelMesh) {
       labelMesh.position.copy(label.position)
       scene.add(labelMesh)
     }
   }
 
-  spotlightCone = createSpotlightCone()
-  if (spotlightCone) {
-    scene.add(spotlightCone)
-  }
+  const spotlight = createSpotlightCone(theme.value)
+  spotlightCone = spotlight.mesh
+  spotlightConeMaterial = spotlight.material
+  scene.add(spotlightCone)
 
-  skyboxTexture = createSkybox()
-  if (skyboxTexture && scene) {
-    scene.background = skyboxTexture
-  }
+  themeManager.applySceneTheme({
+    scene,
+    spotlightConeMaterial,
+    createSkybox,
+    setSkyboxTexture,
+  })
 
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
   renderer.shadowMap.enabled = true
@@ -633,12 +408,19 @@ onMounted(async () => {
         camera.lookAt(0, 1.2, 0)
       }
       playerMovement.resetState()
+      audioController.stop()
       event.preventDefault()
       return
     }
     if (focus.active && (event.code === 'KeyQ' || event.code === 'Space')) {
       focus.active = false
       focus.transitioning = false
+      if (focus.openedFromMenu) {
+        hasStarted.value = false
+        isFadingOut.value = false
+        intro.active = false
+        focus.openedFromMenu = false
+      }
       event.preventDefault()
       return
     }
@@ -695,8 +477,13 @@ onMounted(async () => {
   renderer.setAnimationLoop(animate)
 })
 
-watch(theme, (value) => {
-  applySceneTheme(value)
+watch(theme, () => {
+  themeManager.applySceneTheme({
+    scene,
+    spotlightConeMaterial,
+    createSkybox,
+    setSkyboxTexture,
+  })
 })
 
 onBeforeUnmount(() => {
@@ -737,6 +524,10 @@ onBeforeUnmount(() => {
     spotlightCone = null
     spotlightConeMaterial = null
   }
+  if (graffitiGroup && scene) {
+    scene.remove(graffitiGroup)
+    graffitiGroup = null
+  }
   if (skyboxTexture) {
     skyboxTexture.dispose()
     skyboxTexture = null
@@ -749,6 +540,7 @@ onBeforeUnmount(() => {
     container.value.removeChild(renderer.domElement)
     renderer.dispose()
   }
+  audioController.stop()
 })
 
 function animate() {
@@ -789,17 +581,17 @@ function animate() {
       lastFocusOpacity = targetOpacity
     }
   }
-  if (backWallMaterial && playerRig) {
-    const backWallZ = -roomDepth / 2 - wallThickness / 2
-    const distanceBehind = backWallZ - playerRig.position.z
-    const fadeStart = 0.15
-    const fadeEnd = 1.2
-    const t = Math.min(Math.max((distanceBehind - fadeStart) / (fadeEnd - fadeStart), 0), 1)
-    const targetOpacity = 1 - t * 0.6
-    if (Math.abs(backWallMaterial.opacity - targetOpacity) > 0.01) {
-      backWallMaterial.opacity = targetOpacity
-    }
-  }
+  updateWallOcclusion({
+    camera,
+    playerRig,
+    roomWidth,
+    roomDepth,
+    roomHeight,
+    wallThickness,
+    backWallMaterial,
+    leftWallMaterial,
+    rightWallMaterial,
+  })
 
   // Ball physics
   if (playerRig && ballMesh) {
@@ -861,15 +653,8 @@ function animate() {
     nearbyId.value = ''
   }
   const highlightId = !focus.active ? nearbyId.value : ''
-  setLabelActive(highlightId)
-  if (activeLabelBackplate) {
-    const pulse = Math.sin(performance.now() * 0.004) * 0.15
-    activeLabelBackplate.emissiveIntensity = 0.35 + pulse
-  }
-  if (activeLabelGroup) {
-    const scalePulse = 1 + Math.sin(performance.now() * 0.004) * 0.015
-    activeLabelGroup.scale.setScalar(scalePulse)
-  }
+  labelManager.setActive(highlightId)
+  labelManager.updatePulse(performance.now())
 
   // Camera control
   if (playerRig && focus.active) {
@@ -926,11 +711,7 @@ function animate() {
     avatarHead.rotateY(Math.PI)
   }
 
-  if (labelBillboards.length > 0) {
-    for (const label of labelBillboards) {
-      label.quaternion.copy(camera.quaternion)
-    }
-  }
+  labelManager.updateBillboards(camera)
 
   if (ballMesh && ballCubeCamera) {
     ballMesh.visible = false
@@ -945,20 +726,68 @@ function animate() {
 
 <template>
   <div class="threejs-stage">
-    <button class="theme-toggle" type="button" @click.stop="toggleTheme"
-      v-bind="{
-        'aria-pressed': theme === 'dark',
-        'aria-label': `Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`,
-        title: `Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`,
-      }">
+
+    <button class="theme-toggle" type="button" @click.stop="toggleTheme" v-bind="{
+      'aria-pressed': theme === 'dark',
+      'aria-label': `Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`,
+      title: `Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`,
+    }">
       <fa class="theme-toggle__icon" icon="lightbulb" aria-hidden="true" />
     </button>
+
+    <button class="theme-toggle theme-toggle--audio" type="button" @click.stop="toggleAudio" v-bind="{
+      'aria-pressed': audioEnabled,
+      'aria-label': `${audioEnabled ? 'Mute' : 'Enable'} background music`,
+      title: `${audioEnabled ? 'Mute' : 'Enable'} background music`,
+    }">
+      <fa class="theme-toggle__icon" :icon="audioEnabled ? 'volume-high' : 'volume-xmark'" aria-hidden="true" />
+    </button>
+    <button class="theme-toggle theme-toggle--menu" type="button" @click.stop="toggleMenu" v-bind="{
+      'aria-expanded': menuOpen,
+      'aria-label': 'Open menu',
+      title: 'Open menu',
+    }">
+      <fa class="theme-toggle__icon" icon="bars" aria-hidden="true" />
+    </button>
+    <div v-if="menuOpen" class="overlay-menu">
+      <div class="overlay-menu__title">Sections</div>
+      <button v-for="item in overlayMenuItems" :key="item.id" class="overlay-menu__item" type="button"
+        @click="openOverlay(item.id)">
+        {{ item.label }}
+      </button>
+    </div>
+    <div v-if="hasStarted && !focus.active" class="threejs-guide">
+      <div class="threejs-guide__row threejs-guide__row--cluster">
+        <div class="threejs-guide__cluster">
+          <div class="threejs-guide__key threejs-guide__key--w">W</div>
+          <div class="threejs-guide__key threejs-guide__key--a">A</div>
+          <div class="threejs-guide__key threejs-guide__key--s">S</div>
+          <div class="threejs-guide__key threejs-guide__key--d">D</div>
+        </div>
+        <span class="threejs-guide__label">Movement</span>
+      </div>
+      <div class="threejs-guide__row">
+        <div class="threejs-guide__key threejs-guide__key--space">Space</div>
+        <span class="threejs-guide__label">Interact / Close</span>
+      </div>
+      <div class="threejs-guide__row">
+        <div class="threejs-guide__key threejs-guide__key--enter">Enter</div>
+        <span class="threejs-guide__label">Return</span>
+      </div>
+      <div class="threejs-guide__row">
+        <span class="threejs-guide__mouse">
+          <fa class="threejs-guide__mouse-icon" icon="mouse-pointer" aria-hidden="true" />
+          Drag
+        </span>
+        <span class="threejs-guide__label">Look</span>
+      </div>
+    </div>
     <div ref="container" class="threejs-canvas"></div>
     <SceneCamera :container="container" :intro-from="intro.from" :look-at="introLookAt" @ready="handleCameraReady" />
     <RoomShell v-if="sceneRef" :scene="sceneRef" :room-width="roomWidth" :room-depth="roomDepth"
       :room-height="roomHeight" :wall-thickness="wallThickness" :floor-thickness="floorThickness"
       :roof-thickness="roofThickness" :floor-overshoot="floorOvershoot" :theme="theme"
-      @back-wall-ready="handleBackWallReady" />
+      @back-wall-ready="handleBackWallReady" @walls-ready="handleWallsReady" />
     <SceneLights v-if="sceneRef" :scene="sceneRef" :theme="theme" />
     <BallModel v-if="sceneRef" :scene="sceneRef" :position="ballPosition" :radius="ballRadius"
       @ready="handleBallReady" />
@@ -978,7 +807,7 @@ function animate() {
       :target-height="chairTargetHeight" />
     <AvatarModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef" :position="avatarPosition"
       :rotation-y="avatarRotationY" :scale="avatarScale" @head-ready="avatarHead = $event" />
-    <div v-if="hasStarted" class="threejs-hint">Press Enter to return</div>
+
     <div v-if="hasStarted && nearbyId && !focus.active" class="threejs-prompt">
       Press Spacebar to view
     </div>
@@ -1049,10 +878,123 @@ function animate() {
   letter-spacing: 0.4px;
 }
 
+.threejs-guide {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 20;
+  padding: 14px 16px;
+  border-radius: 14px;
+  color: var(--stage-hint-text);
+  font-size: 12px;
+  letter-spacing: 0.3px;
+  display: grid;
+  gap: 10px;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.threejs-guide__cluster {
+  position: relative;
+  width: 110px;
+  height: 76px;
+}
+
+.threejs-guide__key {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 32px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--stage-hint-text) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--stage-hint-text) 25%, transparent);
+  color: var(--stage-hint-text);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.threejs-guide__key--w {
+  top: 0;
+  left: 36px;
+}
+
+.threejs-guide__key--a {
+  top: 38px;
+  left: 0;
+}
+
+.threejs-guide__key--s {
+  top: 38px;
+  left: 36px;
+}
+
+.threejs-guide__key--d {
+  top: 38px;
+  left: 72px;
+}
+
+.threejs-guide__key--space {
+  position: relative;
+  width: 110px;
+}
+
+.threejs-guide__key--enter {
+  position: relative;
+  width: 88px;
+}
+
+.threejs-guide__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1.2;
+}
+
+.threejs-guide__row--cluster {
+  gap: 14px;
+}
+
+.threejs-guide__label {
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.threejs-guide__mouse {
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--stage-hint-text) 12%, transparent);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.threejs-guide__mouse-icon {
+  font-size: 12px;
+}
+
+[data-theme='light'] .threejs-guide {
+  color: #1d1f27;
+}
+
+[data-theme='light'] .threejs-guide__key {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.18);
+  color: #1d1f27;
+}
+
+[data-theme='light'] .threejs-guide__mouse {
+  background: rgba(0, 0, 0, 0.08);
+}
+
 .theme-toggle {
   position: fixed;
   top: 20px;
-  right: 20px;
+  right: 72px;
   z-index: 20;
   display: inline-flex;
   align-items: center;
@@ -1069,6 +1011,56 @@ function animate() {
   box-shadow: var(--theme-toggle-shadow);
   backdrop-filter: blur(10px);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.theme-toggle--audio {
+  right: 124px;
+}
+
+.theme-toggle--menu {
+  right: 20px;
+}
+
+.overlay-menu {
+  position: fixed;
+  right: 20px;
+  top: 74px;
+  z-index: 20;
+  min-width: 160px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--stage-hint-bg);
+  color: var(--stage-hint-text);
+  border: 1px solid var(--theme-toggle-border);
+  box-shadow: var(--theme-toggle-shadow);
+  display: grid;
+  gap: 6px;
+}
+
+.overlay-menu__title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.7;
+  margin-bottom: 4px;
+}
+
+.overlay-menu__item {
+  appearance: none;
+  border: 1px solid transparent;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.overlay-menu__item:hover {
+  background: var(--stage-prompt-bg);
+  border-color: var(--stage-prompt-text);
 }
 
 .theme-toggle:hover {
