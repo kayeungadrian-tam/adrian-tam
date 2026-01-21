@@ -25,12 +25,28 @@
         </span>
       </div>
 
-      <!-- CTA -->
+      <!-- CTA Buttons -->
       <div class="cta-section">
+        <div class="cta-buttons">
+          <button class="cta-btn cta-btn--primary" @click.stop="handleQuickView">
+            <fa icon="file-alt" class="cta-btn__icon" />
+            <div class="cta-btn__content">
+              <span class="cta-btn__title">Quick Overview</span>
+              <span class="cta-btn__subtitle">1-minute professional summary</span>
+            </div>
+          </button>
+          <button class="cta-btn cta-btn--secondary" @click.stop="handleExplore">
+            <fa icon="cube" class="cta-btn__icon" />
+            <div class="cta-btn__content">
+              <span class="cta-btn__title">Explore in 3D</span>
+              <span class="cta-btn__subtitle">Interactive career journey</span>
+            </div>
+          </button>
+        </div>
         <div class="hint">
-          <span>Press</span>
+          <span>or press</span>
           <kbd class="kbd">Space</kbd>
-          <span>to explore</span>
+          <span>to enter 3D experience</span>
         </div>
       </div>
     </div>
@@ -41,7 +57,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps<{ isFadingOut: boolean }>()
-const emit = defineEmits(['fade'])
+const emit = defineEmits(['fade', 'quickView'])
 
 const typedText = ref('')
 const cursorVisible = ref(true)
@@ -102,9 +118,15 @@ onMounted(() => {
 })
 
 const handleClick = (event: MouseEvent) => {
-  if (event.button !== 0) {
-    return
-  }
+  // Disabled general click to prevent accidental clicks
+  // Users must click buttons or press space
+}
+
+const handleQuickView = () => {
+  emit('quickView')
+}
+
+const handleExplore = () => {
   emit('fade')
 }
 
@@ -347,7 +369,91 @@ const getParticleStyle = (i: number) => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 24px;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.cta-btn {
+  display: flex;
+  align-items: center;
   gap: 16px;
+  padding: 20px 28px;
+  border-radius: 16px;
+  border: 2px solid;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 260px;
+  text-align: left;
+}
+
+.cta-btn__icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.cta-btn__content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cta-btn__title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.cta-btn__subtitle {
+  font-size: 12px;
+  opacity: 0.8;
+  font-weight: 400;
+}
+
+.cta-btn--primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+}
+
+.cta-btn--primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.5);
+}
+
+[data-theme="dark"] .cta-btn--secondary {
+  border-color: #0f62fe;
+  color: #d0e1ff;
+  background: rgba(15, 98, 254, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+[data-theme="dark"] .cta-btn--secondary:hover {
+  background: rgba(15, 98, 254, 0.25);
+  border-color: #78a9ff;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(15, 98, 254, 0.3);
+}
+
+[data-theme="light"] .cta-btn--secondary {
+  border-color: #0f62fe;
+  color: #0043ce;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .cta-btn--secondary:hover {
+  background: rgba(15, 98, 254, 0.15);
+  border-color: #0043ce;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 67, 206, 0.2);
 }
 
 .hint {
@@ -425,6 +531,17 @@ const getParticleStyle = (i: number) => {
 
   .typing-container {
     height: 60px;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .cta-btn {
+    min-width: auto;
+    width: 100%;
   }
 }
 </style>
