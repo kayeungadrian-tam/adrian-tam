@@ -11,6 +11,7 @@ import EducationOverlay from './overlays/EducationOverlay.vue'
 import StartOverlay from './overlays/StartOverlay.vue'
 import AwardsOverlay from './overlays/AwardsOverlay.vue'
 import ProjectsOverlay from './overlays/ProjectsOverlay.vue'
+import QuickOverview from './overlays/QuickOverview.vue'
 
 // Objects
 import TableModel from './objects/table.vue'
@@ -42,6 +43,7 @@ const container = ref<HTMLDivElement | null>(null)
 const themeStorageKey = 'portfolio-theme'
 const hasStarted = ref(false)
 const isFadingOut = ref(false)
+const showQuickOverview = ref(false)
 const themeManager = createThemeManager({ storageKey: themeStorageKey })
 const theme = themeManager.theme
 const audioEnabled = ref(true)
@@ -221,6 +223,19 @@ const startExperience = () => {
   intro.active = true
   intro.startTime = performance.now()
   audioController.start()
+}
+
+const handleQuickView = () => {
+  showQuickOverview.value = true
+}
+
+const handleCloseQuickView = () => {
+  showQuickOverview.value = false
+}
+
+const handleExploreFromQuickView = () => {
+  showQuickOverview.value = false
+  startExperience()
 }
 
 type BallReadyPayload = { mesh: THREE.Mesh; cubeCamera: THREE.CubeCamera } | null
@@ -785,6 +800,11 @@ function animate() {
       <fa class="theme-toggle__icon" icon="bars" aria-hidden="true" />
     </button>
     <div v-if="menuOpen" class="overlay-menu">
+      <div class="overlay-menu__title">Navigation</div>
+      <button class="overlay-menu__item overlay-menu__item--highlight" type="button" @click="handleQuickView">
+        <fa icon="file-alt" /> Quick Overview
+      </button>
+      <div class="overlay-menu__divider"></div>
       <div class="overlay-menu__title">Sections</div>
       <button v-for="item in overlayMenuItems" :key="item.id" class="overlay-menu__item" type="button"
         @click="openOverlay(item.id)">
@@ -865,7 +885,18 @@ function animate() {
       <ProjectsOverlay v-if="focus.active && focus.targetId === 'drawer'" />
     </Transition>
 
-    <StartOverlay v-if="!hasStarted || isFadingOut" :is-fading-out="isFadingOut" @fade="startExperience" />
+    <StartOverlay
+      v-if="!hasStarted || isFadingOut"
+      :is-fading-out="isFadingOut"
+      @fade="startExperience"
+      @quick-view="handleQuickView"
+    />
+
+    <QuickOverview
+      v-if="showQuickOverview"
+      @close="handleCloseQuickView"
+      @explore="handleExploreFromQuickView"
+    />
 
   </div>
 </template>
@@ -1096,6 +1127,27 @@ function animate() {
 .overlay-menu__item:hover {
   background: var(--stage-prompt-bg);
   border-color: var(--stage-prompt-text);
+}
+
+.overlay-menu__item--highlight {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 600;
+  border-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.overlay-menu__item--highlight:hover {
+  background: linear-gradient(135deg, #7688eb 0%, #8458b3 100%);
+  transform: translateY(-1px);
+}
+
+.overlay-menu__divider {
+  height: 1px;
+  background: var(--theme-toggle-border);
+  margin: 8px 0;
 }
 
 .theme-toggle:hover {
