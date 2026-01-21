@@ -36,6 +36,7 @@ import { createThemeManager } from './useThemeManager'
 import { createLabelManager } from './labelManager'
 import { createGraffiti, createSkyboxTexture, createSpotlightCone } from './sceneVisuals'
 import { updateWallOcclusion } from './sceneOcclusion'
+import { createPostProcessing, type PostProcessingController } from './postProcessing'
 
 const container = ref<HTMLDivElement | null>(null)
 const themeStorageKey = 'portfolio-theme'
@@ -51,6 +52,7 @@ const clock = new THREE.Clock()
 let scene: THREE.Scene | null = null
 let camera: THREE.PerspectiveCamera | null = null
 let renderer: THREE.WebGLRenderer | null = null
+let postProcessing: PostProcessingController | null = null
 let resizeHandler: (() => void) | null = null
 let keyDownHandler: ((event: KeyboardEvent) => void) | null = null
 let keyUpHandler: ((event: KeyboardEvent) => void) | null = null
@@ -382,11 +384,26 @@ onMounted(async () => {
   container.value.appendChild(renderer.domElement)
   renderer.setClearColor(0x000000, 0)
 
+  // Initialize post-processing effects
+  if (camera) {
+    postProcessing = createPostProcessing({
+      renderer,
+      scene,
+      camera,
+      theme: theme.value,
+    })
+  }
+
   resizeHandler = () => {
     if (!container.value || !renderer) {
       return
     }
     renderer.setSize(window.innerWidth, window.innerHeight)
+    if (camera && postProcessing) {
+      camera.aspect = window.innerWidth / window.innerHeight
+      camera.updateProjectionMatrix()
+      postProcessing.resize(window.innerWidth, window.innerHeight)
+    }
   }
   window.addEventListener('resize', resizeHandler)
 
@@ -484,6 +501,9 @@ watch(theme, () => {
     createSkybox,
     setSkyboxTexture,
   })
+  if (postProcessing) {
+    postProcessing.updateTheme(theme.value)
+  }
 })
 
 onBeforeUnmount(() => {
@@ -536,6 +556,11 @@ onBeforeUnmount(() => {
     }
   }
 
+  if (postProcessing) {
+    postProcessing.dispose()
+    postProcessing = null
+  }
+
   if (renderer && container.value) {
     container.value.removeChild(renderer.domElement)
     renderer.dispose()
@@ -547,7 +572,11 @@ function animate() {
   if (!scene || !camera || !renderer) return;
 
   if (!hasStarted.value && !isFadingOut.value && !intro.active) {
-    renderer.render(scene, camera);
+    if (postProcessing) {
+      postProcessing.render();
+    } else {
+      renderer.render(scene, camera);
+    }
     return;
   }
 
@@ -720,7 +749,13 @@ function animate() {
     ballMesh.visible = true
   }
 
-  renderer.render(scene, camera)
+  // Update post-processing effects
+  if (postProcessing) {
+    postProcessing.updateFocusMode(focus.active)
+    postProcessing.render()
+  } else {
+    renderer.render(scene, camera)
+  }
 }
 </script>
 
