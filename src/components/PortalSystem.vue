@@ -173,7 +173,7 @@ onBeforeUnmount(() => {
 /**
  * Check if player is near a portal
  */
-export function checkPortalProximity(playerPosition: THREE.Vector3): Portal | null {
+function checkPortalProximity(playerPosition: THREE.Vector3): Portal | null {
   for (const [id, group] of portalMeshes) {
     const portal = group.userData.portal as Portal
     const distance = playerPosition.distanceTo(portal.position)
