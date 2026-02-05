@@ -29,8 +29,18 @@ import CeilingLightModel from './objects/ceilingLight.vue'
 // Cameras
 import SceneCamera from './camera/SceneCamera.vue'
 
+// Expanded World
+import PortalSystem from './PortalSystem.vue'
+import Minimap from './Minimap.vue'
+import ZoneFloors from './ZoneFloors.vue'
+import SkillCrystals from './zones/SkillCrystals.vue'
+import ProjectOrbs from './zones/ProjectOrbs.vue'
+import HubWelcome from './zones/HubWelcome.vue'
+import PersonalManifesto from './zones/PersonalManifesto.vue'
+
 // Config
 import { sceneLayout } from '../config/sceneLayout'
+import { expandedWorld, zones, portals, getCurrentZone, type Portal } from '../config/expandedWorld'
 import { createPlayerMovement } from './playerMovement'
 import { createAudioController } from './audioController'
 import { createThemeManager } from './useThemeManager'
@@ -48,6 +58,12 @@ const themeManager = createThemeManager({ storageKey: themeStorageKey })
 const theme = themeManager.theme
 const audioEnabled = ref(true)
 const menuOpen = ref(false)
+
+// Expanded world
+const portalSystemRef = ref<InstanceType<typeof PortalSystem> | null>(null)
+const playerPositionRef = ref<THREE.Vector3 | null>(null)
+const currentZoneId = ref<string>('hub')
+const nearbyPortal = ref<Portal | null>(null)
 
 const clock = new THREE.Clock()
 
@@ -81,11 +97,13 @@ const sceneRef = shallowRef<THREE.Scene | null>(null)
 const gltfLoaderRef = shallowRef<GLTFLoader | null>(null)
 const introLookAt = new THREE.Vector3(0, 1.2, 0)
 
+// Start at hub center with camera above
+const hubZone = zones.find(z => z.id === 'hub')!
 const intro = {
   active: false,
   startTime: 0,
   durationMs: 2200,
-  from: new THREE.Vector3(0, 3.6, 9),
+  from: new THREE.Vector3(hubZone.center.x, 15, hubZone.center.z + 15),
 }
 const {
   followOffset,
@@ -236,6 +254,48 @@ const handleCloseQuickView = () => {
 const handleExploreFromQuickView = () => {
   showQuickOverview.value = false
   startExperience()
+}
+
+/**
+ * Handle portal teleportation
+ */
+const handlePortalTeleport = (portal: Portal) => {
+  if (!playerRig || !camera) return
+
+  const targetZone = zones.find(z => z.id === portal.toZone)
+  if (!targetZone) return
+
+  // Teleport player to spawn point of destination zone
+  playerRig.position.copy(targetZone.spawnPoint)
+  currentZoneId.value = portal.toZone
+
+  // Update camera position smoothly
+  const offsetPos = targetZone.spawnPoint.clone()
+  offsetPos.y += 6
+  offsetPos.z += 5
+  camera.position.copy(offsetPos)
+  camera.lookAt(targetZone.spawnPoint)
+}
+
+/**
+ * Handle minimap teleport (fast travel to visited zone)
+ */
+const handleMinimapTeleport = (zoneId: string) => {
+  if (!playerRig || !camera) return
+
+  const targetZone = zones.find(z => z.id === zoneId)
+  if (!targetZone) return
+
+  // Teleport to zone spawn point
+  playerRig.position.copy(targetZone.spawnPoint)
+  currentZoneId.value = zoneId
+
+  // Update camera
+  const offsetPos = targetZone.spawnPoint.clone()
+  offsetPos.y += 6
+  offsetPos.z += 5
+  camera.position.copy(offsetPos)
+  camera.lookAt(targetZone.spawnPoint)
 }
 
 type BallReadyPayload = { mesh: THREE.Mesh; cubeCamera: THREE.CubeCamera } | null
@@ -624,6 +684,26 @@ function animate() {
       updateRigOpacity(playerRig, targetOpacity)
       lastFocusOpacity = targetOpacity
     }
+
+    // Update player position for minimap
+    playerPositionRef.value = playerRig.position.clone()
+
+    // Check for nearby portals
+    if (portalSystemRef.value && !focus.active) {
+      const portal = portalSystemRef.value.checkPortalProximity(playerRig.position)
+      nearbyPortal.value = portal
+
+      // Auto-teleport when entering portal
+      if (portal && movementState.moveVelocity.length() > 0.5) {
+        handlePortalTeleport(portal)
+      }
+    }
+
+    // Update current zone
+    const zone = getCurrentZone(playerRig.position)
+    if (zone) {
+      currentZoneId.value = zone.id
+    }
   }
   updateWallOcclusion({
     camera,
@@ -844,9 +924,20 @@ function animate() {
       :roof-thickness="roofThickness" :floor-overshoot="floorOvershoot" :theme="theme"
       @back-wall-ready="handleBackWallReady" @walls-ready="handleWallsReady" />
     <SceneLights v-if="sceneRef" :scene="sceneRef" :theme="theme" />
+
+    <!-- Expanded World Components -->
+    <ZoneFloors v-if="sceneRef" :scene="sceneRef" :theme="theme" />
+    <PortalSystem ref="portalSystemRef" v-if="sceneRef" :scene="sceneRef" :theme="theme" />
+
+    <!-- Zone Content -->
+    <HubWelcome v-if="sceneRef" :scene="sceneRef" :hub-center="zones.find(z => z.id === 'hub')!.center" :theme="theme" />
+    <SkillCrystals v-if="sceneRef" :scene="sceneRef" :zone-center="zones.find(z => z.id === 'technical')!.center" :theme="theme" />
+    <ProjectOrbs v-if="sceneRef" :scene="sceneRef" :zone-center="zones.find(z => z.id === 'creative')!.center" :theme="theme" />
+    <PersonalManifesto v-if="sceneRef" :scene="sceneRef" :zone-center="zones.find(z => z.id === 'personal')!.center" :theme="theme" />
+
     <BallModel v-if="sceneRef" :scene="sceneRef" :position="ballPosition" :radius="ballRadius"
       @ready="handleBallReady" />
-    <PlayerRig v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef" :position="playerPosition"
+    <PlayerRig v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef" :position="hubZone.spawnPoint"
       :target-height="playerTargetHeight" @ready="handlePlayerReady" />
     <CeilingLightModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef"
       :position="ceilingLightPosition" :target-height="ceilingLightTargetHeight" />
@@ -866,9 +957,20 @@ function animate() {
     <div v-if="hasStarted && nearbyId && !focus.active" class="threejs-prompt">
       Press Spacebar to view
     </div>
+    <div v-if="hasStarted && nearbyPortal && !focus.active" class="threejs-prompt threejs-prompt--portal">
+      <fa icon="door-open" /> Entering {{ nearbyPortal.label }}
+    </div>
     <div v-if="focus.active" class="threejs-prompt">
       Press Q to return
     </div>
+
+    <!-- Minimap -->
+    <Minimap
+      v-if="hasStarted && !focus.active"
+      :player-position="playerPositionRef"
+      :theme="theme"
+      @teleport="handleMinimapTeleport"
+    />
     <Transition name="overlay-fade">
       <WorkOverlay v-if="focus.active && focus.targetId === 'table'" />
     </Transition>
@@ -942,6 +1044,28 @@ function animate() {
   font-size: 15px;
   border-radius: 999px;
   letter-spacing: 0.4px;
+}
+
+.threejs-prompt--portal {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  animation: portal-pulse 1.5s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@keyframes portal-pulse {
+  0%, 100% {
+    transform: translateX(-50%) scale(1);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.05);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+  }
 }
 
 .threejs-guide {
