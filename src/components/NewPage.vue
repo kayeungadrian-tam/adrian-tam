@@ -33,6 +33,10 @@ import SceneCamera from './camera/SceneCamera.vue'
 import PortalSystem from './PortalSystem.vue'
 import Minimap from './Minimap.vue'
 import ZoneFloors from './ZoneFloors.vue'
+import SkillCrystals from './zones/SkillCrystals.vue'
+import ProjectOrbs from './zones/ProjectOrbs.vue'
+import HubWelcome from './zones/HubWelcome.vue'
+import PersonalManifesto from './zones/PersonalManifesto.vue'
 
 // Config
 import { sceneLayout } from '../config/sceneLayout'
@@ -924,6 +928,12 @@ function animate() {
     <!-- Expanded World Components -->
     <ZoneFloors v-if="sceneRef" :scene="sceneRef" :theme="theme" />
     <PortalSystem ref="portalSystemRef" v-if="sceneRef" :scene="sceneRef" :theme="theme" />
+
+    <!-- Zone Content -->
+    <HubWelcome v-if="sceneRef" :scene="sceneRef" :hub-center="zones.find(z => z.id === 'hub')!.center" :theme="theme" />
+    <SkillCrystals v-if="sceneRef" :scene="sceneRef" :zone-center="zones.find(z => z.id === 'technical')!.center" :theme="theme" />
+    <ProjectOrbs v-if="sceneRef" :scene="sceneRef" :zone-center="zones.find(z => z.id === 'creative')!.center" :theme="theme" />
+    <PersonalManifesto v-if="sceneRef" :scene="sceneRef" :zone-center="zones.find(z => z.id === 'personal')!.center" :theme="theme" />
 
     <BallModel v-if="sceneRef" :scene="sceneRef" :position="ballPosition" :radius="ballRadius"
       @ready="handleBallReady" />
