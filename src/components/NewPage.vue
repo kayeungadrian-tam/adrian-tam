@@ -176,10 +176,15 @@ const handleExploreFromQuickView = () => {
   startExperience()
 }
 
+let lastTeleportTime = 0
+const TELEPORT_COOLDOWN = 2000 // ms
+
 const handlePortalTeleport = (portal: Portal) => {
   if (!playerRig || !camera) return
+  if (performance.now() - lastTeleportTime < TELEPORT_COOLDOWN) return
   const targetZone = zones.find(z => z.id === portal.toZone)
   if (!targetZone) return
+  lastTeleportTime = performance.now()
   playerRig.position.copy(targetZone.spawnPoint)
   currentZoneId.value = portal.toZone
   const offsetPos = targetZone.spawnPoint.clone()
