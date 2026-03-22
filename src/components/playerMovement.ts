@@ -172,8 +172,8 @@ export const createPlayerMovement = (config: PlayerMovementConfig) => {
       args.setPlayerAnimation(isSprinting ? 'run' : 'walk')
 
       const speed = state.moveVelocity.length()
-      const bobFrequency = isSprinting ? 10 : 7
-      const bobAmplitude = 0.03
+      const bobFrequency = isSprinting ? 8 : 5
+      const bobAmplitude = 0.008
       headBobTime += delta * bobFrequency
       state.headBobOffset = Math.sin(headBobTime) * bobAmplitude * Math.min(speed / config.walkSpeed, 1)
     } else {

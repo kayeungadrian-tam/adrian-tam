@@ -42,12 +42,15 @@ const createPlayer = () => {
       const shadowMaterial = new THREE.MeshBasicMaterial({
         color: 0x000000,
         transparent: true,
-        opacity: 0.25,
+        opacity: 0.18,
         depthWrite: false,
+        polygonOffset: true,
+        polygonOffsetFactor: -1,
+        polygonOffsetUnits: -1,
       })
       const shadowMesh = new THREE.Mesh(shadowGeometry, shadowMaterial)
       shadowMesh.rotation.x = -Math.PI / 2
-      shadowMesh.position.y = 0.02 // just above the ground to avoid z-fighting
+      shadowMesh.position.y = 0.05
       shadowMesh.renderOrder = -1
 
       const rig = new THREE.Group()
