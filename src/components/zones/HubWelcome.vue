@@ -16,112 +16,105 @@ let welcomeGroup: THREE.Group | null = null
 let textMeshes: Text[] = []
 let animationId: number | null = null
 
-// Reusable vectors to avoid per-frame allocations
 const _cameraWorldPos = new THREE.Vector3()
 const _textWorldPos = new THREE.Vector3()
 const _lookTarget = new THREE.Vector3()
 
-/**
- * Create welcome pedestal in hub center
- */
-function createWelcomePedestal(): THREE.Group {
+function createWelcomeHub(): THREE.Group {
   const group = new THREE.Group()
   group.position.copy(props.hubCenter)
 
-  // Pedestal base (cylinder)
-  const baseGeometry = new THREE.CylinderGeometry(2, 2.5, 0.5, 32)
-  const baseMaterial = new THREE.MeshStandardMaterial({
-    color: 0xa78bfa, // Purple
-    metalness: 0.7,
-    roughness: 0.3,
-  })
-  const base = new THREE.Mesh(baseGeometry, baseMaterial)
-  base.position.y = 0.25
-  base.castShadow = true
-  base.receiveShadow = true
-  group.add(base)
-
-  // Pedestal column
-  const columnGeometry = new THREE.CylinderGeometry(1.5, 1.8, 2, 32)
-  const columnMaterial = new THREE.MeshStandardMaterial({
-    color: 0x8b5cf6,
-    metalness: 0.6,
-    roughness: 0.4,
-  })
-  const column = new THREE.Mesh(columnGeometry, columnMaterial)
-  column.position.y = 1.5
-  column.castShadow = true
-  group.add(column)
-
-  // Top platform
-  const topGeometry = new THREE.CylinderGeometry(2, 1.5, 0.3, 32)
-  const topMaterial = new THREE.MeshStandardMaterial({
+  // Thin glowing ground ring
+  const ringGeometry = new THREE.TorusGeometry(4, 0.04, 16, 64)
+  const ringMaterial = new THREE.MeshBasicMaterial({
     color: 0xa78bfa,
-    metalness: 0.8,
-    roughness: 0.2,
+    transparent: true,
+    opacity: 0.6,
   })
-  const top = new THREE.Mesh(topGeometry, topMaterial)
-  top.position.y = 2.65
-  top.castShadow = true
-  group.add(top)
+  const ring = new THREE.Mesh(ringGeometry, ringMaterial)
+  ring.rotation.x = -Math.PI / 2
+  ring.position.y = 0.05
+  group.add(ring)
 
-  // Holographic text above pedestal
-  const textMesh = new Text() as any
-  textMesh.text = 'WELCOME TO\nADRIAN\'S MIND'
-  textMesh.fontSize = 0.4
-  textMesh.font = '/fonts/Roboto-Bold.ttf'
-  textMesh.color = 0xffffff
-  textMesh.anchorX = 'center'
-  textMesh.anchorY = 'middle'
-  textMesh.position.y = 4
-  textMesh.textAlign = 'center'
-  textMesh.sync()
-  textMeshes.push(textMesh)
-  group.add(textMesh)
+  // Inner ring
+  const innerRingGeometry = new THREE.TorusGeometry(2.5, 0.02, 16, 64)
+  const innerRingMaterial = new THREE.MeshBasicMaterial({
+    color: 0xc4b5fd,
+    transparent: true,
+    opacity: 0.3,
+  })
+  const innerRing = new THREE.Mesh(innerRingGeometry, innerRingMaterial)
+  innerRing.rotation.x = -Math.PI / 2
+  innerRing.position.y = 0.05
+  group.add(innerRing)
 
-  // Subtitle text
+  // Floating title
+  const titleMesh = new Text() as any
+  titleMesh.text = 'ADRIAN TAM'
+  titleMesh.fontSize = 0.6
+  titleMesh.font = '/fonts/Roboto-Bold.ttf'
+  titleMesh.color = 0xffffff
+  titleMesh.anchorX = 'center'
+  titleMesh.anchorY = 'middle'
+  titleMesh.position.y = 3.5
+  titleMesh.textAlign = 'center'
+  titleMesh.letterSpacing = 0.12
+  titleMesh.sync()
+  textMeshes.push(titleMesh)
+  group.add(titleMesh)
+
+  // Subtitle
   const subtitleMesh = new Text() as any
-  subtitleMesh.text = 'Choose a path to explore'
-  subtitleMesh.fontSize = 0.2
+  subtitleMesh.text = 'AI ENGINEER'
+  subtitleMesh.fontSize = 0.25
   subtitleMesh.font = '/fonts/Roboto-Regular.ttf'
-  subtitleMesh.color = 0xcccccc
+  subtitleMesh.color = 0xa78bfa
   subtitleMesh.anchorX = 'center'
   subtitleMesh.anchorY = 'middle'
-  subtitleMesh.position.y = 3.2
+  subtitleMesh.position.y = 2.8
   subtitleMesh.textAlign = 'center'
+  subtitleMesh.letterSpacing = 0.3
   subtitleMesh.sync()
   textMeshes.push(subtitleMesh)
   group.add(subtitleMesh)
 
-  // Energy rings around pedestal
-  for (let i = 0; i < 3; i++) {
-    const ringGeometry = new THREE.TorusGeometry(2.5 + i * 0.5, 0.05, 8, 32)
-    const ringMaterial = new THREE.MeshBasicMaterial({
-      color: 0xa78bfa,
-      transparent: true,
-      opacity: 0.3 - i * 0.05,
-    })
-    const ring = new THREE.Mesh(ringGeometry, ringMaterial)
-    ring.rotation.x = Math.PI / 2
-    ring.position.y = 0.1 + i * 0.1
-    group.add(ring)
+  // Hint text
+  const hintMesh = new Text() as any
+  hintMesh.text = 'explore the zones'
+  hintMesh.fontSize = 0.15
+  hintMesh.font = '/fonts/Roboto-Regular.ttf'
+  hintMesh.color = 0x888888
+  hintMesh.anchorX = 'center'
+  hintMesh.anchorY = 'middle'
+  hintMesh.position.y = 2.3
+  hintMesh.textAlign = 'center'
+  hintMesh.letterSpacing = 0.15
+  hintMesh.sync()
+  textMeshes.push(hintMesh)
+  group.add(hintMesh)
 
-    // Store for animation
-    group.userData[`ring${i}`] = ring
-  }
+  // Subtle vertical light beam
+  const beamGeometry = new THREE.CylinderGeometry(0.02, 0.02, 8, 8)
+  const beamMaterial = new THREE.MeshBasicMaterial({
+    color: 0xa78bfa,
+    transparent: true,
+    opacity: 0.08,
+  })
+  const beam = new THREE.Mesh(beamGeometry, beamMaterial)
+  beam.position.y = 4
+  group.add(beam)
+  group.userData.beam = beam
 
-  // Particle system
-  const particleCount = 100
+  // Sparse floating particles
+  const particleCount = 40
   const particlesGeometry = new THREE.BufferGeometry()
   const positions = new Float32Array(particleCount * 3)
 
   for (let i = 0; i < particleCount; i++) {
     const angle = (i / particleCount) * Math.PI * 2
     const radius = 3 + Math.random() * 2
-    const height = Math.random() * 5
-
     positions[i * 3] = Math.cos(angle) * radius
-    positions[i * 3 + 1] = height
+    positions[i * 3 + 1] = Math.random() * 6
     positions[i * 3 + 2] = Math.sin(angle) * radius
   }
 
@@ -129,51 +122,52 @@ function createWelcomePedestal(): THREE.Group {
 
   const particlesMaterial = new THREE.PointsMaterial({
     color: 0xa78bfa,
-    size: 0.1,
+    size: 0.06,
     transparent: true,
-    opacity: 0.6,
+    opacity: 0.4,
     blending: THREE.AdditiveBlending,
   })
 
   const particles = new THREE.Points(particlesGeometry, particlesMaterial)
   group.add(particles)
   group.userData.particles = particles
+  group.userData.ring = ring
+  group.userData.innerRing = innerRing
 
   return group
 }
 
-/**
- * Animate welcome pedestal
- */
 function animateWelcome() {
   if (!welcomeGroup) return
 
   const time = performance.now() * 0.001
 
+  // Billboard text toward camera
   if (props.camera) {
     props.camera.getWorldPosition(_cameraWorldPos)
-
     textMeshes.forEach((textMesh) => {
       textMesh.getWorldPosition(_textWorldPos)
-      // Keep Y from text position so text stays upright (Y-axis billboard only)
       _lookTarget.set(_cameraWorldPos.x, _textWorldPos.y, _cameraWorldPos.z)
       textMesh.lookAt(textMesh.parent!.worldToLocal(_lookTarget))
     })
   }
 
-  // Animate rings
-  for (let i = 0; i < 3; i++) {
-    const ring = welcomeGroup.userData[`ring${i}`]
-    if (ring) {
-      ring.rotation.z += 0.005 * (i + 1)
-      ring.position.y = 0.1 + i * 0.1 + Math.sin(time * 2 + i) * 0.05
-    }
+  // Gentle ring pulse
+  const ring = welcomeGroup.userData.ring
+  if (ring) {
+    ring.material.opacity = 0.4 + Math.sin(time * 1.5) * 0.2
   }
 
-  // Rotate particles
+  // Slow particle rotation
   const particles = welcomeGroup.userData.particles
   if (particles) {
-    particles.rotation.y += 0.002
+    particles.rotation.y += 0.001
+  }
+
+  // Subtle beam pulse
+  const beam = welcomeGroup.userData.beam
+  if (beam) {
+    beam.material.opacity = 0.04 + Math.sin(time * 0.8) * 0.04
   }
 
   animationId = requestAnimationFrame(animateWelcome)
@@ -181,12 +175,8 @@ function animateWelcome() {
 
 onMounted(() => {
   if (!props.scene) return
-
-  // Create welcome pedestal
-  welcomeGroup = createWelcomePedestal()
+  welcomeGroup = createWelcomeHub()
   props.scene.add(welcomeGroup)
-
-  // Start animation
   animateWelcome()
 })
 

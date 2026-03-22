@@ -14,17 +14,8 @@ import ProjectsOverlay from './overlays/ProjectsOverlay.vue'
 import QuickOverview from './overlays/QuickOverview.vue'
 
 // Objects
-import TableModel from './objects/table.vue'
-import BookshelfModel from './objects/bookshelf.vue'
-import ChairModel from './objects/chair.vue'
-import AvatarModel from './objects/avatar.vue'
-import BallModel from './objects/ball.vue'
 import SceneLights from './lights/SceneLights.vue'
 import PlayerRig from './objects/playerRig.vue'
-import CertificateModel from './objects/certificate.vue'
-import DrawerModel from './objects/drawer.vue'
-import RoomShell from './room/RoomShell.vue'
-import CeilingLightModel from './objects/ceilingLight.vue'
 
 // Cameras
 import SceneCamera from './camera/SceneCamera.vue'
@@ -44,13 +35,11 @@ import WorldDecorations from './WorldDecorations.vue'
 
 // Config
 import { sceneLayout } from '../config/sceneLayout'
-import { expandedWorld, zones, portals, getCurrentZone, type Portal } from '../config/expandedWorld'
+import { zones, getCurrentZone, type Portal } from '../config/expandedWorld'
 import { createPlayerMovement } from './playerMovement'
 import { createAudioController } from './audioController'
 import { createThemeManager } from './useThemeManager'
-import { createLabelManager } from './labelManager'
-import { createGraffiti, createSkyboxTexture, createSpotlightCone } from './sceneVisuals'
-import { updateWallOcclusion } from './sceneOcclusion'
+import { createSkyboxTexture } from './sceneVisuals'
 import { createPostProcessing, type PostProcessingController } from './postProcessing'
 
 const container = ref<HTMLDivElement | null>(null)
@@ -84,18 +73,8 @@ let pointerUpHandler: (() => void) | null = null
 let wheelHandler: ((event: WheelEvent) => void) | null = null
 let contextMenuHandler: ((event: MouseEvent) => void) | null = null
 
-let avatarHead: THREE.Object3D | null = null
 let playerRig: THREE.Object3D | null = null
-let ballCubeCamera: THREE.CubeCamera | null = null
-
-let spotlightCone: THREE.Mesh | null = null
-let spotlightConeMaterial: THREE.MeshBasicMaterial | null = null
 let skyboxTexture: THREE.Texture | null = null
-let backWallMaterial: THREE.MeshStandardMaterial | null = null
-let backWallMesh: THREE.Mesh | null = null
-let leftWallMaterial: THREE.MeshStandardMaterial | null = null
-let rightWallMaterial: THREE.MeshStandardMaterial | null = null
-let graffitiGroup: THREE.Object3D | null = null
 
 const sceneRef = shallowRef<THREE.Scene | null>(null)
 const cameraRef = shallowRef<THREE.PerspectiveCamera | null>(null)
@@ -112,64 +91,16 @@ const intro = {
 }
 const {
   followOffset,
-  roomWidth,
-  roomDepth,
-  roomHeight,
-  wallThickness,
-  floorThickness,
-  roofThickness,
-  floorOvershoot,
-  playerRadius,
-  ballRadius,
-  ballPosition,
-  tablePosition,
-  tableRotationY,
-  tableTargetHeight,
-  drawerPosition,
-  drawerRotationY,
-  drawerTargetHeight,
-  chairPosition,
-  chairTargetHeight,
-  bookshelfPosition,
-  bookshelfTargetHeight,
-  avatarPosition,
-  avatarRotationY,
-  avatarScale,
-  playerPosition,
   playerTargetHeight,
-  certificatePosition,
-  certificateRotationY,
-  certificateTargetHeight,
-  ceilingLightPosition,
-  ceilingLightTargetHeight,
-  labels,
-  interactables,
   movement: movementConfig,
 } = sceneLayout
-const overlayMenuItems = labels
-  .filter((label) => typeof label.id === 'string' && label.id.length > 0)
-  .map((label) => ({
-    id: label.id as string,
-    label: label.text,
-  }))
-const ballVelocity = new THREE.Vector3()
-let ballMesh: THREE.Mesh | null = null
-const labelManager = createLabelManager()
-const floorWidth = roomWidth + floorOvershoot * 2
-const floorDepth = roomDepth + floorOvershoot * 2
-const wallColliders = [
-  {
-    center: new THREE.Vector3(0, roomHeight / 2, -roomDepth / 2 - wallThickness / 2),
-    halfSize: new THREE.Vector3(roomWidth / 2, roomHeight / 2, wallThickness / 2),
-  },
-  {
-    center: new THREE.Vector3(-roomWidth / 2 - wallThickness / 2, roomHeight / 2, 0),
-    halfSize: new THREE.Vector3(wallThickness / 2, roomHeight / 2, roomDepth / 2),
-  },
-  {
-    center: new THREE.Vector3(roomWidth / 2 + wallThickness / 2, roomHeight / 2, 0),
-    halfSize: new THREE.Vector3(wallThickness / 2, roomHeight / 2, roomDepth / 2),
-  },
+
+const overlayMenuItems = [
+  { id: 'table', label: 'Work' },
+  { id: 'bookshelf', label: 'Education' },
+  { id: 'drawer', label: 'Projects' },
+  { id: 'chair', label: 'About me' },
+  { id: 'certificate', label: 'Awards' },
 ]
 
 const toggleTheme = () => {
@@ -193,13 +124,6 @@ const toggleMenu = () => {
 }
 
 const openOverlay = (id: string) => {
-  if (!camera) {
-    return
-  }
-  const target = interactables.find((item) => item.id === id)
-  if (!target) {
-    return
-  }
   if (!hasStarted.value) {
     hasStarted.value = true
     isFadingOut.value = false
@@ -209,16 +133,8 @@ const openOverlay = (id: string) => {
     focus.openedFromMenu = false
   }
   focus.active = true
-  focus.transitioning = true
-  focus.targetId = target.id
-  focus.startTime = performance.now()
-  focus.fromPos.copy(camera.position)
-  const forward = new THREE.Vector3()
-  camera.getWorldDirection(forward)
-  focus.fromLook.copy(camera.position).add(forward)
-  const focusOffset = target.cameraOffset ?? new THREE.Vector3(0, 2.0, 2.4)
-  focus.toPos.copy(target.position).add(focusOffset)
-  focus.toLook.copy(target.position)
+  focus.transitioning = false
+  focus.targetId = id
   menuOpen.value = false
 }
 
@@ -235,7 +151,6 @@ const focus = reactive({
   fromLook: new THREE.Vector3(),
   toLook: new THREE.Vector3(),
 })
-
 
 const createSkybox = () => createSkyboxTexture(theme.value)
 const startExperience = () => {
@@ -261,20 +176,12 @@ const handleExploreFromQuickView = () => {
   startExperience()
 }
 
-/**
- * Handle portal teleportation
- */
 const handlePortalTeleport = (portal: Portal) => {
   if (!playerRig || !camera) return
-
   const targetZone = zones.find(z => z.id === portal.toZone)
   if (!targetZone) return
-
-  // Teleport player to spawn point of destination zone
   playerRig.position.copy(targetZone.spawnPoint)
   currentZoneId.value = portal.toZone
-
-  // Update camera position smoothly
   const offsetPos = targetZone.spawnPoint.clone()
   offsetPos.y += 6
   offsetPos.z += 5
@@ -282,20 +189,12 @@ const handlePortalTeleport = (portal: Portal) => {
   camera.lookAt(targetZone.spawnPoint)
 }
 
-/**
- * Handle minimap teleport (fast travel to visited zone)
- */
 const handleMinimapTeleport = (zoneId: string) => {
   if (!playerRig || !camera) return
-
   const targetZone = zones.find(z => z.id === zoneId)
   if (!targetZone) return
-
-  // Teleport to zone spawn point
   playerRig.position.copy(targetZone.spawnPoint)
   currentZoneId.value = zoneId
-
-  // Update camera
   const offsetPos = targetZone.spawnPoint.clone()
   offsetPos.y += 6
   offsetPos.z += 5
@@ -303,18 +202,7 @@ const handleMinimapTeleport = (zoneId: string) => {
   camera.lookAt(targetZone.spawnPoint)
 }
 
-type BallReadyPayload = { mesh: THREE.Mesh; cubeCamera: THREE.CubeCamera } | null
 type PlayerReadyPayload = THREE.Object3D | null
-
-const handleBallReady = (payload: BallReadyPayload) => {
-  if (payload) {
-    ballMesh = payload.mesh
-    ballCubeCamera = payload.cubeCamera
-  } else {
-    ballMesh = null
-    ballCubeCamera = null
-  }
-}
 
 const handlePlayerReady = (payload: PlayerReadyPayload) => {
   playerRig = payload
@@ -323,33 +211,6 @@ const handlePlayerReady = (payload: PlayerReadyPayload) => {
 const handleCameraReady = (payload: THREE.PerspectiveCamera | null) => {
   camera = payload
   cameraRef.value = payload
-}
-
-const handleBackWallReady = (payload: { material: THREE.MeshStandardMaterial | null; mesh: THREE.Mesh | null }) => {
-  backWallMaterial = payload.material
-  backWallMesh = payload.mesh
-  if (!scene) {
-    return
-  }
-  if (graffitiGroup) {
-    scene.remove(graffitiGroup)
-    graffitiGroup = null
-  }
-  if (backWallMesh) {
-    graffitiGroup = createGraffiti('THE ROOM OF ADRIAN TAM')
-    graffitiGroup.position.set(0, roomHeight * 0.8, -4.7)
-    scene.add(graffitiGroup)
-  }
-}
-
-const handleWallsReady = (payload: {
-  back: THREE.MeshStandardMaterial | null
-  left: THREE.MeshStandardMaterial | null
-  right: THREE.MeshStandardMaterial | null
-}) => {
-  backWallMaterial = payload.back
-  leftWallMaterial = payload.left
-  rightWallMaterial = payload.right
 }
 
 // Camera smoothing for RPG feel
@@ -423,6 +284,9 @@ const setPlayerAnimation = (state: 'idle' | 'walk' | 'run') => {
   playerRig.userData.activeAction = nextAction
 }
 
+// World bounds for open world movement
+const worldHalfSize = 100
+
 onMounted(async () => {
   themeManager.initTheme()
   if (!container.value) {
@@ -430,7 +294,7 @@ onMounted(async () => {
   }
 
   scene = new THREE.Scene()
-  scene.fog = new THREE.FogExp2(0xe8edf3, 0.025)
+  scene.fog = new THREE.FogExp2(0x0a0a1a, 0.008)
   sceneRef.value = scene
 
   const dracoLoader = new DRACOLoader()
@@ -440,22 +304,9 @@ onMounted(async () => {
   gltfLoaderRef.value = gltfLoader
   audioController.init()
 
-  for (const label of labels) {
-    const labelMesh = labelManager.createLabel(label.text, label.id)
-    if (labelMesh) {
-      labelMesh.position.copy(label.position)
-      scene.add(labelMesh)
-    }
-  }
-
-  const spotlight = createSpotlightCone(theme.value)
-  spotlightCone = spotlight.mesh
-  spotlightConeMaterial = spotlight.material
-  scene.add(spotlightCone)
-
   themeManager.applySceneTheme({
     scene,
-    spotlightConeMaterial,
+    spotlightConeMaterial: null,
     createSkybox,
     setSkyboxTexture,
   })
@@ -466,9 +317,8 @@ onMounted(async () => {
   renderer.setPixelRatio(window.devicePixelRatio)
   renderer.setSize(window.innerWidth, window.innerHeight)
   container.value.appendChild(renderer.domElement)
-  renderer.setClearColor(0x000000, 0)
+  renderer.setClearColor(0x0a0a1a, 1)
 
-  // Initialize post-processing effects
   if (camera) {
     postProcessing = createPostProcessing({
       renderer,
@@ -531,23 +381,7 @@ onMounted(async () => {
         event.preventDefault()
         return
       }
-      if (hasStarted.value && !focus.active) {
-        const target = interactables.find((item) => item.id === nearbyId.value)
-        if (target && camera) {
-          focus.active = true
-          focus.transitioning = true
-          focus.targetId = target.id
-          focus.startTime = performance.now()
-          focus.fromPos.copy(camera.position)
-          const forward = new THREE.Vector3()
-          camera.getWorldDirection(forward)
-          focus.fromLook.copy(camera.position).add(forward)
-          const focusOffset = target.cameraOffset ?? new THREE.Vector3(0, 2.0, 2.4)
-          focus.toPos.copy(target.position).add(focusOffset)
-          focus.toLook.copy(target.position)
-        }
-        event.preventDefault()
-      }
+      event.preventDefault()
       return
     }
     if (!hasStarted.value) {
@@ -581,12 +415,19 @@ onMounted(async () => {
 watch(theme, () => {
   themeManager.applySceneTheme({
     scene,
-    spotlightConeMaterial,
+    spotlightConeMaterial: null,
     createSkybox,
     setSkyboxTexture,
   })
   if (postProcessing) {
     postProcessing.updateTheme(theme.value)
+  }
+  // Update fog for theme
+  if (scene) {
+    scene.fog = new THREE.FogExp2(
+      theme.value === 'dark' ? 0x0a0a1a : 0xe8edf3,
+      theme.value === 'dark' ? 0.008 : 0.012
+    )
   }
 })
 
@@ -603,48 +444,13 @@ onBeforeUnmount(() => {
   if (keyUpHandler) {
     window.removeEventListener('keyup', keyUpHandler)
   }
-  if (pointerDownHandler && renderer) {
-    renderer.domElement.removeEventListener('mousedown', pointerDownHandler)
+  if (renderer) {
+    if (contextMenuHandler) renderer.domElement.removeEventListener('contextmenu', contextMenuHandler)
+    if (pointerDownHandler) renderer.domElement.removeEventListener('mousedown', pointerDownHandler)
+    if (wheelHandler) renderer.domElement.removeEventListener('wheel', wheelHandler)
   }
-  if (pointerUpHandler) {
-    window.removeEventListener('mouseup', pointerUpHandler)
-  }
-  if (mouseMoveHandler) {
-    window.removeEventListener('mousemove', mouseMoveHandler)
-  }
-  if (wheelHandler && renderer) {
-    renderer.domElement.removeEventListener('wheel', wheelHandler)
-  }
-  if (contextMenuHandler && renderer) {
-    renderer.domElement.removeEventListener('contextmenu', contextMenuHandler)
-  }
-
-  if (spotlightCone && scene) {
-    scene.remove(spotlightCone)
-    spotlightCone.geometry.dispose()
-    if (spotlightConeMaterial) {
-      spotlightConeMaterial.dispose()
-    }
-    spotlightCone = null
-    spotlightConeMaterial = null
-  }
-  if (graffitiGroup && scene) {
-    scene.remove(graffitiGroup)
-    graffitiGroup = null
-  }
-  if (skyboxTexture) {
-    skyboxTexture.dispose()
-    skyboxTexture = null
-    if (scene?.background) {
-      scene.background = null
-    }
-  }
-
-  if (postProcessing) {
-    postProcessing.dispose()
-    postProcessing = null
-  }
-
+  if (pointerUpHandler) window.removeEventListener('mouseup', pointerUpHandler)
+  if (mouseMoveHandler) window.removeEventListener('mousemove', mouseMoveHandler)
   if (renderer && container.value) {
     container.value.removeChild(renderer.domElement)
     renderer.dispose()
@@ -671,22 +477,18 @@ function animate() {
     mixer.update(delta)
   }
 
-  if (spotlightCone && spotlightConeMaterial) {
-    const time = performance.now() * 0.001
-    const baseOpacity = theme.value === 'dark' ? 0.15 : 0.01
-    spotlightConeMaterial.opacity = baseOpacity + Math.sin(time * 0.5) * 0.03
-  }
-
+  // Player movement — open world bounds
   playerMovement.updateMovement({
     delta,
     playerRig,
     focusActive: focus.active,
-    roomWidth: floorWidth,
-    roomDepth: floorDepth,
-    wallColliders,
-    playerRadius,
+    roomWidth: worldHalfSize * 2,
+    roomDepth: worldHalfSize * 2,
+    wallColliders: [],
+    playerRadius: 0.4,
     setPlayerAnimation,
   })
+
   if (playerRig) {
     const targetOpacity = focus.active ? 0.35 : 1
     if (Math.abs(targetOpacity - lastFocusOpacity) > 0.01) {
@@ -694,114 +496,27 @@ function animate() {
       lastFocusOpacity = targetOpacity
     }
 
-    // Update player position for minimap
     playerPositionRef.value = playerRig.position.clone()
 
-    // Check for nearby portals
     if (portalSystemRef.value && !focus.active) {
       const portal = portalSystemRef.value.checkPortalProximity(playerRig.position)
       nearbyPortal.value = portal
 
-      // Auto-teleport when entering portal
       if (portal && movementState.moveVelocity.length() > 0.5) {
         handlePortalTeleport(portal)
       }
     }
 
-    // Update current zone
     const zone = getCurrentZone(playerRig.position)
     if (zone) {
       currentZoneId.value = zone.id
     }
   }
-  updateWallOcclusion({
-    camera,
-    playerRig,
-    roomWidth,
-    roomDepth,
-    roomHeight,
-    wallThickness,
-    backWallMaterial,
-    leftWallMaterial,
-    rightWallMaterial,
-  })
-
-  // Ball physics
-  if (playerRig && ballMesh) {
-    const toBall = new THREE.Vector3().subVectors(ballMesh.position, playerRig.position)
-    const distance = toBall.length()
-    const minDistance = playerRadius + ballRadius
-    if (distance > 0 && distance < minDistance) {
-      const pushDir = toBall.normalize()
-      const overlap = minDistance - distance
-      ballMesh.position.addScaledVector(pushDir, overlap)
-      const pushForce = movementState.moveVelocity.length() * 3.5
-      ballVelocity.addScaledVector(pushDir, pushForce)
-    }
-  }
-
-  if (ballMesh) {
-    ballMesh.rotation.y += delta * 0.9
-    ballMesh.rotation.x += delta * 0.35
-    ballVelocity.multiplyScalar(0.99)
-    ballMesh.position.addScaledVector(ballVelocity, delta)
-
-    const halfWidth = roomWidth / 2 - ballRadius
-    const halfDepth = roomDepth / 2 - ballRadius
-
-    if (ballMesh.position.x < -halfWidth) {
-      ballMesh.position.x = -halfWidth
-      ballVelocity.x *= -0.6
-    } else if (ballMesh.position.x > halfWidth) {
-      ballMesh.position.x = halfWidth
-      ballVelocity.x *= -0.6
-    }
-
-    if (ballMesh.position.z < -halfDepth) {
-      ballMesh.position.z = -halfDepth
-      ballVelocity.z *= -0.6
-    } else if (ballMesh.position.z > halfDepth) {
-      ballMesh.position.z = halfDepth
-      ballVelocity.z *= -0.6
-    }
-
-    ballMesh.position.y = ballRadius
-  }
-
-  // Interactable detection
-  if (playerRig && !focus.active) {
-    let nearest = ''
-    let nearestDist = Infinity
-    const playerPos = playerRig.position
-    for (const item of interactables) {
-      const dist = playerPos.distanceTo(item.position)
-      const triggerRadius = item.triggerRadius ?? 2.5
-      if (dist < triggerRadius && dist < nearestDist) {
-        nearest = item.id
-        nearestDist = dist
-      }
-    }
-    nearbyId.value = nearest
-  } else if (focus.active) {
-    nearbyId.value = ''
-  }
-  const highlightId = !focus.active ? nearbyId.value : ''
-  labelManager.setActive(highlightId)
-  labelManager.updatePulse(performance.now())
 
   // Camera control
   if (playerRig && focus.active) {
-    const elapsed = performance.now() - focus.startTime
-    const t = Math.min(Math.max(elapsed / focus.durationMs, 0), 1)
-    const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2
-    camera.position.lerpVectors(focus.fromPos, focus.toPos, eased)
-    const lookTarget = new THREE.Vector3().lerpVectors(focus.fromLook, focus.toLook, eased)
-    camera.lookAt(lookTarget)
-    if (t >= 1) {
-      focus.transitioning = false
-    }
+    // Focus mode — just hold camera
   } else if (playerRig) {
-    // Smooth camera follow with lag
     const offsetRotation = new THREE.Euler(
       movementState.cameraOrbitPitch,
       movementState.cameraOrbitYaw,
@@ -845,23 +560,6 @@ function animate() {
     }
   }
 
-  if (avatarHead) {
-    const headTarget = new THREE.Vector3()
-    camera.getWorldPosition(headTarget)
-    avatarHead.lookAt(headTarget)
-    avatarHead.rotateY(Math.PI)
-  }
-
-  labelManager.updateBillboards(camera)
-
-  if (ballMesh && ballCubeCamera) {
-    ballMesh.visible = false
-    ballCubeCamera.position.copy(ballMesh.position)
-    ballCubeCamera.update(renderer, scene)
-    ballMesh.visible = true
-  }
-
-  // Update post-processing effects
   if (postProcessing) {
     postProcessing.updateFocusMode(focus.active)
     postProcessing.render()
@@ -936,10 +634,6 @@ function animate() {
     </div>
     <div ref="container" class="threejs-canvas"></div>
     <SceneCamera :container="container" :intro-from="intro.from" :look-at="introLookAt" @ready="handleCameraReady" />
-    <RoomShell v-if="sceneRef" :scene="sceneRef" :room-width="roomWidth" :room-depth="roomDepth"
-      :room-height="roomHeight" :wall-thickness="wallThickness" :floor-thickness="floorThickness"
-      :roof-thickness="roofThickness" :floor-overshoot="floorOvershoot" :theme="theme"
-      @back-wall-ready="handleBackWallReady" @walls-ready="handleWallsReady" />
     <SceneLights v-if="sceneRef" :scene="sceneRef" :theme="theme" :player-position="playerPositionRef" />
 
     <!-- Expanded World Components -->
@@ -958,28 +652,9 @@ function animate() {
     <WayfindingSigns v-if="sceneRef" :scene="sceneRef" :theme="theme" />
     <WorldDecorations v-if="sceneRef" :scene="sceneRef" :theme="theme" />
 
-    <BallModel v-if="sceneRef" :scene="sceneRef" :position="ballPosition" :radius="ballRadius"
-      @ready="handleBallReady" />
     <PlayerRig v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef" :position="hubZone.spawnPoint"
       :target-height="playerTargetHeight" @ready="handlePlayerReady" />
-    <CeilingLightModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef"
-      :position="ceilingLightPosition" :target-height="ceilingLightTargetHeight" />
-    <DrawerModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef" :position="drawerPosition"
-      :rotation-y="drawerRotationY" :target-height="drawerTargetHeight" />
-    <CertificateModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef"
-      :position="certificatePosition" :rotation-y="certificateRotationY" :target-height="certificateTargetHeight" />
-    <TableModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef" :position="tablePosition"
-      :rotation-y="tableRotationY" :target-height="tableTargetHeight" />
-    <BookshelfModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef"
-      :position="bookshelfPosition" :target-height="bookshelfTargetHeight" />
-    <ChairModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef" :position="chairPosition"
-      :target-height="chairTargetHeight" />
-    <AvatarModel v-if="sceneRef && gltfLoaderRef" :scene="sceneRef" :loader="gltfLoaderRef" :position="avatarPosition"
-      :rotation-y="avatarRotationY" :scale="avatarScale" @head-ready="avatarHead = $event" />
 
-    <div v-if="hasStarted && nearbyId && !focus.active" class="threejs-prompt">
-      Press Spacebar to view
-    </div>
     <div v-if="hasStarted && nearbyPortal && !focus.active" class="threejs-prompt threejs-prompt--portal">
       <fa icon="door-open" /> Entering {{ nearbyPortal.label }}
     </div>
@@ -1022,49 +697,56 @@ function animate() {
       @close="handleCloseQuickView"
       @explore="handleExploreFromQuickView"
     />
-
   </div>
 </template>
 
 <style scoped>
 .threejs-stage {
+  --stage-bg: #0a0a1a;
+  --stage-hint-bg: rgba(10, 10, 26, 0.7);
+  --stage-hint-text: rgba(255, 255, 255, 0.75);
+  --stage-prompt-bg: rgba(10, 10, 26, 0.85);
+  --stage-prompt-text: rgba(255, 255, 255, 0.9);
+  --theme-toggle-bg: rgba(10, 10, 26, 0.6);
+  --theme-toggle-border: rgba(255, 255, 255, 0.1);
+  --theme-toggle-text: rgba(255, 255, 255, 0.85);
+  --theme-toggle-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --theme-toggle-hover-bg: rgba(255, 255, 255, 0.1);
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
+  overflow: hidden;
   background: var(--stage-bg);
 }
 
+[data-theme='light'] .threejs-stage {
+  --stage-bg: #f0f2f5;
+  --stage-hint-bg: rgba(255, 255, 255, 0.75);
+  --stage-hint-text: rgba(0, 0, 0, 0.65);
+  --stage-prompt-bg: rgba(255, 255, 255, 0.9);
+  --stage-prompt-text: rgba(0, 0, 0, 0.85);
+  --theme-toggle-bg: rgba(255, 255, 255, 0.8);
+  --theme-toggle-border: rgba(0, 0, 0, 0.12);
+  --theme-toggle-text: rgba(0, 0, 0, 0.75);
+  --theme-toggle-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --theme-toggle-hover-bg: rgba(0, 0, 0, 0.06);
+}
+
 .threejs-canvas {
-  width: 100%;
-  height: 100%;
-}
-
-.threejs-canvas :deep(canvas) {
-  display: block;
-}
-
-.threejs-hint {
-  position: absolute;
-  right: 24px;
-  bottom: 20px;
-  padding: 8px 14px;
-  background: var(--stage-hint-bg);
-  color: var(--stage-hint-text);
-  font-size: 14px;
-  border-radius: 999px;
-  letter-spacing: 0.4px;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
 }
 
 .threejs-prompt {
-  position: absolute;
+  position: fixed;
+  bottom: 100px;
   left: 50%;
-  bottom: 24px;
   transform: translateX(-50%);
-  padding: 10px 18px;
+  z-index: 20;
+  padding: 12px 24px;
   background: var(--stage-prompt-bg);
   color: var(--stage-prompt-text);
-  font-size: 15px;
+  font-size: 14px;
   border-radius: 999px;
   letter-spacing: 0.4px;
 }
@@ -1128,35 +810,12 @@ function animate() {
   font-size: 12px;
 }
 
-.threejs-guide__key--w {
-  top: 0;
-  left: 36px;
-}
-
-.threejs-guide__key--a {
-  top: 38px;
-  left: 0;
-}
-
-.threejs-guide__key--s {
-  top: 38px;
-  left: 36px;
-}
-
-.threejs-guide__key--d {
-  top: 38px;
-  left: 72px;
-}
-
-.threejs-guide__key--space {
-  position: relative;
-  width: 110px;
-}
-
-.threejs-guide__key--enter {
-  position: relative;
-  width: 88px;
-}
+.threejs-guide__key--w { top: 0; left: 36px; }
+.threejs-guide__key--a { top: 38px; left: 0; }
+.threejs-guide__key--s { top: 38px; left: 36px; }
+.threejs-guide__key--d { top: 38px; left: 72px; }
+.threejs-guide__key--space { position: relative; width: 110px; }
+.threejs-guide__key--enter { position: relative; width: 88px; }
 
 .threejs-guide__row {
   display: flex;
@@ -1165,14 +824,8 @@ function animate() {
   line-height: 1.2;
 }
 
-.threejs-guide__row--cluster {
-  gap: 14px;
-}
-
-.threejs-guide__label {
-  font-size: 11px;
-  opacity: 0.85;
-}
+.threejs-guide__row--cluster { gap: 14px; }
+.threejs-guide__label { font-size: 11px; opacity: 0.85; }
 
 .threejs-guide__mouse {
   padding: 4px 8px;
@@ -1186,23 +839,15 @@ function animate() {
   gap: 6px;
 }
 
-.threejs-guide__mouse-icon {
-  font-size: 12px;
-}
+.threejs-guide__mouse-icon { font-size: 12px; }
 
-[data-theme='light'] .threejs-guide {
-  color: #1d1f27;
-}
-
+[data-theme='light'] .threejs-guide { color: #1d1f27; }
 [data-theme='light'] .threejs-guide__key {
   background: rgba(0, 0, 0, 0.06);
   border-color: rgba(0, 0, 0, 0.18);
   color: #1d1f27;
 }
-
-[data-theme='light'] .threejs-guide__mouse {
-  background: rgba(0, 0, 0, 0.08);
-}
+[data-theme='light'] .threejs-guide__mouse { background: rgba(0, 0, 0, 0.08); }
 
 .theme-toggle {
   position: fixed;
@@ -1226,13 +871,8 @@ function animate() {
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
-.theme-toggle--audio {
-  right: 124px;
-}
-
-.theme-toggle--menu {
-  right: 20px;
-}
+.theme-toggle--audio { right: 124px; }
+.theme-toggle--menu { right: 20px; }
 
 .overlay-menu {
   position: fixed;
