@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import projectsData from '../../data/projects'
 
 const emit = defineEmits<{
   (e: 'close'): void
@@ -21,70 +21,69 @@ interface Experience {
 }
 
 const skills: Skill[] = [
-  { name: 'Python', level: 5, years: 5 },
-  { name: 'TypeScript/JavaScript', level: 5, years: 4 },
-  { name: 'React/Vue', level: 5, years: 4 },
-  { name: 'Node.js', level: 4, years: 3 },
-  { name: 'AI/ML (TensorFlow, PyTorch)', level: 4, years: 3 },
-  { name: 'AWS/Cloud', level: 4, years: 3 },
-  { name: 'Docker/K8s', level: 4, years: 2 },
-  { name: 'System Design', level: 5, years: 4 },
+  { name: 'Python', level: 5, years: 6 },
+  { name: 'Vue / TypeScript', level: 4, years: 4 },
+  { name: 'AI/ML (TensorFlow, PyTorch)', level: 5, years: 5 },
+  { name: 'FastAPI', level: 4, years: 3 },
+  { name: 'Docker', level: 4, years: 4 },
+  { name: 'Three.js', level: 3, years: 2 },
+  { name: 'OpenCV', level: 4, years: 4 },
+  { name: 'Cloud (IBM Cloud, AWS)', level: 4, years: 3 },
 ]
 
 const experience: Experience[] = [
   {
-    title: 'Senior Full-Stack Engineer',
-    company: 'Current Company',
-    period: '2022 - Present',
+    title: 'AI Engineer',
+    company: 'IBM Japan',
+    period: '2023 - Present',
     highlights: [
-      'Built AI-powered features processing 10M+ requests/day',
-      'Reduced API latency by 60% through architecture redesign',
-      'Led team of 5 engineers on microservices migration',
-      'Implemented real-time analytics dashboard serving 50K+ users',
+      'Causal discovery system development and advisory',
+      'IBM Corporate Award recipient (2023)',
+      'IBM Excellence Award recipient (2022)',
     ],
-    tech: ['Python', 'React', 'AWS', 'TensorFlow', 'PostgreSQL'],
+    tech: ['Python', 'AI/ML', 'IBM Cloud', 'watsonx'],
   },
   {
-    title: 'Full-Stack Developer',
-    company: 'Previous Company',
-    period: '2020 - 2022',
+    title: 'AI Team Lead',
+    company: 'AMBL Co.',
+    period: '2021 - 2023',
     highlights: [
-      'Developed customer-facing web applications',
-      'Improved test coverage from 40% to 95%',
-      'Optimized database queries reducing load time by 3x',
+      'AI development for Learning Management System (LMS)',
+      'Causal discovery system advisor',
+      'Led AI team initiatives and project delivery',
     ],
-    tech: ['Node.js', 'Vue', 'MongoDB', 'Docker'],
+    tech: ['Python', 'TensorFlow', 'FastAPI', 'Docker'],
+  },
+  {
+    title: 'ML Engineer',
+    company: 'iPX Co.',
+    period: '2020 - 2021',
+    highlights: [
+      'Object detection system development and deployment',
+      'Data analysis for automotives',
+      'Implementation of machine learning papers (distillation learning)',
+    ],
+    tech: ['Python', 'OpenCV', 'TensorFlow', 'Docker'],
+  },
+  {
+    title: 'CIR (Coordinator for International Relations)',
+    company: 'Kyotango City',
+    period: '2018 - 2020',
+    highlights: [
+      'International correspondent for 2021 Tokyo Olympics (Spain, Belgium)',
+      'Multi-cultural promotions',
+      'Translation & interpreting (English / Japanese)',
+    ],
+    tech: ['Translation', 'Cross-cultural Communication'],
   },
 ]
 
-const projects = [
-  {
-    name: 'AI Content Generator',
-    description: 'ML-powered content creation tool',
-    impact: '100K+ generations, 95% user satisfaction',
-    tech: ['Python', 'GPT-4', 'FastAPI', 'React'],
-    link: '#',
-  },
-  {
-    name: 'Real-time Analytics Platform',
-    description: 'Distributed event processing system',
-    impact: 'Processes 50M events/day with <100ms latency',
-    tech: ['Node.js', 'Kafka', 'Redis', 'TimescaleDB'],
-    link: '#',
-  },
-  {
-    name: 'E-commerce Optimization Engine',
-    description: 'ML recommendation system',
-    impact: 'Increased conversion rate by 35%',
-    tech: ['Python', 'Scikit-learn', 'PostgreSQL'],
-    link: '#',
-  },
-]
-
-const handleDownloadResume = () => {
-  // TODO: Add actual resume download link
-  window.open('#', '_blank')
-}
+const projects = projectsData.slice(0, 4).map((p) => ({
+  name: p.description,
+  description: p.overview,
+  tech: p.tags,
+  link: p.link,
+}))
 </script>
 
 <template>
@@ -94,15 +93,12 @@ const handleDownloadResume = () => {
       <div class="quick-overview__header">
         <div class="quick-overview__title-section">
           <h1 class="quick-overview__name">Adrian Tam</h1>
-          <p class="quick-overview__tagline">Senior Full-Stack Engineer • AI/ML Specialist</p>
+          <p class="quick-overview__tagline">AI Engineer</p>
           <div class="quick-overview__location">
-            <fa icon="location-dot" /> San Francisco Bay Area
+            <fa icon="location-dot" /> Tokyo
           </div>
         </div>
         <div class="quick-overview__actions">
-          <button class="quick-overview__btn quick-overview__btn--primary" @click="handleDownloadResume">
-            <fa icon="download" /> Download Resume
-          </button>
           <button class="quick-overview__btn quick-overview__btn--secondary" @click="emit('explore')">
             <fa icon="cube" /> Explore in 3D
           </button>
@@ -115,9 +111,9 @@ const handleDownloadResume = () => {
           <fa icon="user" /> About
         </h2>
         <p class="quick-overview__summary">
-          Full-stack engineer with 5+ years building scalable systems and AI-powered applications.
-          Specialized in high-performance web apps, distributed systems, and machine learning integration.
-          Proven track record of delivering products that serve millions of users with measurable business impact.
+          AI Engineer based in Tokyo with experience spanning machine learning, computer vision, and full-stack development.
+          Currently at IBM Japan, building causal discovery systems and enterprise AI solutions.
+          Background in mathematics and Japanese, with a passion for bridging technology and cross-cultural communication.
         </p>
       </section>
 
@@ -172,18 +168,22 @@ const handleDownloadResume = () => {
           <fa icon="rocket" /> Featured Projects
         </h2>
         <div class="projects-grid">
-          <div v-for="project in projects" :key="project.name" class="project-card">
+          <a
+            v-for="project in projects"
+            :key="project.name"
+            :href="project.link"
+            target="_blank"
+            rel="noreferrer"
+            class="project-card"
+          >
             <h3 class="project-card__name">{{ project.name }}</h3>
             <p class="project-card__description">{{ project.description }}</p>
-            <p class="project-card__impact">
-              <fa icon="chart-line" /> {{ project.impact }}
-            </p>
             <div class="project-card__tech">
               <span v-for="tech in project.tech" :key="tech" class="tech-tag tech-tag--small">
                 {{ tech }}
               </span>
             </div>
-          </div>
+          </a>
         </div>
       </section>
 
@@ -193,13 +193,13 @@ const handleDownloadResume = () => {
           <fa icon="envelope" /> Let's Connect
         </h2>
         <div class="contact-links">
-          <a href="mailto:your.email@example.com" class="contact-link">
+          <a href="mailto:tamkayeung.adrian@gmail.com" class="contact-link">
             <fa icon="envelope" /> Email
           </a>
-          <a href="https://linkedin.com/in/yourprofile" target="_blank" class="contact-link">
+          <a href="https://www.linkedin.com/in/kayeungadrian-tam/" target="_blank" class="contact-link">
             <fa :icon="['fab', 'linkedin']" /> LinkedIn
           </a>
-          <a href="https://github.com/yourprofile" target="_blank" class="contact-link">
+          <a href="https://github.com/kayeungadrian-tam" target="_blank" class="contact-link">
             <fa :icon="['fab', 'github']" /> GitHub
           </a>
         </div>
@@ -461,6 +461,8 @@ const handleDownloadResume = () => {
   border: 1px solid var(--theme-toggle-border);
   border-radius: 16px;
   transition: all 0.3s ease;
+  text-decoration: none;
+  display: block;
 }
 
 .project-card:hover {
@@ -480,17 +482,8 @@ const handleDownloadResume = () => {
   font-size: 14px;
   color: var(--stage-hint-text);
   opacity: 0.75;
-  margin: 0 0 12px 0;
-}
-
-.project-card__impact {
-  font-size: 13px;
-  color: #667eea;
   margin: 0 0 16px 0;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  line-height: 1.5;
 }
 
 .project-card__tech {
