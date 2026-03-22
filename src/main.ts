@@ -5,12 +5,10 @@ import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import "element-plus/dist/index.css";
 
 import App from "./App.vue";
-// import router from "./router/index";
 import VueObserveVisibility from 'vue-observe-visibility'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
-
 
 import {
     faBars,
@@ -25,7 +23,17 @@ import {
     faLightbulb,
     faVolumeHigh,
     faVolumeXmark,
-    faMousePointer
+    faMousePointer,
+    faFileAlt,
+    faCube,
+    faLocationDot,
+    faDownload,
+    faCode,
+    faRocket,
+    faChartLine,
+    faEnvelope,
+    faTimes,
+    faDoorOpen
 } from '@fortawesome/free-solid-svg-icons'
 
 import {
@@ -54,17 +62,23 @@ library.add(
     faMousePointer,
     faLinkedin,
     faGoogle,
-    faFacebook
+    faFacebook,
+    faFileAlt,
+    faCube,
+    faLocationDot,
+    faDownload,
+    faCode,
+    faRocket,
+    faChartLine,
+    faEnvelope,
+    faTimes,
+    faDoorOpen
 )
 
-
-
 const app = createApp(App)
-    // .use(router)
     .use(ElementPlus)
     .use(VueObserveVisibility);
 
-// app.component('video-background', VideoBackground);
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component);
 }

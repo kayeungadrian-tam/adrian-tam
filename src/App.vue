@@ -1,70 +1,7 @@
 <script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-// import HelloWorld from './components/HelloWorld.vue'
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
 import NewPage from './components/NewPage.vue'
-
-document.title = "Adrian Tam ";
-
-const route = (() => {
-  try {
-    return useRoute()
-  } catch {
-    return null
-  }
-})()
-const hideChrome = computed(() => Boolean(route?.meta?.hideChrome))
 </script>
 
 <template>
-
-  <body>
-    <NewPage />
-    <!-- <router-view v-slot="{ Component }">
-      <transition name="fade">
-        <component :is="Component" />
-      </transition>
-    </router-view> -->
-  </body>
-  <div v-if="!hideChrome" class="area">
-    <div class="circles">
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-
-    </div>
-  </div>
+  <NewPage />
 </template>
-
-<style scoped>
-.fade-enter-active {
-  transition: opacity 1.0s ease-in-out;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-}
-
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
