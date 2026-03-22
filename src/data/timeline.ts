@@ -3,7 +3,7 @@ const timeline = [
         timestamp: "2020-08 <br> ~ <br> ",
         start: "2023-07",
         end: "present",
-        title: "AI Egnineer",
+        title: "AI Engineer",
         location: "IBM Japan Systems Engineering",
         icon: "fa-solid fa-briefcase",
         website: "https://www.ibm.com/jp-ja/about/subsidiaries/ise",
