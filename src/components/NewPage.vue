@@ -351,6 +351,9 @@ const handleWallsReady = (payload: {
 // Camera smoothing for RPG feel
 const cameraLag = 0.08
 const cameraRotationLag = 0.12
+const baseFov = 55
+const sprintFov = 50
+const fovLerpSpeed = 0.08
 
 let targetCameraOffset = new THREE.Vector3()
 let currentCameraOffset = new THREE.Vector3()
@@ -821,12 +824,20 @@ function animate() {
       }
     } else {
       camera.position.lerp(targetPos, cameraRotationLag)
+      camera.position.y += movementState.headBobOffset
       const lookTarget = new THREE.Vector3(
         playerRig.position.x,
         playerRig.position.y + 0.6,
         playerRig.position.z
       )
       camera.lookAt(lookTarget)
+    }
+
+    const targetFov = movementState.isSprinting ? sprintFov : baseFov
+    const fovDelta = (targetFov - camera.fov) * fovLerpSpeed
+    if (Math.abs(fovDelta) > 0.01) {
+      camera.fov += fovDelta
+      camera.updateProjectionMatrix()
     }
   }
 

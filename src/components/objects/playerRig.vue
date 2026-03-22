@@ -38,8 +38,21 @@ const createPlayer = () => {
       gltf.scene.position.set(-center.x * scale, -box.min.y * scale, -center.z * scale)
       applyShadowProps(gltf.scene)
 
+      const shadowGeometry = new THREE.CircleGeometry(0.45, 32)
+      const shadowMaterial = new THREE.MeshBasicMaterial({
+        color: 0x000000,
+        transparent: true,
+        opacity: 0.25,
+        depthWrite: false,
+      })
+      const shadowMesh = new THREE.Mesh(shadowGeometry, shadowMaterial)
+      shadowMesh.rotation.x = -Math.PI / 2
+      shadowMesh.position.y = 0.02 // just above the ground to avoid z-fighting
+      shadowMesh.renderOrder = -1
+
       const rig = new THREE.Group()
       rig.add(gltf.scene)
+      rig.add(shadowMesh)
       rig.position.copy(props.position)
       rig.rotation.y = Math.PI
 

@@ -24,6 +24,8 @@ export type PlayerMovementState = {
   cameraZoom: number
   currentYaw: number
   moveVelocity: THREE.Vector3
+  headBobOffset: number
+  isSprinting: boolean
 }
 
 export type UpdateMovementArgs = {
@@ -54,8 +56,11 @@ export const createPlayerMovement = (config: PlayerMovementConfig) => {
     cameraZoom: 1,
     currentYaw: config.initialYaw,
     moveVelocity: new THREE.Vector3(),
+    headBobOffset: 0,
+    isSprinting: false,
   }
   let isPointerDown = false
+  let headBobTime = 0
 
   const resetState = () => {
     movement.forward = false
@@ -68,6 +73,9 @@ export const createPlayerMovement = (config: PlayerMovementConfig) => {
     state.cameraOrbitYaw = config.initialOrbitYaw
     state.cameraOrbitPitch = config.initialOrbitPitch
     state.cameraZoom = 1
+    state.headBobOffset = 0
+    state.isSprinting = false
+    headBobTime = 0
   }
 
   const handlePointerDown = (event: MouseEvent) => {
@@ -104,18 +112,19 @@ export const createPlayerMovement = (config: PlayerMovementConfig) => {
   }
 
   const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.code === 'KeyS') movement.forward = true
-    if (event.code === 'KeyW') movement.backward = true
-    if (event.code === 'KeyA') movement.left = true
-    if (event.code === 'KeyD') movement.right = true
+    if (event.code === 'KeyS' || event.code === 'ArrowDown') movement.forward = true
+    if (event.code === 'KeyW' || event.code === 'ArrowUp') movement.backward = true
+    if (event.code === 'KeyA' || event.code === 'ArrowLeft') movement.left = true
+    if (event.code === 'KeyD' || event.code === 'ArrowRight') movement.right = true
     if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') sprintKey.value = true
+    if (event.code.startsWith('Arrow')) event.preventDefault()
   }
 
   const handleKeyUp = (event: KeyboardEvent) => {
-    if (event.code === 'KeyS') movement.forward = false
-    if (event.code === 'KeyW') movement.backward = false
-    if (event.code === 'KeyA') movement.left = false
-    if (event.code === 'KeyD') movement.right = false
+    if (event.code === 'KeyS' || event.code === 'ArrowDown') movement.forward = false
+    if (event.code === 'KeyW' || event.code === 'ArrowUp') movement.backward = false
+    if (event.code === 'KeyA' || event.code === 'ArrowLeft') movement.left = false
+    if (event.code === 'KeyD' || event.code === 'ArrowRight') movement.right = false
     if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') sprintKey.value = false
   }
 
@@ -154,17 +163,31 @@ export const createPlayerMovement = (config: PlayerMovementConfig) => {
       while (yawDiff < -Math.PI) yawDiff += Math.PI * 2
       state.currentYaw += yawDiff * config.rotationSmoothing * delta
 
-      const currentSpeed = sprintKey.value ? config.runSpeed : config.walkSpeed
+      const isSprinting = sprintKey.value
+      const currentSpeed = isSprinting ? config.runSpeed : config.walkSpeed
       const targetVelocity = moveDir.multiplyScalar(currentSpeed)
 
       state.moveVelocity.lerp(targetVelocity, config.moveAcceleration * delta)
-      args.setPlayerAnimation(sprintKey.value ? 'run' : 'walk')
+      state.isSprinting = isSprinting
+      args.setPlayerAnimation(isSprinting ? 'run' : 'walk')
+
+      const speed = state.moveVelocity.length()
+      const bobFrequency = isSprinting ? 10 : 7
+      const bobAmplitude = 0.03
+      headBobTime += delta * bobFrequency
+      state.headBobOffset = Math.sin(headBobTime) * bobAmplitude * Math.min(speed / config.walkSpeed, 1)
     } else {
       state.moveVelocity.multiplyScalar(Math.exp(-config.moveDamping * delta))
       if (state.moveVelocity.length() < 0.01) {
         state.moveVelocity.set(0, 0, 0)
       }
+      state.isSprinting = false
       args.setPlayerAnimation('idle')
+      state.headBobOffset *= 0.9
+      if (Math.abs(state.headBobOffset) < 0.001) {
+        state.headBobOffset = 0
+        headBobTime = 0
+      }
     }
 
     playerRig.rotation.y = state.currentYaw
