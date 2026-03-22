@@ -16,7 +16,7 @@
         </h2>
       </div>
 
-      <p class="subtitle">Full-Stack · AI · Cloud · Mobile · Everything In Between</p>
+      <p class="subtitle">AI Engineering · Machine Learning · Full-Stack Development</p>
 
       <!-- Tech stack pills -->
       <div class="tech-pills">
@@ -61,8 +61,8 @@ const emit = defineEmits(['fade', 'quickView'])
 
 const typedText = ref('')
 const cursorVisible = ref(true)
-const fullText = "ALL STACK ENGINEER"
-const techStack = ['React', 'Python', 'AI/ML', 'Node.js', 'Cloud', 'DevOps']
+const fullText = "AI ENGINEER"
+const techStack = ['Python', 'Vue', 'TypeScript', 'AI/ML', 'Three.js', 'FastAPI']
 
 // Typing animation with loop
 onMounted(() => {

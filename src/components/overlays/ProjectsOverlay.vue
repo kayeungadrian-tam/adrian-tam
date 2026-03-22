@@ -1,7 +1,16 @@
 <script setup lang="ts">
+import projectsData from '../../data/projects'
+
 defineEmits<{
   (event: 'close'): void
 }>()
+
+const projects = projectsData.map((p) => ({
+  name: p.description,
+  overview: p.overview,
+  tags: p.tags,
+  link: p.link,
+}))
 </script>
 
 <template>
@@ -18,59 +27,30 @@ defineEmits<{
 
       <div class="card-body">
         <div class="projects-list">
-          <div class="project-item">
+          <a
+            v-for="(project, index) in projects"
+            :key="index"
+            :href="project.link"
+            target="_blank"
+            rel="noreferrer"
+            class="project-item project-link"
+          >
             <div class="project-header">
-              <div class="project-icon">🛰️</div>
+              <div class="project-icon">🔧</div>
               <div class="project-title-group">
-                <h3 class="project-title">Orbit</h3>
-                <span class="project-date">2024</span>
+                <h3 class="project-title">{{ project.name }}</h3>
               </div>
             </div>
             <p class="project-description">
-              A tiny space telemetry dashboard with real-time streams, custom alerts, and a sci-fi UI layer.
+              {{ project.overview }}
             </p>
             <div class="tech-stack">
-              <span class="tech-tag">TypeScript</span>
-              <span class="tech-tag">WebSockets</span>
-              <span class="tech-tag">Three.js</span>
+              <span v-for="(tag, tIndex) in project.tags" :key="tIndex" class="tech-tag">{{ tag }}</span>
             </div>
-          </div>
-
-          <div class="project-item">
-            <div class="project-header">
-              <div class="project-icon">📦</div>
-              <div class="project-title-group">
-                <h3 class="project-title">Packrat</h3>
-                <span class="project-date">2023</span>
-              </div>
-            </div>
-            <p class="project-description">
-              A local-first asset organizer with fast tagging, fuzzy search, and offline sync.
-            </p>
-            <div class="tech-stack">
-              <span class="tech-tag">Vue</span>
-              <span class="tech-tag">SQLite</span>
-              <span class="tech-tag">Vite</span>
-            </div>
-          </div>
-
-          <div class="project-item">
-            <div class="project-header">
-              <div class="project-icon">🧭</div>
-              <div class="project-title-group">
-                <h3 class="project-title">Trailhead</h3>
-                <span class="project-date">2022</span>
-              </div>
-            </div>
-            <p class="project-description">
-              A minimalist habit tracker with adaptive nudges and a journaling mode.
-            </p>
-            <div class="tech-stack">
-              <span class="tech-tag">React</span>
-              <span class="tech-tag">Supabase</span>
-              <span class="tech-tag">Tailwind</span>
-            </div>
-          </div>
+            <span class="github-link">
+              <fa :icon="['fab', 'github']" /> View on GitHub
+            </span>
+          </a>
         </div>
       </div>
 
@@ -87,3 +67,28 @@ defineEmits<{
 </template>
 
 <style scoped src="../../assets/css/workOverlay.css" />
+
+<style scoped>
+.project-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  cursor: pointer;
+}
+
+.github-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--overlay-accent);
+  margin-top: 12px;
+  font-weight: 500;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.project-link:hover .github-link {
+  opacity: 1;
+}
+</style>
