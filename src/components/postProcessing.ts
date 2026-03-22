@@ -12,6 +12,7 @@ import {
   ToneMappingMode,
   BlendFunction,
   KernelSize,
+  ChromaticAberrationEffect,
 } from 'postprocessing'
 
 export interface PostProcessingConfig {
@@ -31,8 +32,9 @@ export interface PostProcessingController {
 }
 
 /**
- * Creates and manages post-processing effects for the 3D portfolio
- * Includes Bloom, SSAO, Depth of Field, Vignette, and Color Grading
+ * Creates and manages post-processing effects for the 3D portfolio.
+ * Includes Bloom, SSAO, Depth of Field, Vignette, Color Grading,
+ * and Chromatic Aberration for cinematic open-world feel.
  */
 export function createPostProcessing(config: PostProcessingConfig): PostProcessingController {
   const { renderer, scene, camera, theme } = config
@@ -49,7 +51,7 @@ export function createPostProcessing(config: PostProcessingConfig): PostProcessi
   // Normal pass for SSAO
   const normalPass = new NormalPass(scene, camera)
 
-  // SSAO Effect - Adds contact shadows for depth
+  // SSAO Effect - Reduced intensity for open world with fewer wall occluders
   const ssaoEffect = new SSAOEffect(camera, normalPass.texture, {
     blendFunction: BlendFunction.MULTIPLY,
     distanceScaling: true,
@@ -59,20 +61,20 @@ export function createPostProcessing(config: PostProcessingConfig): PostProcessi
     rangeFalloff: 0.001,
     luminanceInfluence: 0.7,
     radius: 0.05,
-    intensity: theme === 'dark' ? 2.5 : 1.8,
+    intensity: theme === 'dark' ? 1.5 : 1.2,
     bias: 0.025,
     samples: 16,
     rings: 4,
     resolutionScale: 0.5,
   })
 
-  // Bloom Effect - Makes lights and bright surfaces glow
+  // Bloom Effect - Raised threshold for open world with portals, zone halos, beacons
   const bloomEffect = new BloomEffect({
     blendFunction: BlendFunction.ADD,
     kernelSize: KernelSize.MEDIUM,
-    luminanceThreshold: theme === 'dark' ? 0.4 : 0.6,
-    luminanceSmoothing: 0.5,
-    intensity: theme === 'dark' ? 1.2 : 0.8,
+    luminanceThreshold: theme === 'dark' ? 0.5 : 0.65,
+    luminanceSmoothing: 0.4,
+    intensity: theme === 'dark' ? 1.0 : 0.7,
     mipmapBlur: true,
   })
 
@@ -90,6 +92,13 @@ export function createPostProcessing(config: PostProcessingConfig): PostProcessi
   const vignetteEffect = new VignetteEffect({
     offset: 0.35,
     darkness: theme === 'dark' ? 0.5 : 0.3,
+  })
+
+  // Chromatic Aberration - Subtle color fringing at screen edges for cinematic feel
+  const chromaticAberrationEffect = new ChromaticAberrationEffect({
+    offset: new THREE.Vector2(0.0006, 0.0006),
+    radialModulation: true,
+    modulationOffset: 0.3,
   })
 
   // Tone Mapping - Professional color grading
@@ -110,54 +119,40 @@ export function createPostProcessing(config: PostProcessingConfig): PostProcessi
     ssaoEffect,
     vignetteEffect,
     depthOfFieldEffect,
+    chromaticAberrationEffect,
     toneMappingEffect
   )
 
   composer.addPass(normalPass)
   composer.addPass(effectPass)
 
-  // Store effects for later access
-  const effects = {
-    bloom: bloomEffect,
-    ssao: ssaoEffect,
-    dof: depthOfFieldEffect,
-    vignette: vignetteEffect,
-    toneMapping: toneMappingEffect,
-  }
-
   /**
    * Updates effects based on theme
    */
   const updateTheme = (newTheme: 'dark' | 'light') => {
-    // Bloom adjustments - access through uniforms
+    // Bloom adjustments - raised threshold for open world
     const bloomUniforms = bloomEffect.luminanceMaterial.uniforms
     if (bloomUniforms.threshold) {
-      bloomUniforms.threshold.value = newTheme === 'dark' ? 0.4 : 0.6
+      bloomUniforms.threshold.value = newTheme === 'dark' ? 0.5 : 0.65
     }
-    bloomEffect.intensity = newTheme === 'dark' ? 1.2 : 0.8
+    bloomEffect.intensity = newTheme === 'dark' ? 1.0 : 0.7
 
-    // SSAO adjustments
-    ssaoEffect.intensity = newTheme === 'dark' ? 2.5 : 1.8
+    // SSAO adjustments - reduced for open world
+    ssaoEffect.intensity = newTheme === 'dark' ? 1.5 : 1.2
 
     // Vignette adjustments - access through uniforms
     const vignetteUniforms = vignetteEffect.uniforms
     if (vignetteUniforms.get('darkness')) {
       vignetteUniforms.get('darkness')!.value = newTheme === 'dark' ? 0.5 : 0.3
     }
-
-    // Note: Tone mapping properties are read-only after creation
-    // The theme-specific values are set during initialization
   }
 
   /**
    * Updates Depth of Field based on focus mode
    */
   const updateFocusMode = (isFocused: boolean) => {
-    // Smoothly fade DOF in/out
     const targetOpacity = isFocused ? 1.0 : 0.0
     const currentOpacity = depthOfFieldEffect.blendMode.opacity.value
-
-    // Animate opacity over time (will be called in render loop)
     const diff = targetOpacity - currentOpacity
     depthOfFieldEffect.blendMode.opacity.value += diff * 0.05
   }
@@ -185,6 +180,7 @@ export function createPostProcessing(config: PostProcessingConfig): PostProcessi
     ssaoEffect.dispose()
     depthOfFieldEffect.dispose()
     vignetteEffect.dispose()
+    chromaticAberrationEffect.dispose()
     toneMappingEffect.dispose()
   }
 
