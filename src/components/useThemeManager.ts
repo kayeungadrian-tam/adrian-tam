@@ -45,10 +45,10 @@ export const createThemeManager = (options: { storageKey: string }) => {
     }
     if (theme.value === 'dark') {
       scene.fog.color.set(0x2a2030)
-      scene.fog.density = 0.04
+      scene.fog.density = 0.02
     } else {
       scene.fog.color.set(0xe8edf3)
-      scene.fog.density = 0.06
+      scene.fog.density = 0.025
     }
     if (spotlightConeMaterial) {
       if (theme.value === 'dark') {

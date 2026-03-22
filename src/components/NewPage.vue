@@ -426,7 +426,7 @@ onMounted(async () => {
   }
 
   scene = new THREE.Scene()
-  scene.fog = new THREE.FogExp2(0xe8edf3, 0.08)
+  scene.fog = new THREE.FogExp2(0xe8edf3, 0.025)
   sceneRef.value = scene
 
   const dracoLoader = new DRACOLoader()
@@ -936,7 +936,7 @@ function animate() {
       :room-height="roomHeight" :wall-thickness="wallThickness" :floor-thickness="floorThickness"
       :roof-thickness="roofThickness" :floor-overshoot="floorOvershoot" :theme="theme"
       @back-wall-ready="handleBackWallReady" @walls-ready="handleWallsReady" />
-    <SceneLights v-if="sceneRef" :scene="sceneRef" :theme="theme" />
+    <SceneLights v-if="sceneRef" :scene="sceneRef" :theme="theme" :player-position="playerPositionRef" />
 
     <!-- Expanded World Components -->
     <ZoneFloors v-if="sceneRef" :scene="sceneRef" :theme="theme" />
