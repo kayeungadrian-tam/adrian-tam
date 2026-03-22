@@ -18,28 +18,10 @@ const data = {
     },
     info: {
         email: "tamkayeung.adrian@gmail.com",
-        phone: "Phone number",
+        phone: "",
         city: "Tokyo",
         lang: ["🇳🇿", "🇯🇵", "🇭🇰", "🇨🇳"],
     },
-    timeline: [
-        {
-            start: "1970-01-01",
-            end: "1970-01-02",
-            title: "TimelineTitle",
-            location: "@location",
-            category: "category",
-            website: "website"
-        },
-        {
-            start: "1970-01-05",
-            end: "1970-01-08",
-            title: "TimelineTitle2",
-            location: "@location2",
-            category: "category2",
-            website: "website2"
-        }
-    ]
 };
 
 export default data;
