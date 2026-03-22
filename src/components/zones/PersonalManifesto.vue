@@ -18,12 +18,12 @@ let animationId: number | null = null
 
 const manifesto = {
   title: 'MY PHILOSOPHY',
-  statement: 'Build with purpose.\nCode with empathy.\nLearn relentlessly.',
+  statement: 'Bridge cultures through code.\nSolve problems with AI.\nNever stop exploring.',
   values: [
-    { name: 'Excellence', description: 'Pursue mastery in craft', color: '#00ff88' },
-    { name: 'Impact', description: 'Create meaningful change', color: '#00d4aa' },
-    { name: 'Growth', description: 'Never stop learning', color: '#00a87c' },
-    { name: 'Integrity', description: 'Do the right thing', color: '#008c66' },
+    { name: 'Cross-Cultural', description: 'NZ-born, Tokyo-based, bridging East and West through technology', color: '#00ff88' },
+    { name: 'AI-Driven', description: 'Applying machine learning and computer vision to real-world challenges', color: '#00d4aa' },
+    { name: 'Curiosity', description: 'From bicycle dynamics to reinforcement learning, always experimenting', color: '#00a87c' },
+    { name: 'Craftsmanship', description: 'Building polished experiences from backend systems to 3D frontends', color: '#008c66' },
   ],
 }
 
