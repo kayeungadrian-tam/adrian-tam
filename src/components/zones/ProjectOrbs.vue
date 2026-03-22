@@ -1,17 +1,14 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount } from 'vue'
 import * as THREE from 'three'
+import rawProjects from '../../data/projects'
 
 interface Project {
   name: string
   description: string
   tech: string[]
-  impact: string
   color: string
-  metrics?: {
-    label: string
-    value: string
-  }[]
+  link?: string
 }
 
 interface Props {
@@ -25,68 +22,25 @@ const emit = defineEmits<{
   (e: 'projectClick', project: Project): void
 }>()
 
-const projects: Project[] = [
-  {
-    name: 'AI Content Generator',
-    description: 'ML-powered content creation platform',
-    tech: ['Python', 'GPT-4', 'FastAPI', 'React'],
-    impact: 'Served 100K+ users with 95% satisfaction',
-    color: '#ff6b6b',
-    metrics: [
-      { label: 'Generations', value: '100K+' },
-      { label: 'Satisfaction', value: '95%' },
-      { label: 'Response Time', value: '<2s' },
-    ],
-  },
-  {
-    name: 'Real-time Analytics',
-    description: 'Distributed event processing system',
-    tech: ['Node.js', 'Kafka', 'Redis', 'TimescaleDB'],
-    impact: '50M events/day, <100ms latency',
-    color: '#4ecdc4',
-    metrics: [
-      { label: 'Events/Day', value: '50M' },
-      { label: 'Latency', value: '<100ms' },
-      { label: 'Uptime', value: '99.9%' },
-    ],
-  },
-  {
-    name: 'E-commerce Optimizer',
-    description: 'ML recommendation engine',
-    tech: ['Python', 'TensorFlow', 'PostgreSQL'],
-    impact: '35% increase in conversion rate',
-    color: '#95e1d3',
-    metrics: [
-      { label: 'Conv. Increase', value: '+35%' },
-      { label: 'Revenue Impact', value: '+$2M' },
-      { label: 'Users', value: '500K' },
-    ],
-  },
-  {
-    name: 'Cloud Migration Tool',
-    description: 'Automated AWS infrastructure deployment',
-    tech: ['Python', 'AWS', 'Terraform', 'Docker'],
-    impact: 'Reduced deployment time by 80%',
-    color: '#f38181',
-    metrics: [
-      { label: 'Time Saved', value: '80%' },
-      { label: 'Services', value: '50+' },
-      { label: 'Deployments', value: '1K+' },
-    ],
-  },
-  {
-    name: 'API Gateway',
-    description: 'High-performance microservices gateway',
-    tech: ['Node.js', 'Redis', 'Kubernetes'],
-    impact: 'Handles 10M+ requests/day',
-    color: '#aa96da',
-    metrics: [
-      { label: 'Requests/Day', value: '10M+' },
-      { label: 'Services', value: '30' },
-      { label: 'Latency p99', value: '50ms' },
-    ],
-  },
+const orbColors = [
+  '#ff6b6b',
+  '#4ecdc4',
+  '#ffd93d',
+  '#6c5ce7',
+  '#a8e6cf',
+  '#ff8a5c',
+  '#3dc1d3',
+  '#e77f67',
 ]
+
+// Map real project data to the component's Project interface
+const projects: Project[] = rawProjects.map((p, i) => ({
+  name: p.description,
+  description: p.overview,
+  tech: p.tags,
+  color: orbColors[i % orbColors.length],
+  link: p.link,
+}))
 
 let projectOrbs: Map<string, THREE.Group> = new Map()
 let animationId: number | null = null
@@ -152,11 +106,11 @@ function createProjectOrb(project: Project, index: number): THREE.Group {
   for (let i = 0; i < particleCount; i++) {
     const theta = Math.random() * Math.PI * 2
     const phi = Math.random() * Math.PI
-    const radius = 2
+    const r = 2
 
-    positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta)
-    positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta)
-    positions[i * 3 + 2] = radius * Math.cos(phi)
+    positions[i * 3] = r * Math.sin(phi) * Math.cos(theta)
+    positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta)
+    positions[i * 3 + 2] = r * Math.cos(phi)
   }
 
   particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))

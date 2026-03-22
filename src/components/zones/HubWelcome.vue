@@ -5,6 +5,7 @@ import { Text } from 'troika-three-text'
 
 interface Props {
   scene: THREE.Scene
+  camera: THREE.PerspectiveCamera | null
   hubCenter: THREE.Vector3
   theme: 'dark' | 'light'
 }
@@ -14,6 +15,11 @@ const props = defineProps<Props>()
 let welcomeGroup: THREE.Group | null = null
 let textMeshes: Text[] = []
 let animationId: number | null = null
+
+// Reusable vectors to avoid per-frame allocations
+const _cameraWorldPos = new THREE.Vector3()
+const _textWorldPos = new THREE.Vector3()
+const _lookTarget = new THREE.Vector3()
 
 /**
  * Create welcome pedestal in hub center
@@ -144,10 +150,16 @@ function animateWelcome() {
 
   const time = performance.now() * 0.001
 
-  // Rotate text
-  textMeshes.forEach((textMesh, i) => {
-    textMesh.rotation.y = Math.sin(time * 0.5) * 0.1
-  })
+  if (props.camera) {
+    props.camera.getWorldPosition(_cameraWorldPos)
+
+    textMeshes.forEach((textMesh) => {
+      textMesh.getWorldPosition(_textWorldPos)
+      // Keep Y from text position so text stays upright (Y-axis billboard only)
+      _lookTarget.set(_cameraWorldPos.x, _textWorldPos.y, _cameraWorldPos.z)
+      textMesh.lookAt(textMesh.parent!.worldToLocal(_lookTarget))
+    })
+  }
 
   // Animate rings
   for (let i = 0; i < 3; i++) {

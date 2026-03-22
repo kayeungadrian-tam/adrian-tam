@@ -94,6 +94,7 @@ let rightWallMaterial: THREE.MeshStandardMaterial | null = null
 let graffitiGroup: THREE.Object3D | null = null
 
 const sceneRef = shallowRef<THREE.Scene | null>(null)
+const cameraRef = shallowRef<THREE.PerspectiveCamera | null>(null)
 const gltfLoaderRef = shallowRef<GLTFLoader | null>(null)
 const introLookAt = new THREE.Vector3(0, 1.2, 0)
 
@@ -317,6 +318,7 @@ const handlePlayerReady = (payload: PlayerReadyPayload) => {
 
 const handleCameraReady = (payload: THREE.PerspectiveCamera | null) => {
   camera = payload
+  cameraRef.value = payload
 }
 
 const handleBackWallReady = (payload: { material: THREE.MeshStandardMaterial | null; mesh: THREE.Mesh | null }) => {
@@ -930,8 +932,8 @@ function animate() {
     <PortalSystem ref="portalSystemRef" v-if="sceneRef" :scene="sceneRef" :theme="theme" />
 
     <!-- Zone Content -->
-    <HubWelcome v-if="sceneRef" :scene="sceneRef" :hub-center="zones.find(z => z.id === 'hub')!.center" :theme="theme" />
-    <SkillCrystals v-if="sceneRef" :scene="sceneRef" :zone-center="zones.find(z => z.id === 'technical')!.center" :theme="theme" />
+    <HubWelcome v-if="sceneRef" :scene="sceneRef" :camera="cameraRef" :hub-center="zones.find(z => z.id === 'hub')!.center" :theme="theme" />
+    <SkillCrystals v-if="sceneRef" :scene="sceneRef" :camera="cameraRef" :zone-center="zones.find(z => z.id === 'technical')!.center" :theme="theme" />
     <ProjectOrbs v-if="sceneRef" :scene="sceneRef" :zone-center="zones.find(z => z.id === 'creative')!.center" :theme="theme" />
     <PersonalManifesto v-if="sceneRef" :scene="sceneRef" :zone-center="zones.find(z => z.id === 'personal')!.center" :theme="theme" />
 

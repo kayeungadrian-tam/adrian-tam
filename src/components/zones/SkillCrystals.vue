@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref } from 'vue'
+import { onMounted, onBeforeUnmount } from 'vue'
 import * as THREE from 'three'
 
 interface Skill {
@@ -8,11 +8,11 @@ interface Skill {
   years: number
   color: string
   category: string
-  projects?: number
 }
 
 interface Props {
   scene: THREE.Scene
+  camera: THREE.PerspectiveCamera | null
   zoneCenter: THREE.Vector3
   theme: 'dark' | 'light'
 }
@@ -23,37 +23,34 @@ const emit = defineEmits<{
 }>()
 
 const skills: Skill[] = [
-  // Frontend
-  { name: 'React', level: 5, years: 4, color: '#61dafb', category: 'Frontend', projects: 12 },
-  { name: 'Vue', level: 5, years: 4, color: '#42b883', category: 'Frontend', projects: 8 },
-  { name: 'TypeScript', level: 5, years: 4, color: '#3178c6', category: 'Frontend', projects: 15 },
-
-  // Backend
-  { name: 'Node.js', level: 5, years: 4, color: '#339933', category: 'Backend', projects: 20 },
-  { name: 'Python', level: 5, years: 5, color: '#3776ab', category: 'Backend', projects: 25 },
-  { name: 'FastAPI', level: 4, years: 2, color: '#009688', category: 'Backend', projects: 8 },
+  // Primary Languages
+  { name: 'Python', level: 5, years: 5, color: '#3776ab', category: 'Language' },
+  { name: 'Vue/TypeScript', level: 5, years: 4, color: '#42b883', category: 'Frontend' },
 
   // AI/ML
-  { name: 'TensorFlow', level: 4, years: 3, color: '#ff6f00', category: 'AI/ML', projects: 6 },
-  { name: 'PyTorch', level: 4, years: 3, color: '#ee4c2c', category: 'AI/ML', projects: 5 },
-  { name: 'LangChain', level: 4, years: 1, color: '#1c3c3c', category: 'AI/ML', projects: 4 },
+  { name: 'TensorFlow', level: 4, years: 3, color: '#ff6f00', category: 'AI/ML' },
+  { name: 'PyTorch', level: 4, years: 3, color: '#ee4c2c', category: 'AI/ML' },
+  { name: 'OpenCV', level: 4, years: 3, color: '#5c3ee8', category: 'AI/ML' },
 
-  // Cloud & DevOps
-  { name: 'AWS', level: 4, years: 3, color: '#ff9900', category: 'Cloud', projects: 15 },
-  { name: 'Docker', level: 4, years: 3, color: '#2496ed', category: 'DevOps', projects: 18 },
-  { name: 'Kubernetes', level: 3, years: 2, color: '#326ce5', category: 'DevOps', projects: 6 },
+  // Backend & Cloud
+  { name: 'FastAPI', level: 4, years: 2, color: '#009688', category: 'Backend' },
+  { name: 'Node.js', level: 4, years: 4, color: '#339933', category: 'Backend' },
+  { name: 'Docker', level: 4, years: 3, color: '#2496ed', category: 'DevOps' },
+  { name: 'AWS', level: 4, years: 3, color: '#ff9900', category: 'Cloud' },
 
-  // Database
-  { name: 'PostgreSQL', level: 4, years: 4, color: '#336791', category: 'Database', projects: 12 },
-  { name: 'MongoDB', level: 4, years: 3, color: '#47a248', category: 'Database', projects: 10 },
-  { name: 'Redis', level: 4, years: 3, color: '#dc382d', category: 'Database', projects: 8 },
+  // Creative
+  { name: 'Three.js', level: 3, years: 2, color: '#00d4ff', category: 'Creative' },
 ]
 
 let skillCrystals: Map<string, THREE.Group> = new Map()
+let crystalMeshCache: THREE.Object3D[] = []
 let raycaster = new THREE.Raycaster()
 let mouse = new THREE.Vector2()
 let animationId: number | null = null
 let hoveredSkill: Skill | null = null
+
+const _hoverScale = new THREE.Vector3(1.3, 1.3, 1.3)
+const _defaultScale = new THREE.Vector3(1, 1, 1)
 
 /**
  * Create a skill crystal (floating geometric shape)
@@ -146,10 +143,10 @@ function animateCrystals() {
     // Pulse emission on hover
     if (hoveredSkill === skill) {
       crystal.material.emissiveIntensity = 1.0 + Math.sin(time * 5) * 0.3
-      group.scale.lerp(new THREE.Vector3(1.3, 1.3, 1.3), 0.1)
+      group.scale.lerp(_hoverScale, 0.1)
     } else {
       crystal.material.emissiveIntensity = 0.5
-      group.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1)
+      group.scale.lerp(_defaultScale, 0.1)
     }
   })
 
@@ -164,20 +161,12 @@ function handleMouseMove(event: MouseEvent) {
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
 
-  // Update raycaster
-  const camera = props.scene.children.find(child => child.type === 'PerspectiveCamera') as THREE.PerspectiveCamera
-  if (!camera) return
+  // Use camera from props
+  if (!props.camera) return
 
-  raycaster.setFromCamera(mouse, camera)
+  raycaster.setFromCamera(mouse, props.camera)
 
-  // Check for intersections
-  const crystalMeshes: THREE.Object3D[] = []
-  skillCrystals.forEach(group => {
-    const crystal = group.userData.crystal
-    if (crystal) crystalMeshes.push(crystal)
-  })
-
-  const intersects = raycaster.intersectObjects(crystalMeshes)
+  const intersects = raycaster.intersectObjects(crystalMeshCache)
 
   if (intersects.length > 0) {
     const intersectedCrystal = intersects[0].object
@@ -206,6 +195,13 @@ onMounted(() => {
     const crystal = createSkillCrystal(skill, index)
     props.scene.add(crystal)
     skillCrystals.set(skill.name, crystal)
+  })
+
+  // Cache crystal meshes for raycasting
+  crystalMeshCache = []
+  skillCrystals.forEach(group => {
+    const crystal = group.userData.crystal
+    if (crystal) crystalMeshCache.push(crystal)
   })
 
   // Start animation
@@ -237,6 +233,7 @@ onBeforeUnmount(() => {
     })
   })
   skillCrystals.clear()
+  crystalMeshCache = []
 
   document.body.style.cursor = 'default'
 })
