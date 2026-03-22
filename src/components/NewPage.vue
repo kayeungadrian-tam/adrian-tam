@@ -37,6 +37,10 @@ import SkillCrystals from './zones/SkillCrystals.vue'
 import ProjectOrbs from './zones/ProjectOrbs.vue'
 import HubWelcome from './zones/HubWelcome.vue'
 import PersonalManifesto from './zones/PersonalManifesto.vue'
+import WorldAtmosphere from './WorldAtmosphere.vue'
+import WorldLandmarks from './WorldLandmarks.vue'
+import WayfindingSigns from './WayfindingSigns.vue'
+import WorldDecorations from './WorldDecorations.vue'
 
 // Config
 import { sceneLayout } from '../config/sceneLayout'
@@ -947,6 +951,12 @@ function animate() {
     <SkillCrystals v-if="sceneRef" :scene="sceneRef" :camera="cameraRef" :zone-center="zones.find(z => z.id === 'technical')!.center" :theme="theme" />
     <ProjectOrbs v-if="sceneRef" :scene="sceneRef" :zone-center="zones.find(z => z.id === 'creative')!.center" :theme="theme" />
     <PersonalManifesto v-if="sceneRef" :scene="sceneRef" :zone-center="zones.find(z => z.id === 'personal')!.center" :theme="theme" />
+
+    <!-- World Environment -->
+    <WorldAtmosphere v-if="sceneRef" :scene="sceneRef" :theme="theme" />
+    <WorldLandmarks v-if="sceneRef" :scene="sceneRef" :theme="theme" />
+    <WayfindingSigns v-if="sceneRef" :scene="sceneRef" :theme="theme" />
+    <WorldDecorations v-if="sceneRef" :scene="sceneRef" :theme="theme" />
 
     <BallModel v-if="sceneRef" :scene="sceneRef" :position="ballPosition" :radius="ballRadius"
       @ready="handleBallReady" />
