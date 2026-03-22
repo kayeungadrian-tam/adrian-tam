@@ -21,6 +21,7 @@ declare module 'troika-three-text' {
       blockBounds?: [number, number, number, number];
     };
     sync(callback?: () => void): void;
+    dispose(): void;
   }
 }
 

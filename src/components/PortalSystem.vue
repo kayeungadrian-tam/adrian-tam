@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, watch } from 'vue'
 import * as THREE from 'three'
+import { Text } from 'troika-three-text'
 import { portals, type Portal } from '../config/expandedWorld'
 
 interface Props {
@@ -16,9 +17,33 @@ const emit = defineEmits<{
 let portalMeshes: Map<string, THREE.Group> = new Map()
 let animationId: number | null = null
 
-/**
- * Creates a glowing portal with particle effects
- */
+/** Base emissive intensity per theme */
+function baseEmissive(): number {
+  return props.theme === 'dark' ? 2.0 : 1.0
+}
+
+/** Creates a destination label above the portal */
+function createDestinationLabel(portal: Portal): Text {
+  const label = new Text()
+  label.text = `\u2192 ${portal.label}`
+  label.fontSize = 0.5
+  label.color = portal.color
+  label.anchorX = 'center'
+  label.anchorY = 'bottom'
+  label.outlineWidth = 0.02
+  label.outlineColor = '#000000'
+  label.position.set(0, portal.radius + 1.2, 0)
+  label.depthOffset = -1
+  label.sync(() => {
+    if (label.material) {
+      ;(label.material as THREE.Material).depthTest = false
+      ;(label.material as THREE.Material).transparent = true
+    }
+  })
+  return label
+}
+
+/** Creates a glowing portal with particle effects and destination label */
 function createPortalVisual(portal: Portal): THREE.Group {
   const group = new THREE.Group()
   group.position.copy(portal.position)
@@ -29,7 +54,7 @@ function createPortalVisual(portal: Portal): THREE.Group {
   const ringMaterial = new THREE.MeshStandardMaterial({
     color: new THREE.Color(portal.color),
     emissive: new THREE.Color(portal.color),
-    emissiveIntensity: 2.0,
+    emissiveIntensity: baseEmissive(),
     metalness: 0.8,
     roughness: 0.2,
   })
@@ -77,55 +102,57 @@ function createPortalVisual(portal: Portal): THREE.Group {
   particles.rotation.x = Math.PI / 2
   group.add(particles)
 
-  // Store references for animation
+  // Destination label above portal
+  const label = createDestinationLabel(portal)
+  group.add(label)
+
+  // Store initial Y for vertical bob animation
+  const baseY = portal.position.y
+
   group.userData = {
     ring,
     disc,
     particles,
     portal,
+    baseY,
   }
 
   return group
 }
 
-/**
- * Animates portal effects
- */
 function animatePortals() {
   const time = performance.now() * 0.001
+  const intensity = baseEmissive()
 
   portalMeshes.forEach((group) => {
-    const { ring, disc, particles } = group.userData
+    const { ring, disc, particles, baseY } = group.userData
 
-    // Pulse ring emission
     if (ring && ring.material) {
-      ring.material.emissiveIntensity = 1.5 + Math.sin(time * 2) * 0.5
+      ring.material.emissiveIntensity = (intensity * 0.75) + Math.sin(time * 2) * (intensity * 0.25)
     }
 
-    // Shimmer disc
     if (disc && disc.material) {
       disc.material.opacity = 0.3 + Math.sin(time * 3) * 0.1
     }
 
-    // Rotate particles
     if (particles) {
       particles.rotation.z += 0.01
     }
+
+    group.position.y = baseY + Math.sin(time * 1.5) * 0.3
   })
 
   animationId = requestAnimationFrame(animatePortals)
 }
 
-/**
- * Updates portal theme
- */
-function updatePortalTheme(theme: 'dark' | 'light') {
-  const intensityMultiplier = theme === 'dark' ? 1.0 : 0.6
+/** Updates emissive intensity when theme changes */
+function updatePortalTheme(_theme: 'dark' | 'light') {
+  const intensity = baseEmissive()
 
   portalMeshes.forEach((group) => {
     const { ring } = group.userData
     if (ring && ring.material) {
-      ring.material.emissiveIntensity *= intensityMultiplier
+      ring.material.emissiveIntensity = intensity
     }
   })
 }
@@ -157,13 +184,16 @@ onBeforeUnmount(() => {
   portalMeshes.forEach((group) => {
     props.scene.remove(group)
     group.traverse((obj) => {
-      if (obj instanceof THREE.Mesh) {
+      if (obj instanceof THREE.Mesh || obj instanceof THREE.Points) {
         obj.geometry.dispose()
         if (Array.isArray(obj.material)) {
           obj.material.forEach(m => m.dispose())
-        } else {
+        } else if (obj.material) {
           obj.material.dispose()
         }
+      }
+      if (obj instanceof Text) {
+        obj.dispose()
       }
     })
   })
