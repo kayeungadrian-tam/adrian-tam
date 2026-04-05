@@ -12,15 +12,19 @@
         <div class="hero__cta">
           <a
             href="#projects"
-            class="hero__btn hero__btn--filled"
+            class="hero__btn hero__btn--filled magnetic"
             @click.prevent="smoothScrollTo('projects')"
+            @mousemove="onMagMove"
+            @mouseleave="onMagLeave"
           >
             View Projects
           </a>
           <a
             href="#contact"
-            class="hero__btn hero__btn--outlined"
+            class="hero__btn hero__btn--outlined magnetic"
             @click.prevent="smoothScrollTo('contact')"
+            @mousemove="onMagMove"
+            @mouseleave="onMagLeave"
           >
             Get in Touch
           </a>
@@ -93,6 +97,9 @@ import {
 } from 'three'
 import personal from '../data/personal'
 import { smoothScrollTo } from '../composables/useSmoothScroll'
+import { useMagnetic } from '../composables/useMagnetic'
+
+const { onMove: onMagMove, onLeave: onMagLeave } = useMagnetic(0.3)
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const canvasWrap = ref<HTMLDivElement | null>(null)

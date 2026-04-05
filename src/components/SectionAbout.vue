@@ -19,7 +19,7 @@
           </p>
         </div>
         <div class="about__info">
-          <div class="about__photo-wrapper">
+          <div class="about__photo-wrapper" :style="{ transform: `translateY(${(scrollY - 400) * 0.06}px)` }">
             <img
               :src="photoUrl"
               alt="Adrian Tam"
@@ -43,8 +43,10 @@
 <script setup lang="ts">
 import personal from '../data/personal'
 import { useScrollAnimation } from '../composables/useScrollAnimation'
+import { useParallax } from '../composables/useParallax'
 
 const { elRef, isVisible } = useScrollAnimation()
+const { scrollY } = useParallax()
 
 const photoUrl = new URL('../assets/img/new_photo.png', import.meta.url).href
 </script>

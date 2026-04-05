@@ -6,8 +6,12 @@
         <h2 class="section__title">Career Journey</h2>
       </div>
       <div class="section__content">
-        <div class="timeline">
+        <div class="timeline" ref="timelineRef">
+          <!-- Background line (gray) -->
           <div class="timeline__line"></div>
+          <!-- Fill line (accent, scroll-driven) -->
+          <div class="timeline__fill" :style="{ height: `${fillPercent}%` }"></div>
+
           <div
             v-for="(entry, index) in workEntries"
             :key="index"
@@ -17,9 +21,11 @@
               index % 2 === 0 ? 'timeline__item--left' : 'timeline__item--right',
               { 'is-visible': visibleCards[index] }
             ]"
-            :style="{ transitionDelay: `${index * 150}ms` }"
           >
-            <div class="timeline__node"></div>
+            <div
+              class="timeline__node"
+              :class="{ 'timeline__node--active': visibleCards[index] }"
+            ></div>
             <div class="timeline__card">
               <span class="timeline__date">{{ formatDate(entry.start) }} - {{ formatDate(entry.end) }}</span>
               <h3 class="timeline__title">{{ entry.title }}</h3>
@@ -63,36 +69,50 @@ const workEntries = computed(() =>
   timeline.filter((entry) => entry.icon.includes('briefcase'))
 )
 
+const timelineRef = ref<HTMLElement | null>(null)
 const cardRefs = ref<HTMLElement[]>([])
 const visibleCards = ref<boolean[]>([])
+const fillPercent = ref(0)
 
-let observer: IntersectionObserver | null = null
+let ticking = false
+
+function onScroll() {
+  if (ticking) return
+  ticking = true
+  requestAnimationFrame(() => {
+    updateTimeline()
+    ticking = false
+  })
+}
+
+function updateTimeline() {
+  if (!timelineRef.value) return
+
+  const rect = timelineRef.value.getBoundingClientRect()
+  const trigger = window.innerHeight * 0.65
+
+  // Fill progress: how far through the timeline the scroll trigger has reached
+  const progress = (trigger - rect.top) / rect.height
+  fillPercent.value = Math.max(0, Math.min(100, progress * 100))
+
+  // Reveal cards when scroll trigger passes their position
+  cardRefs.value.forEach((el, i) => {
+    if (!el || visibleCards.value[i]) return
+    const cardRect = el.getBoundingClientRect()
+    if (cardRect.top < trigger + 50) {
+      visibleCards.value[i] = true
+    }
+  })
+}
 
 onMounted(() => {
   visibleCards.value = new Array(workEntries.value.length).fill(false)
-
-  observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((observed) => {
-        if (observed.isIntersecting) {
-          const index = cardRefs.value.indexOf(observed.target as HTMLElement)
-          if (index !== -1) {
-            visibleCards.value[index] = true
-            observer?.unobserve(observed.target)
-          }
-        }
-      })
-    },
-    { threshold: 0.15 }
-  )
-
-  cardRefs.value.forEach((el) => {
-    if (el) observer?.observe(el)
-  })
+  window.addEventListener('scroll', onScroll, { passive: true })
+  updateTimeline()
 })
 
 onBeforeUnmount(() => {
-  observer?.disconnect()
+  window.removeEventListener('scroll', onScroll)
 })
 
 function formatDate(date: string): string {
@@ -132,6 +152,33 @@ function parseBullets(description: string): string[] {
   transform: translateX(-50%);
 }
 
+.timeline__fill {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, var(--color-accent), var(--color-secondary));
+  border-radius: 0 0 2px 2px;
+  z-index: 1;
+  transition: height 0.1s linear;
+  box-shadow: 0 0 8px var(--color-accent), 0 0 20px rgba(99,102,241,0.2);
+}
+
+/* Glowing tip */
+.timeline__fill::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 12px var(--color-accent), 0 0 24px rgba(99,102,241,0.4);
+}
+
 .timeline__item {
   position: relative;
   display: flex;
@@ -139,22 +186,22 @@ function parseBullets(description: string): string[] {
   width: 50%;
   padding: var(--space-4) 0;
   opacity: 0;
-  transition: opacity var(--duration-slow) var(--ease-out),
-              transform var(--duration-slow) var(--ease-out);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .timeline__item--left {
   left: 0;
   justify-content: flex-end;
   padding-right: var(--space-10);
-  transform: translateX(-30px);
+  transform: translateX(-40px);
 }
 
 .timeline__item--right {
   left: 50%;
   justify-content: flex-start;
   padding-left: var(--space-10);
-  transform: translateX(30px);
+  transform: translateX(40px);
 }
 
 .timeline__item.is-visible {
@@ -169,10 +216,18 @@ function parseBullets(description: string): string[] {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: var(--color-accent);
+  background: var(--color-border);
   border: 3px solid var(--color-surface);
   box-shadow: var(--shadow-sm);
-  z-index: 1;
+  z-index: 2;
+  transition: background 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+.timeline__node--active {
+  background: var(--color-accent);
+  box-shadow: 0 0 0 4px rgba(99,102,241,0.2), var(--shadow-sm);
+  transform: scale(1.2);
+  animation: node-glow 2s ease-in-out infinite;
 }
 
 .timeline__item--left .timeline__node {
@@ -192,6 +247,12 @@ function parseBullets(description: string): string[] {
   box-shadow: var(--shadow-sm);
   position: relative;
   max-width: 100%;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.timeline__card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 
 /* Arrow pointing toward timeline line */
@@ -282,7 +343,8 @@ function parseBullets(description: string): string[] {
 
 /* ===== Mobile: left-aligned timeline ===== */
 @media (max-width: 768px) {
-  .timeline__line {
+  .timeline__line,
+  .timeline__fill {
     left: 8px;
     transform: none;
   }
