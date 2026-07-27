@@ -13,7 +13,9 @@
         <span class="section__label">CONTACT</span>
         <h2 class="section__title">Let's Connect</h2>
         <p class="section__subtitle">
-          I'm always open to discussing AI projects, collaboration opportunities, or just chatting about tech.
+          Bring me the difficult AI deployment problem: the workflow that needs
+          careful integration, operator trust, human control, and an outcome the
+          business can measure.
         </p>
       </div>
 
@@ -73,6 +75,26 @@
               </span>
               <span class="contact-card__text">adrian-tam</span>
             </a>
+
+            <a
+              :href="personal.links.zennLink"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="contact-card contact-card--link"
+            >
+              <span class="contact-card__icon" aria-hidden="true">Z</span>
+              <span class="contact-card__text">Zenn · adrian_tam</span>
+            </a>
+
+            <a
+              :href="personal.links.resumeLink"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="contact-card contact-card--link"
+            >
+              <span class="contact-card__icon" aria-hidden="true">↗</span>
+              <span class="contact-card__text">View résumé</span>
+            </a>
           </div>
         </div>
       </div>
@@ -86,7 +108,7 @@
           </svg>
         </button>
         <div class="footer__bar">
-          <span class="footer__copyright">&copy; 2025 {{ personal.name }}</span>
+          <span class="footer__copyright">&copy; 2026 {{ personal.name }}</span>
           <span class="footer__built-with">Built with Vue 3 + TypeScript</span>
         </div>
       </div>

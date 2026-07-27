@@ -2,6 +2,7 @@
 import NavHeader from './components/NavHeader.vue'
 import HeroGlobe from './components/HeroGlobe.vue'
 import SectionAbout from './components/SectionAbout.vue'
+import SectionImpact from './components/SectionImpact.vue'
 import SectionSkills from './components/SectionSkills.vue'
 import SectionExperience from './components/SectionExperience.vue'
 import SectionProjects from './components/SectionProjects.vue'
@@ -24,6 +25,7 @@ useDarkMode()
     <WaveDivider color="var(--color-bg-alt)" variant="wave" />
     <SectionAbout />
     <WaveDivider color="var(--color-bg)" variant="curve" flip />
+    <SectionImpact />
     <SectionSkills />
     <WaveDivider color="var(--color-bg-alt)" variant="peaks" />
     <SectionExperience />

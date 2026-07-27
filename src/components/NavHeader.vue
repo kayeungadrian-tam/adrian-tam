@@ -17,6 +17,15 @@
         >
           {{ link.label }}
         </a>
+        <a
+          :href="personal.links.resumeLink"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="nav__link nav__link--external"
+          @click="menuOpen = false"
+        >
+          Résumé ↗
+        </a>
       </nav>
 
       <button
@@ -62,6 +71,7 @@ const { isDark, toggle } = useDarkMode()
 
 const navLinks = [
   { id: 'about', label: 'About' },
+  { id: 'impact', label: 'Impact' },
   { id: 'skills', label: 'Skills' },
   { id: 'experience', label: 'Experience' },
   { id: 'projects', label: 'Projects' },
@@ -156,6 +166,10 @@ onBeforeUnmount(() => {
   color: var(--color-accent);
 }
 
+.nav__link--external {
+  color: var(--color-accent);
+}
+
 .nav__theme-toggle {
   display: inline-flex;
   align-items: center;
@@ -236,6 +250,16 @@ onBeforeUnmount(() => {
     padding: var(--space-3) 0;
     width: 100%;
     font-size: var(--text-base);
+  }
+}
+
+@media (max-width: 1100px) and (min-width: 769px) {
+  .nav__links {
+    gap: var(--space-3);
+  }
+
+  .nav__link {
+    font-size: var(--text-xs);
   }
 }
 </style>

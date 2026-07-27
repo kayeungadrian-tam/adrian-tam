@@ -5,9 +5,8 @@
         <span class="hero__label">{{ personal.title }}</span>
         <h1 class="hero__name">{{ personal.name }}</h1>
         <p class="hero__tagline">
-          Building intelligent systems at the intersection of AI and modern
-          engineering. Based in Tokyo, solving real-world problems with machine
-          learning.
+          I embed with operators, turn difficult workflows into dependable
+          systems, and ship AI into live operations with measurable impact.
         </p>
         <div class="hero__cta">
           <a
@@ -26,7 +25,17 @@
             @mousemove="onMagMove"
             @mouseleave="onMagLeave"
           >
-            Get in Touch
+            Work With Me
+          </a>
+          <a
+            :href="personal.links.resumeLink"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hero__btn hero__btn--text magnetic"
+            @mousemove="onMagMove"
+            @mouseleave="onMagLeave"
+          >
+            View résumé ↗
           </a>
         </div>
         <div class="hero__socials">
@@ -376,6 +385,7 @@ onBeforeUnmount(() => {
 
 .hero__cta {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-4);
   margin-bottom: var(--space-6);
 }
@@ -418,6 +428,16 @@ onBeforeUnmount(() => {
 
 .hero__btn--outlined:hover {
   background: var(--color-accent-bg);
+}
+
+.hero__btn--text {
+  color: var(--color-text-secondary);
+  padding-left: var(--space-2);
+  padding-right: var(--space-2);
+}
+
+.hero__btn--text:hover {
+  color: var(--color-accent);
 }
 
 .hero__socials {
@@ -508,6 +528,7 @@ onBeforeUnmount(() => {
 
   .hero__cta {
     justify-content: center;
+    gap: var(--space-3);
   }
 
   .hero__socials {

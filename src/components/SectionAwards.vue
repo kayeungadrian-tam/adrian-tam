@@ -38,6 +38,27 @@ import { useStaggeredScrollAnimation } from '../composables/useScrollAnimation'
 const awards = [
   {
     emoji: '🏆',
+    name: 'IBM Consulting Award Japan — Go-to-Market',
+    year: '2025 Q1',
+    description:
+      'Team award for the Aktio Holdings indirect-procurement transformation and input-operations consolidation project.',
+  },
+  {
+    emoji: '📚',
+    name: 'IBM Community Japan Knowledge Mall',
+    year: '2025 · B-05-b',
+    description:
+      'Recognition for sharing reusable technical knowledge and delivery practices.',
+  },
+  {
+    emoji: '💡',
+    name: 'IBM Community Japan Knowledge Mall',
+    year: '2024 · B-06',
+    description:
+      'Recognition for technical knowledge contribution.',
+  },
+  {
+    emoji: '🏆',
     name: "IBM Manager's Choice Award",
     year: '2024',
     description:
@@ -58,7 +79,7 @@ const { setRef, visible } = useStaggeredScrollAnimation(awards.length)
 <style scoped>
 .awards-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--space-6);
 }
 
@@ -110,7 +131,13 @@ const { setRef, visible } = useStaggeredScrollAnimation(awards.length)
   line-height: 1.6;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
+  .awards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
   .awards-grid {
     grid-template-columns: 1fr;
   }
