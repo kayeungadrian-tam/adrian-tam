@@ -1,21 +1,22 @@
 const data = {
   name: "Adrian Tam",
   fullName: "KaYeung Adrian Tam",
-  title: "AI Engineer",
+  title: "AI Deployed Engineer",
   location: "Tokyo, Japan",
 
   aboutMeParagraph:
-    "Motivated artificial intelligence engineer with a strong background in delivering machine learning solutions to solve real-world problems. 5+ years of experience include applying object detection algorithms for autonomous driving, managing a team of 4 engineers in developing an AI-driven learning management system, and building causal discovery systems. Capable of translating business requirements into AI-driven solutions.",
+    "I’m an AI Deployed Engineer with 5+ years of experience turning ambiguous operational problems into production AI systems. I work alongside customers and operators from discovery through rollout, translating real workflows into dependable software with measurable outcomes.",
 
   aboutMeExpanded:
-    "Beyond my professional work, I'm passionate about exploring the intersection of AI and distributed systems. I'm currently building Chatixia Mesh — a decentralized peer-to-peer framework that enables AI agents to communicate directly through encrypted channels. I believe in building technology that empowers people and solves real problems.",
+    "My recent work spans production GenAI, multimodal document intelligence, and human-controlled automation: an Aktio quote-to-procurement workflow, explainable quote validation for ENEOS, and an IPA Mitou Advanced project exploring context and governance for Physical AI. I focus on AI that operators can trust because it is observable, auditable, and designed around clear human control.",
 
   links: {
     githubLink: "https://github.com/kayeungadrian-tam",
     linkedinLink: "https://www.linkedin.com/in/kayeungadrian-tam/",
     qiitaLink: "https://qiita.com/adrian-tam",
-    facebookLink:
-      "https://www.facebook.com/profile.php?id=100006443926392",
+    zennLink: "https://zenn.dev/adrian_tam",
+    resumeLink:
+      "https://drive.google.com/file/d/1yRiNDv8L9Tl1wZOZ_gC1R0bQZUzK4uwy/view",
   },
 
   info: {

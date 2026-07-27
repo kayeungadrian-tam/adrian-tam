@@ -98,7 +98,7 @@ const { setRef, visible } = useStaggeredScrollAnimation(skillCategories.length)
 const hoveredCategory = ref(-1)
 const hoveredSkill = ref(-1)
 
-const categoryColors = ['#6366F1', '#8B5CF6', '#06B6D4', '#F59E0B']
+const categoryColors = ['#6366F1', '#8B5CF6', '#06B6D4']
 
 const orbitRadii = [60, 95, 130]
 
@@ -146,20 +146,20 @@ function getOrbitStyle(level: number, index: number, total: number, catIndex: nu
 }
 
 const nameMap: Record<string, string> = {
+  'Multimodal LLMs': 'MM LLM',
+  'RAG / Retrieval': 'RAG',
+  'Document Intelligence': 'Doc AI',
+  'Prompt & Workflow Design': 'Prompt',
   'Computer Vision': 'CV',
-  'NLP / Transformers': 'NLP',
-  'Causal Discovery': 'Causal',
-  'Scikit-learn': 'sklearn',
+  'Causal Inference': 'Causal',
+  'Azure OpenAI': 'AOAI',
+  'Human-in-the-loop': 'HITL',
+  'ServiceNow': 'SNOW',
+  'SAP Ariba': 'Ariba',
   'TypeScript': 'TS',
   'PostgreSQL': 'PG',
-  'HTML / CSS': 'HTML',
-  'Three.js': '3JS',
   'Vue.js': 'Vue',
   'FastAPI': 'FAPI',
-  'English (Native)': 'EN',
-  'Japanese (Business)': 'JP',
-  'Cantonese (Native)': 'HK',
-  'Mandarin': 'CN',
 }
 
 function shortName(name: string): string {
@@ -174,11 +174,11 @@ function shortName(name: string): string {
 
 .skills__grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--space-8);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .skills__grid {
     grid-template-columns: 1fr;
   }

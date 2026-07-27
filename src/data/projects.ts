@@ -1,7 +1,7 @@
 export interface Project {
   name: string
   description: string
-  link: string
+  link?: string
   img: string | null
   tags: string[]
   overview: string
@@ -12,12 +12,11 @@ const projects: Project[] = [
   {
     name: "Chatixia Mesh",
     description:
-      "A decentralized P2P agent networking framework enabling AI agents to communicate directly via encrypted WebRTC DataChannels.",
-    link: "https://github.com/kayeungadrian-tam/chatixia-mesh",
+      "A private experimental architecture for decentralized AI-agent communication over encrypted WebRTC data channels.",
     img: null,
     tags: ["Rust", "Python", "React", "WebRTC", "P2P", "AI Agents"],
     overview:
-      "Decentralized mesh network for AI agent communication. Features a Rust registry + WebRTC sidecar, Python agent framework with 29+ skills, React Hub dashboard, full mesh topology, sidecar pattern, CLI tools, invite codes, and multi-LLM support.",
+      "A private prototype exploring a decentralized mesh for AI-agent communication, with a Rust registry and WebRTC sidecar, a Python agent framework, React operations hub, full-mesh topology, CLI tooling, and multi-LLM support.",
     featured: true,
   },
   {
