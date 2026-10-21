@@ -33,16 +33,19 @@
             </span>
           </div>
 
-          <a
-            v-if="item.source"
-            :href="item.source"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="impact-card__source"
-          >
-            View public source
-            <span aria-hidden="true">↗</span>
-          </a>
+          <div v-if="item.sources?.length" class="impact-card__sources">
+            <a
+              v-for="source in item.sources"
+              :key="source.url"
+              :href="source.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="impact-card__source"
+            >
+              {{ source.label }}
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
         </article>
       </div>
     </div>
@@ -151,6 +154,12 @@ const { setRef, visible } = useStaggeredScrollAnimation(impact.length, 0.1)
   border-radius: var(--radius-full);
   font-size: var(--text-xs);
   font-weight: 500;
+}
+
+.impact-card__sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
 }
 
 .impact-card__source {

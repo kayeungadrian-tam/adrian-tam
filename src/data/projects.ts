@@ -2,22 +2,67 @@ export interface Project {
   name: string
   description: string
   link?: string
+  site?: string
   img: string | null
   tags: string[]
   overview: string
   featured?: boolean
+  highlights?: { icon: string; label: string }[]
+  diagram?: [string, string, string, string, string]
 }
 
 const projects: Project[] = [
   {
+    name: "Interlatch",
+    description:
+      "Shared memory for coding agents: every session recorded locally, every lesson linked to where it came from.",
+    link: "https://github.com/Chatixia-AI/interlatch",
+    site: "https://interlatch.com",
+    img: null,
+    tags: ["Python", "MCP", "Claude Code", "Codex", "Firebase", "PyPI"],
+    overview:
+      "Open-source shared memory for Claude Code, Codex, GitHub Copilot, IBM Bob, Antigravity and OpenCode. Interlatch records every session on your own machine, extracts the fixes, gotchas and decisions agents learn, and serves them back through a CLI, an MCP server and a team hub. My IBM team uses the hub to reuse what its agents have learned.",
+    featured: true,
+    highlights: [
+      { icon: "🤖", label: "6 Coding Agents" },
+      { icon: "🔌", label: "MCP Server" },
+      { icon: "🧠", label: "Linked Lessons" },
+      { icon: "👥", label: "Team Hub" },
+      { icon: "🔒", label: "Local-first" },
+      { icon: "📦", label: "MIT · on PyPI" },
+    ],
+    diagram: ["Claude Code", "Codex", "Interlatch", "Team Hub", "MCP"],
+  },
+  {
+    name: "Chatixia Studio",
+    description:
+      "Short 3D films that explain how software works in about two and a half minutes, with every term explained beside the player.",
+    site: "https://studio.chatixia.net",
+    img: null,
+    tags: ["three.js", "3D", "Explainers", "Firebase"],
+    overview:
+      "Real-time 3D blueprint-style explainers of technical concepts, part of Chatixia (chatixia.net).",
+  },
+  {
     name: "Chatixia Mesh",
     description:
-      "A private experimental architecture for decentralized AI-agent communication over encrypted WebRTC data channels.",
+      "A working agent-to-agent network on encrypted WebRTC data channels, documented end to end with an 18-lesson course and a threat model.",
+    link: "https://github.com/Chatixia-AI/chatixia-mesh",
+    site: "https://mesh.chatixia.net",
     img: null,
     tags: ["Rust", "Python", "React", "WebRTC", "P2P", "AI Agents"],
     overview:
-      "A private prototype exploring a decentralized mesh for AI-agent communication, with a Rust registry and WebRTC sidecar, a Python agent framework, React operations hub, full-mesh topology, CLI tooling, and multi-LLM support.",
-    featured: true,
+      "A decentralized mesh for AI-agent communication: Rust registry and WebRTC sidecar, Python agent framework, React operations hub, CLI tooling and multi-LLM support.",
+  },
+  {
+    name: "MoodX",
+    description:
+      "A native macOS meeting mixer for Teams, built with Codex for OpenAI Build Week: local-only audio routing, a meeting timer with a protected decision checkpoint, and a 45-second Quiet Think prompt.",
+    link: "https://github.com/kayeungadrian-tam/MoodX",
+    img: null,
+    tags: ["Swift", "SwiftUI", "Core Audio", "whisper.cpp", "Codex"],
+    overview:
+      "A psychologically safe participation layer for online meetings. Fun is the doorway to participation, and value follows.",
   },
   {
     name: "Bible Search Index",

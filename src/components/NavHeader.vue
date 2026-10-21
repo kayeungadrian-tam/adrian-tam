@@ -76,7 +76,7 @@ const navLinks = [
   { id: 'experience', label: 'Experience' },
   { id: 'projects', label: 'Projects' },
   { id: 'education', label: 'Education' },
-  { id: 'awards', label: 'Awards' },
+  { id: 'awards', label: 'Recognition' },
   { id: 'contact', label: 'Contact' },
 ]
 
