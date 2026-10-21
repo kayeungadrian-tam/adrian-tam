@@ -22,30 +22,14 @@
             <h3 class="featured-card__name">{{ featuredProject.name }}</h3>
             <p class="featured-card__description">{{ featuredProject.overview }}</p>
 
-            <div class="featured-highlights">
-              <div class="highlight-item">
-                <span class="highlight-icon">&#x1F310;</span>
-                <span>Mesh Topology</span>
-              </div>
-              <div class="highlight-item">
-                <span class="highlight-icon">&#x1F9E9;</span>
-                <span>Sidecar Pattern</span>
-              </div>
-              <div class="highlight-item">
-                <span class="highlight-icon">&#x1F916;</span>
-                <span>29+ Agent Skills</span>
-              </div>
-              <div class="highlight-item">
-                <span class="highlight-icon">&#x1F9E0;</span>
-                <span>Multi-LLM Support</span>
-              </div>
-              <div class="highlight-item">
-                <span class="highlight-icon">&#x1F512;</span>
-                <span>WebRTC Encrypted</span>
-              </div>
-              <div class="highlight-item">
-                <span class="highlight-icon">&#x1F6E0;</span>
-                <span>CLI Tools</span>
+            <div v-if="featuredProject.highlights" class="featured-highlights">
+              <div
+                v-for="item in featuredProject.highlights"
+                :key="item.label"
+                class="highlight-item"
+              >
+                <span class="highlight-icon">{{ item.icon }}</span>
+                <span>{{ item.label }}</span>
               </div>
             </div>
 
@@ -57,30 +41,46 @@
               >{{ tag }}</span>
             </div>
 
-            <a
-              v-if="featuredProject.link"
-              :href="featuredProject.link"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="featured-btn magnetic"
-              @mousemove="onMagMove"
-              @mouseleave="onMagLeave"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-              View on GitHub
-            </a>
-            <span v-else class="featured-private">
-              Private prototype · architecture overview
-            </span>
+            <div class="featured-actions">
+              <a
+                v-if="featuredProject.site"
+                :href="featuredProject.site"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="featured-btn magnetic"
+                @mousemove="onMagMove"
+                @mouseleave="onMagLeave"
+              >
+                Visit site ↗
+              </a>
+              <a
+                v-if="featuredProject.link"
+                :href="featuredProject.link"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="featured-btn featured-btn--outlined magnetic"
+                @mousemove="onMagMove"
+                @mouseleave="onMagLeave"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                View on GitHub
+              </a>
+              <span v-if="!featuredProject.site && !featuredProject.link" class="featured-private">
+                Private prototype · architecture overview
+              </span>
+            </div>
           </div>
 
           <div class="featured-card__right">
             <div class="mesh-diagram">
-              <div class="mesh-node mesh-node--agent1"><span>Agent 1</span></div>
-              <div class="mesh-node mesh-node--agent2"><span>Agent 2</span></div>
-              <div class="mesh-node mesh-node--registry"><span>Registry</span></div>
-              <div class="mesh-node mesh-node--hub"><span>Hub</span></div>
-              <div class="mesh-node mesh-node--sidecar"><span>Sidecar</span></div>
+              <div
+                v-for="(label, i) in diagramLabels"
+                :key="label"
+                class="mesh-node"
+                :class="`mesh-node--${diagramSlots[i]}`"
+              >
+                <span>{{ label }}</span>
+              </div>
               <svg class="mesh-lines" viewBox="0 0 300 280" preserveAspectRatio="xMidYMid meet">
                 <line x1="80" y1="40" x2="150" y2="140" />
                 <line x1="220" y1="40" x2="150" y2="140" />
@@ -123,18 +123,30 @@
                 >{{ tag }}</span>
               </div>
 
-              <a
-                v-if="project.link"
-                :href="project.link"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="project-card__link"
-              >
-                View on GitHub
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
-              </a>
+              <div v-if="project.site || project.link" class="project-card__links">
+                <a
+                  v-if="project.site"
+                  :href="project.site"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="project-card__link"
+                >
+                  Visit site
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+                </a>
+                <a
+                  v-if="project.link"
+                  :href="project.link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="project-card__link"
+                >
+                  GitHub
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+                </a>
+              </div>
               <span v-else class="project-card__private">
-                Private prototype · architecture overview
+                Private prototype
               </span>
             </div>
           </div>
@@ -159,6 +171,12 @@ const featuredProject = computed<Project | undefined>(() =>
 
 const regularProjects = computed<Project[]>(() =>
   projects.filter((p) => !p.featured)
+)
+
+const diagramSlots = ['agent1', 'agent2', 'registry', 'hub', 'sidecar']
+
+const diagramLabels = computed<string[]>(
+  () => featuredProject.value?.diagram ?? ['Agent 1', 'Agent 2', 'Registry', 'Hub', 'Sidecar']
 )
 </script>
 
@@ -268,6 +286,18 @@ const regularProjects = computed<Project[]>(() =>
   transition: background var(--duration-fast) var(--ease-out),
               transform var(--duration-fast) var(--ease-out);
   text-decoration: none;
+}
+
+.featured-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.featured-btn--outlined {
+  background: transparent;
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent-border);
 }
 
 .featured-btn:hover {
@@ -455,6 +485,13 @@ const regularProjects = computed<Project[]>(() =>
 
 .project-card__link:hover {
   color: var(--color-secondary);
+}
+
+.project-card__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-top: auto;
 }
 
 .project-card__private {

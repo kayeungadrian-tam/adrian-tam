@@ -7,10 +7,12 @@ const timeline = [
         icon: "fa-solid fa-briefcase",
         website: "https://www.ibm.com/jp-ja/about/subsidiaries/ise",
         description: "\
-        - Lead end-to-end production AI delivery with customers and operations teams, from workflow discovery and system design through rollout, governance, and improvement.<br>\
-        - Built and led Aktio's multimodal quote-to-procurement automation connecting ServiceNow and SAP Ariba.<br>\
-        - Delivered explainable quote validation for ENEOS across 16 plants, using 10,500+ historical quotes and reducing validation time by up to 83%.<br>\
-        - Selected for IPA Mitou Advanced 2026 H1 to develop a context and governance platform for Physical AI."
+        - Lead generative-AI delivery for IBM's procurement BPO clients on Azure, Microsoft Copilot and Databricks, from customer discovery to production.<br>\
+        - Technical lead on Aktio's AI quote processing (ServiceNow → SAP Ariba), in production and announced with IBM Japan in July 2026.<br>\
+        - Led quote validation for a major oil refiner, in daily use across 16 plants since April 2026 (~75% shorter review time).<br>\
+        - Shaped the technical solution for a won RFP at an energy company (Databricks + Copilot Studio) after a 98.5%-accurate quote-assessment PoC.<br>\
+        - Reused the platform for a major bank's IT-procurement quotes, and run the team's Interlatch knowledge hub.<br>\
+        - Speaker at ISE Technical Conference 2024 and 2026."
     },
     {
         start: "2021-10",

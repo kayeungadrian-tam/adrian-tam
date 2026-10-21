@@ -5,59 +5,67 @@ export interface ImpactCaseStudy {
   metric?: string
   description: string
   stack: string[]
-  source?: string
+  sources?: { label: string; url: string }[]
 }
 
 const impact: ImpactCaseStudy[] = [
   {
     client: "Aktio",
-    title: "Quote-to-Procurement AI Automation",
-    status: "Production delivery · Publicly announced",
+    title: "AI Quote Processing, ServiceNow → SAP Ariba",
+    status: "In production · Announced Jul 2026",
     metric:
-      "23万件/年 indirect-procurement transactions; approximately half involve ad-hoc quotes",
+      "~230k indirect purchases a year, about half with one-off supplier quotes",
     description:
-      "I built the core system largely from scratch and led delivery from the first production release in July 2025. The multimodal workflow reads irregular supplier quotes, validates line items, and connects ServiceNow to SAP Ariba while preserving human approval. Guardrails, Langfuse observability, audit evidence, and operator feedback loops keep the automation controlled and continuously improving.",
+      "Technical lead (3 engineers + 1 junior) since June 2025. Every few minutes the system picks up new ServiceNow purchase requests, reads the attached quotes with Azure Document Intelligence and Azure OpenAI vision, runs about ten compliance checks that mix rules with LLM judgments, and registers the order in SAP Ariba. A person still approves each purchase, and anything that fails goes to review. Langfuse prompt versioning, tracing and dataset evaluation keep changes measurable.",
     stack: [
       "Python",
-      "Multimodal LLMs",
-      "OCR",
+      "Azure OpenAI",
+      "Document Intelligence",
       "ServiceNow",
       "SAP Ariba",
       "Langfuse",
     ],
-    source: "https://jp.newsroom.ibm.com/2026-07-13-AKTIO-Automates-Procurement",
+    sources: [
+      {
+        label: "Press release",
+        url: "https://jp.newsroom.ibm.com/2026-07-13-AKTIO-Automates-Procurement",
+      },
+      {
+        label: "Nikkei",
+        url: "https://www.nikkei.com/article/DGXZRSP709780_T10C26A7000000/",
+      },
+    ],
   },
   {
-    client: "ENEOS",
+    client: "Major Japanese oil refiner",
     title: "Explainable Quote Validation",
-    status: "Live across 16 plants",
-    metric: "Up to 83% less validation time",
+    status: "In daily use across 16 plants since Apr 2026",
+    metric: "~75% shorter review time: 6–9 min per quote vs a 30-min manual reference",
     description:
-      "Built from 10,500+ historical quotes, the system evaluates six categories in 10–30 seconds and returns evidence-backed OK, NG, or Review decisions. Confidence indicators and review queues help people focus their attention, while human override and audit trails keep final judgment transparent and accountable.",
+      "Checks refinery-maintenance quotes against 185 framework agreements (8,533 priced items) and ~10.5k past quotes. LLMs match line items while price verdicts are computed by code, so every OK, NG or Review decision carries its evidence. Operator feedback is triaged automatically, and a prompt fix goes live only if it passes a regression set of real cases.",
     stack: [
-      "FastAPI",
-      "React",
       "Azure OpenAI",
-      "AI Search",
+      "Content Understanding",
+      "Power Automate",
+      "Azure Functions",
       "PostgreSQL",
-      "Docker",
+      "React",
     ],
   },
   {
-    client: "IPA Mitou Advanced",
-    title: "Physical AI Context & Governance Platform",
-    status: "Selected project · In development",
+    client: "Japanese energy company",
+    title: "Procurement AI Program",
+    status: "PoC → won RFP · Jun 2026 – present",
+    metric: "98.5% line-level accuracy · 16/16 quote totals matched in the PoC",
     description:
-      "Developing a context and responsibility layer for Physical AI agents that unifies fragmented sensor, API, and device signals. The platform combines harness engineering, Agent Traps, observation, verification, governance, and action recording so autonomous behavior can be evaluated, constrained, and explained.",
+      "An AI pipeline that structures refinery-maintenance contractor quotes and checks them line by line. I shaped the technical solution for a competitive RFP that IBM won: a Databricks lakehouse linking ~28k purchase cases a year across SAP, Ariba and SharePoint, with Copilot Studio agents in Teams. A Copilot Studio agent flow that replaced manual PDF filing is already in production.",
     stack: [
-      "AI Agents",
-      "Context Engineering",
-      "Observability",
-      "Governance",
-      "Physical AI",
+      "Azure OpenAI",
+      "Document Intelligence",
+      "Databricks",
+      "Copilot Studio",
+      "Terraform",
     ],
-    source:
-      "https://www.ipa.go.jp/jinzai/mitou/advanced/2026first/gaiyou-kj-2.html",
   },
 ]
 
