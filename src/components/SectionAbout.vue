@@ -30,7 +30,7 @@
             <span class="about__chip">📍 Tokyo, Japan</span>
             <span class="about__chip">🚀 Production AI Delivery</span>
             <span class="about__chip">🤖 GenAI / Agents / Document AI</span>
-            <span class="about__chip">💼 5+ Years</span>
+            <span class="about__chip">💼 6+ Years</span>
             <span class="about__chip">
               🗣️ {{ personal.info.lang.join(' ') }}
             </span>
