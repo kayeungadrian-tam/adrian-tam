@@ -35,6 +35,16 @@
 
           <div class="contact-socials">
             <a
+              :href="personal.links.interlatchLink"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="contact-card contact-card--link"
+            >
+              <span class="contact-card__icon" aria-hidden="true">I</span>
+              <span class="contact-card__text">Interlatch · interlatch.com</span>
+            </a>
+
+            <a
               :href="personal.links.githubLink"
               target="_blank"
               rel="noopener noreferrer"

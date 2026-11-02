@@ -8,14 +8,25 @@
           I embed with operators, turn difficult workflows into dependable
           systems, and ship AI into live operations with measurable impact.
         </p>
-        <a
-          href="#awards"
-          class="hero__proof"
-          aria-label="See awards, press and talks"
-          @click.prevent="smoothScrollTo('awards')"
-        >
-          <span v-for="item in highlights" :key="item" class="hero__proof-item">{{ item }}</span>
-        </a>
+        <div class="hero__proof">
+          <a
+            :href="personal.links.interlatchLink"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hero__proof-item hero__proof-item--product"
+          >
+            Building Interlatch <span aria-hidden="true">↗</span>
+          </a>
+          <a
+            v-for="item in highlights"
+            :key="item"
+            href="#awards"
+            class="hero__proof-item"
+            @click.prevent="smoothScrollTo('awards')"
+          >
+            {{ item }}
+          </a>
+        </div>
         <div class="hero__cta">
           <a
             href="#projects"
@@ -398,7 +409,6 @@ onBeforeUnmount(() => {
   gap: var(--space-2);
   max-width: 520px;
   margin-bottom: var(--space-8);
-  text-decoration: none;
 }
 
 .hero__proof-item {
@@ -408,10 +418,17 @@ onBeforeUnmount(() => {
   padding: var(--space-1) var(--space-3);
   font-size: var(--text-sm);
   color: var(--color-text);
+  text-decoration: none;
   transition: border-color 0.2s ease;
 }
 
-.hero__proof:hover .hero__proof-item {
+.hero__proof-item--product {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.hero__proof-item:hover {
   border-color: var(--color-accent);
 }
 
@@ -532,6 +549,12 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 768px) {
+  /* The stacked globe and content are taller than one screen, so the hero has to grow or they get clipped. */
+  .hero {
+    height: auto;
+    min-height: 100vh;
+  }
+
   .hero__container {
     flex-direction: column-reverse;
     padding-top: var(--space-4);
@@ -552,6 +575,10 @@ onBeforeUnmount(() => {
     justify-content: center;
     margin-left: auto;
     margin-right: auto;
+  }
+
+  .hero__scroll-indicator {
+    display: none;
   }
 
   .hero__name {
