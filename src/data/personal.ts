@@ -11,6 +11,7 @@ const data = {
     "At IBM Japan I lead procurement AI for enterprise clients: Aktio's AI quote processing (announced July 2026), quote validation running across 16 refinery plants, and a won RFP built on Databricks and Copilot Studio. Outside work I build in the open with coding agents: Interlatch, shared memory for Claude Code and Codex; Chatixia, an agent-to-agent mesh and a studio of 3D explainers; MoodX, a meeting mixer built for OpenAI Build Week; and PolterHub, selected for IPA MITOU Advanced 2026. I'm the first-listed inventor on a U.S. patent application for multi-agent AI orchestration (filed April 2026), and the Aktio team received an IBM Consulting Award Japan. I focus on AI that people can trust because it is observable, auditable, and designed around clear human control.",
 
   links: {
+    interlatchLink: "https://interlatch.com",
     githubLink: "https://github.com/kayeungadrian-tam",
     linkedinLink: "https://www.linkedin.com/in/kayeungadrian-tam/",
     qiitaLink: "https://qiita.com/adrian-tam",
