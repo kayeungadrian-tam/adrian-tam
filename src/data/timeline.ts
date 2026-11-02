@@ -12,6 +12,8 @@ const timeline = [
         - Led quote validation for a major oil refiner, in daily use across 16 plants since April 2026 (~75% shorter review time).<br>\
         - Shaped the technical solution for a won RFP at an energy company (Databricks + Copilot Studio) after a 98.5%-accurate quote-assessment PoC.<br>\
         - Reused the platform for a major bank's IT-procurement quotes, and run the team's Interlatch knowledge hub.<br>\
+        - First-listed inventor on a U.S. patent application for multi-agent AI orchestration, filed through IBM in April 2026.<br>\
+        - IBM Consulting Award Japan 2025 Q1 (Aktio team); IBM Mentor and Recognized Speaker badges.<br>\
         - Speaker at ISE Technical Conference 2024 and 2026."
     },
     {
@@ -22,13 +24,13 @@ const timeline = [
         icon: "fa-solid fa-briefcase",
         website: "https://www.ambl.co.jp/",
         description: "\
-        - Led a four-person engineering team building AI capabilities for a learning management system (LMS).<br>\
+        - Led a five-person AI team building AI capabilities for a learning management system (LMS).<br>\
         - Advised on causal discovery system design and implementation."
     },
     {
-        start: "2020-09",
+        start: "2020-08",
         end: "2021-09",
-        title: "ML Engineer",
+        title: "AI Engineer",
         location: "iPX Co.",
         icon: "fa-solid fa-briefcase",
         website: "https://www.ipx.co.jp/",

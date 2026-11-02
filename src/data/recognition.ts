@@ -21,6 +21,13 @@ export interface Talk {
   note?: string
 }
 
+export const highlights: string[] = [
+  'U.S. patent pending',
+  'IPA MITOU Advanced 2026',
+  'IBM Consulting Award Japan (team)',
+  'Aktio × IBM press release',
+]
+
 export const awards: Award[] = [
   {
     emoji: '🚀',
@@ -35,7 +42,15 @@ export const awards: Award[] = [
     name: 'U.S. Patent Pending',
     year: '2026 · Filed Apr',
     description:
-      'First-listed inventor on a U.S. patent application for a multi-agent AI orchestration system.',
+      'First-listed inventor on a U.S. patent application, filed through IBM, for a multi-agent AI orchestration system.',
+  },
+  {
+    emoji: '🎓',
+    name: 'IBM Mentor & Recognized Speaker',
+    year: '2026 · Badges',
+    description:
+      'IBM-issued badges for mentoring at least three mentees and for speaking at ISE technical conferences and seminars.',
+    link: 'https://www.credly.com/badges/e4e11c52-970c-406e-8b4d-1d1dc05d8929/public_url',
   },
   {
     emoji: '🏆',
@@ -70,7 +85,7 @@ export const awards: Award[] = [
 export const press: PressItem[] = [
   {
     date: '2026-07-13',
-    outlet: 'IBM Japan Newsroom · Nikkei',
+    outlet: 'IBM Japan Newsroom · Nikkei · PR TIMES · IT Leaders · LOGI-TODAY',
     title:
       'アクティオ、日本IBMの支援のもと、見積確認から調達システムへの発注情報登録までの調達業務をAIにより自動化',
     note:
@@ -83,6 +98,18 @@ export const press: PressItem[] = [
       {
         label: 'Nikkei',
         url: 'https://www.nikkei.com/article/DGXZRSP709780_T10C26A7000000/',
+      },
+      {
+        label: 'PR TIMES',
+        url: 'https://prtimes.jp/main/html/rd/p/000000724.000046783.html',
+      },
+      {
+        label: 'IT Leaders',
+        url: 'https://it.impress.co.jp/articles/-/29575',
+      },
+      {
+        label: 'LOGI-TODAY',
+        url: 'https://www.logi-today.com/976347',
       },
     ],
   },

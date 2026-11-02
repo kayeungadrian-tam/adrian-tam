@@ -8,6 +8,14 @@
           I embed with operators, turn difficult workflows into dependable
           systems, and ship AI into live operations with measurable impact.
         </p>
+        <a
+          href="#awards"
+          class="hero__proof"
+          aria-label="See awards, press and talks"
+          @click.prevent="smoothScrollTo('awards')"
+        >
+          <span v-for="item in highlights" :key="item" class="hero__proof-item">{{ item }}</span>
+        </a>
         <div class="hero__cta">
           <a
             href="#projects"
@@ -105,6 +113,7 @@ import {
   Color,
 } from 'three'
 import personal from '../data/personal'
+import { highlights } from '../data/recognition'
 import { smoothScrollTo } from '../composables/useSmoothScroll'
 import { useMagnetic } from '../composables/useMagnetic'
 
@@ -380,7 +389,30 @@ onBeforeUnmount(() => {
   color: var(--color-text-secondary);
   max-width: 480px;
   line-height: 1.7;
+  margin-bottom: var(--space-6);
+}
+
+.hero__proof {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  max-width: 520px;
   margin-bottom: var(--space-8);
+  text-decoration: none;
+}
+
+.hero__proof-item {
+  background: var(--color-accent-bg);
+  border: 1px solid var(--color-accent-border);
+  border-radius: var(--radius-full);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  transition: border-color 0.2s ease;
+}
+
+.hero__proof:hover .hero__proof-item {
+  border-color: var(--color-accent);
 }
 
 .hero__cta {
@@ -514,6 +546,12 @@ onBeforeUnmount(() => {
   .hero__content {
     text-align: center;
     flex: none;
+  }
+
+  .hero__proof {
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .hero__name {
