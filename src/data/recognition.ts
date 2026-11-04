@@ -22,7 +22,6 @@ export interface Talk {
 }
 
 export const highlights: string[] = [
-  'U.S. patent pending',
   'IPA MITOU Advanced 2026',
   'IBM Consulting Award Japan (team)',
   'Aktio × IBM press release',
@@ -36,13 +35,6 @@ export const awards: Award[] = [
     description:
       'PolterHub, a context and governance layer for physical-AI agents. Full-stack lead on the selected project.',
     link: 'https://www.ipa.go.jp/jinzai/mitou/advanced/2026first/gaiyou-kj-2.html',
-  },
-  {
-    emoji: '📜',
-    name: 'U.S. Patent Pending',
-    year: '2026 · Filed Apr',
-    description:
-      'First-listed inventor on a U.S. patent application, filed through IBM, for a multi-agent AI orchestration system.',
   },
   {
     emoji: '🎓',
